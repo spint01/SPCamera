@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 import Photos
 
+@available(iOS 10.2, *)
 class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
 	
@@ -235,20 +236,6 @@ class CameraViewController: UIViewController {
 			return
 		}
 		
-		// Add audio input.
-		do {
-            let audioDevice = AVCaptureDevice.default(for: .audio)
-            let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice!)
-			
-			if session.canAddInput(audioDeviceInput) {
-				session.addInput(audioDeviceInput)
-			} else {
-				print("Could not add audio device input to the session")
-			}
-		} catch {
-			print("Could not create audio device input: \(error)")
-		}
-		
 		// Add photo output.
 		if session.canAddOutput(photoOutput) {
 			session.addOutput(photoOutput)
@@ -468,8 +455,10 @@ class CameraViewController: UIViewController {
 			
             var photoSettings = AVCapturePhotoSettings()
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
-            if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+            if #available(iOS 11.0, *) {
+                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+                }
             }
             
             if self.videoDeviceInput.device.isFlashAvailable {
@@ -532,7 +521,6 @@ class CameraViewController: UIViewController {
 			interruptions and show a preview is paused message. See the documentation
 			of AVCaptureSessionWasInterruptedNotification for other interruption reasons.
 		*/
-		NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
 		NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
 	}
 	
@@ -568,51 +556,7 @@ class CameraViewController: UIViewController {
 					self.session.startRunning()
 					self.isSessionRunning = self.session.isRunning
 				} else {
-					DispatchQueue.main.async {
-//                        self.resumeButton.isHidden = false
-					}
 				}
-			}
-		} else {
-//            resumeButton.isHidden = false
-		}
-	}
-	
-	@objc
-	func sessionWasInterrupted(notification: NSNotification) {
-		/*
-			In some scenarios we want to enable the user to resume the session running.
-			For example, if music playback is initiated via control center while
-			using AVCam, then the user can let AVCam resume
-			the session running, which will stop music playback. Note that stopping
-			music playback in control center will not automatically resume the session
-			running. Also note that it is not always possible to resume, see `resumeInterruptedSession(_:)`.
-		*/
-        if let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
-			let reasonIntegerValue = userInfoValue.integerValue,
-			let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) {
-			print("Capture session was interrupted with reason \(reason)")
-			
-			var showResumeButton = false
-			
-			if reason == .audioDeviceInUseByAnotherClient || reason == .videoDeviceInUseByAnotherClient {
-				showResumeButton = true
-			} else if reason == .videoDeviceNotAvailableWithMultipleForegroundApps {
-				// Simply fade-in a label to inform the user that the camera is unavailable.
-				cameraUnavailableLabel.alpha = 0
-				cameraUnavailableLabel.isHidden = false
-				UIView.animate(withDuration: 0.25) {
-					self.cameraUnavailableLabel.alpha = 1
-				}
-			}
-			
-			if showResumeButton {
-				// Simply fade-in a button to enable the user to try to resume the session running.
-//                resumeButton.alpha = 0
-//                resumeButton.isHidden = false
-//                UIView.animate(withDuration: 0.25) {
-//                    self.resumeButton.alpha = 1
-//                }
 			}
 		}
 	}
@@ -620,16 +564,7 @@ class CameraViewController: UIViewController {
 	@objc
 	func sessionInterruptionEnded(notification: NSNotification) {
 		print("Capture session interruption ended")
-		
-//        if !resumeButton.isHidden {
-//            UIView.animate(withDuration: 0.25,
-//                animations: {
-//                    self.resumeButton.alpha = 0
-//                }, completion: { _ in
-//                    self.resumeButton.isHidden = true
-//                }
-//            )
-//        }
+
 		if !cameraUnavailableLabel.isHidden {
 			UIView.animate(withDuration: 0.25,
 			    animations: {
