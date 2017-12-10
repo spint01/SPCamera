@@ -163,7 +163,8 @@ class CameraViewController: UIViewController {
 	private var setupResult: SessionSetupResult = .success
 	var videoDeviceInput: AVCaptureDeviceInput!
 	@IBOutlet private weak var previewView: PreviewView!
-	
+    @IBOutlet weak var containerView: UIView!
+    
 	// Call this on the session queue.
 	private func configureSession() {
 		if setupResult != .success {
