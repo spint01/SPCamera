@@ -9,7 +9,6 @@ import UIKit
 import AVFoundation
 import Photos
 
-@available(iOS 10.0, *)
 class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
 
@@ -191,18 +190,31 @@ class CameraViewController: UIViewController {
 			var defaultVideoDevice: AVCaptureDevice?
 			
 			// Choose the back dual camera if available, otherwise default to a wide angle camera.
-            if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
-				defaultVideoDevice = dualCameraDevice
-            } else if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-				// If the back dual camera is not available, default to the back wide angle camera.
-				defaultVideoDevice = backCameraDevice
-            } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-				/*
-                   In some cases where users break their phones, the back wide angle camera is not available.
-                   In this case, we should default to the front wide angle camera.
-                */
-				defaultVideoDevice = frontCameraDevice
-			}
+            if #available(iOS 10.2, *) {
+                if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
+                    defaultVideoDevice = dualCameraDevice
+                } else if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    // If the back dual camera is not available, default to the back wide angle camera.
+                    defaultVideoDevice = backCameraDevice
+                } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                    /*
+                     In some cases where users break their phones, the back wide angle camera is not available.
+                     In this case, we should default to the front wide angle camera.
+                     */
+                    defaultVideoDevice = frontCameraDevice
+                }
+            } else {
+                if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    // If the back dual camera is not available, default to the back wide angle camera.
+                    defaultVideoDevice = backCameraDevice
+                } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                    /*
+                     In some cases where users break their phones, the back wide angle camera is not available.
+                     In this case, we should default to the front wide angle camera.
+                     */
+                    defaultVideoDevice = frontCameraDevice
+                }
+            }
 			
             let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice!)
 			
@@ -259,154 +271,9 @@ class CameraViewController: UIViewController {
 		session.commitConfiguration()
 	}
 	
-	@IBAction private func resumeInterruptedSession(_ resumeButton: UIButton) {
-		sessionQueue.async {
-			/*
-				The session might fail to start running, e.g., if a phone or FaceTime call is still
-				using audio or video. A failure to start the session running will be communicated via
-				a session runtime error notification. To avoid repeatedly failing to start the session
-				running, we only try to restart the session running in the session runtime error handler
-				if we aren't trying to resume the session running.
-			*/
-			self.session.startRunning()
-			self.isSessionRunning = self.session.isRunning
-			if !self.session.isRunning {
-				DispatchQueue.main.async {
-					let message = NSLocalizedString("Unable to resume", comment: "Alert message when unable to resume the session running")
-					let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-					let cancelAction = UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil)
-					alertController.addAction(cancelAction)
-					self.present(alertController, animated: true, completion: nil)
-				}
-			} else {
-				DispatchQueue.main.async {
-//                    self.resumeButton.isHidden = true
-				}
-			}
-		}
-	}
-	
-	private enum CaptureMode: Int {
-		case photo = 0
-	}
-
-	@IBAction private func toggleCaptureMode(_ captureModeControl: UISegmentedControl) {
-		captureModeControl.isEnabled = false
-		
-		if captureModeControl.selectedSegmentIndex == CaptureMode.photo.rawValue {
-
-			sessionQueue.async {
-				/*
-					Remove the AVCaptureMovieFileOutput from the session because movie recording is
-					not supported with AVCaptureSession.Preset.Photo. Additionally, Live Photo
-					capture is not supported when an AVCaptureMovieFileOutput is connected to the session.
-				*/
-				self.session.beginConfiguration()
-                self.session.sessionPreset = .photo
-				
-				DispatchQueue.main.async {
-					captureModeControl.isEnabled = true
-				}
-				
-				self.session.commitConfiguration()
-			}
-		}
-	}
-	
 	// MARK: Device Configuration
 	
 	@IBOutlet private weak var cameraUnavailableLabel: UILabel!
-	private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera],
-                                                                               mediaType: .video, position: .unspecified)
-  /*
-	@IBAction private func changeCamera(_ cameraButton: UIButton) {
-		cameraButton.isEnabled = false
-		recordButton.isEnabled = false
-		photoButton.isEnabled = false
-		livePhotoModeButton.isEnabled = false
-		captureModeControl.isEnabled = false
-		
-		sessionQueue.async {
-			let currentVideoDevice = self.videoDeviceInput.device
-            let currentPosition = currentVideoDevice.position
-			
-			let preferredPosition: AVCaptureDevice.Position
-			let preferredDeviceType: AVCaptureDevice.DeviceType
-			
-			switch currentPosition {
-				case .unspecified, .front:
-					preferredPosition = .back
-					preferredDeviceType = .builtInDualCamera
-				
-				case .back:
-					preferredPosition = .front
-					preferredDeviceType = .builtInWideAngleCamera
-			}
-			
-            let devices = self.videoDeviceDiscoverySession.devices
-			var newVideoDevice: AVCaptureDevice? = nil
-			
-			// First, look for a device with both the preferred position and device type. Otherwise, look for a device with only the preferred position.
-            if let device = devices.first(where: { $0.position == preferredPosition && $0.deviceType == preferredDeviceType }) {
-				newVideoDevice = device
-            } else if let device = devices.first(where: { $0.position == preferredPosition }) {
-				newVideoDevice = device
-			}
-
-            if let videoDevice = newVideoDevice {
-                do {
-					let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
-					
-					self.session.beginConfiguration()
-					
-					// Remove the existing device input first, since using the front and back camera simultaneously is not supported.
-					self.session.removeInput(self.videoDeviceInput)
-					
-					if self.session.canAddInput(videoDeviceInput) {
-						NotificationCenter.default.removeObserver(self, name: .AVCaptureDeviceSubjectAreaDidChange, object: currentVideoDevice)
-						
-						NotificationCenter.default.addObserver(self, selector: #selector(self.subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
-						
-						self.session.addInput(videoDeviceInput)
-						self.videoDeviceInput = videoDeviceInput
-					} else {
-						self.session.addInput(self.videoDeviceInput)
-					}
-					
-					if let connection = self.movieFileOutput?.connection(with: .video) {
-						if connection.isVideoStabilizationSupported {
-							connection.preferredVideoStabilizationMode = .auto
-						}
-					}
-					
-                    /*
-						Set Live Photo capture and depth data delivery if it is supported. When changing cameras, the
-						`livePhotoCaptureEnabled and depthDataDeliveryEnabled` properties of the AVCapturePhotoOutput gets set to NO when
-						a video device is disconnected from the session. After the new video device is
-						added to the session, re-enable them on the AVCapturePhotoOutput if it is supported.
-                    */
-					self.photoOutput.isLivePhotoCaptureEnabled = self.photoOutput.isLivePhotoCaptureSupported
-					self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
-                    
-					self.session.commitConfiguration()
-				} catch {
-					print("Error occured while creating video device input: \(error)")
-				}
-			}
-			
-			DispatchQueue.main.async {
-				self.cameraButton.isEnabled = true
-				self.recordButton.isEnabled = self.movieFileOutput != nil
-				self.photoButton.isEnabled = true
-				self.livePhotoModeButton.isEnabled = true
-				self.captureModeControl.isEnabled = true
-                self.depthDataDeliveryButton.isEnabled = self.photoOutput.isDepthDataDeliveryEnabled
-                self.depthDataDeliveryButton.isHidden = !self.photoOutput.isDepthDataDeliverySupported
-			}
-		}
-	}
- */
-	
 	@IBAction private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
 		focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
