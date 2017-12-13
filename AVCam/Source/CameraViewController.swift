@@ -9,14 +9,19 @@ import UIKit
 import AVFoundation
 import Photos
 
-@available(iOS 10.2, *)
+@available(iOS 10.0, *)
 class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
-	
+
+    private var locationManager: LocationManager?
+    private var configuration = Configuration()
+
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// Disable UI. The UI is enabled if and only if the session starts running.
+        locationManager = LocationManager()
+
+        // Disable UI. The UI is enabled if and only if the session starts running.
 		photoButton.isEnabled = false
 
 		// Set up the video preview view.
@@ -472,7 +477,7 @@ class CameraViewController: UIViewController {
 			}
 
 			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
-			let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, willCapturePhotoAnimation: {
+            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, locationManager: self.locationManager, willCapturePhotoAnimation: {
 					DispatchQueue.main.async {
 						self.previewView.videoPreviewLayer.opacity = 0
 						UIView.animate(withDuration: 0.25) {
