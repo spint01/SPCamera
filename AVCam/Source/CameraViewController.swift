@@ -19,8 +19,6 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
-        locationManager = LocationManager()
-
         // Disable UI. The UI is enabled if and only if the session starts running.
 		photoButton.isEnabled = false
 
@@ -118,6 +116,9 @@ class CameraViewController: UIViewController {
                     }
 			}
 		}
+
+        // will ask permission the first time
+        locationManager = LocationManager()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -127,6 +128,7 @@ class CameraViewController: UIViewController {
 				self.isSessionRunning = self.session.isRunning
 				self.removeObservers()
 			}
+            self.locationManager?.stopUpdatingLocation()
 		}
 		
 		super.viewWillDisappear(animated)
