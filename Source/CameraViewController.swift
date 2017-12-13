@@ -9,13 +9,13 @@ import UIKit
 import AVFoundation
 import Photos
 
-class CameraViewController: UIViewController {
+open class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
 
     private var locationManager: LocationManager?
-    private var configuration = Configuration()
+    open var configuration = Configuration()
 
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
 		super.viewDidLoad()
 		
         // Disable UI. The UI is enabled if and only if the session starts running.
@@ -71,7 +71,7 @@ class CameraViewController: UIViewController {
 		}
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
+	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		sessionQueue.async {
@@ -120,7 +120,7 @@ class CameraViewController: UIViewController {
         locationManager = LocationManager()
 	}
 	
-	override func viewWillDisappear(_ animated: Bool) {
+	open override func viewWillDisappear(_ animated: Bool) {
 		sessionQueue.async {
 			if self.setupResult == .success {
 				self.session.stopRunning()
@@ -133,15 +133,15 @@ class CameraViewController: UIViewController {
 		super.viewWillDisappear(animated)
 	}
 	
-    override var shouldAutorotate: Bool {
+    open override var shouldAutorotate: Bool {
 		return true
 	}
 	
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return .all
 	}
 	
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+	open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		super.viewWillTransition(to: size, with: coordinator)
 		
 		if let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
