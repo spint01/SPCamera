@@ -17,7 +17,7 @@
                BlueprintIdentifier = "7AA677101CFF765500B353FB"
                BuildableName = "AVCam.app"
                BlueprintName = "AVCam"
-               ReferencedContainer = "container:AVCam Swift.xcodeproj">
+               ReferencedContainer = "container:SPCamera.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,7 +36,7 @@
             BlueprintIdentifier = "7AA677101CFF765500B353FB"
             BuildableName = "AVCam.app"
             BlueprintName = "AVCam"
-            ReferencedContainer = "container:AVCam Swift.xcodeproj">
+            ReferencedContainer = "container:SPCamera.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -60,7 +60,7 @@
             BlueprintIdentifier = "7AA677101CFF765500B353FB"
             BuildableName = "AVCam.app"
             BlueprintName = "AVCam"
-            ReferencedContainer = "container:AVCam Swift.xcodeproj">
+            ReferencedContainer = "container:SPCamera.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -79,7 +79,7 @@
             BlueprintIdentifier = "7AA677101CFF765500B353FB"
             BuildableName = "AVCam.app"
             BlueprintName = "AVCam"
-            ReferencedContainer = "container:AVCam Swift.xcodeproj">
+            ReferencedContainer = "container:SPCamera.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

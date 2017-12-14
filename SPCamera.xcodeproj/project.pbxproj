@@ -225,7 +225,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7AA6770C1CFF765500B353FB /* Build configuration list for PBXProject "AVCam Swift" */;
+			buildConfigurationList = 7AA6770C1CFF765500B353FB /* Build configuration list for PBXProject "SPCamera" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -536,7 +536,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7AA6770C1CFF765500B353FB /* Build configuration list for PBXProject "AVCam Swift" */ = {
+		7AA6770C1CFF765500B353FB /* Build configuration list for PBXProject "SPCamera" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7AA677211CFF765600B353FB /* Debug */,

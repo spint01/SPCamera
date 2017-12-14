@@ -16,8 +16,8 @@ class ViewController: UIViewController {
     }
 
     @IBAction func launchTouched(_ sender: UIButton) {
-        var config = Configuration()
-        config.photoAlbumName = "SPCamera"
+//        var config = Configuration()
+//        config.photoAlbumName = "SPCamera"
 
 //        let ctr = CameraViewController(configuration: config)
 //        ctr.delegate = self
