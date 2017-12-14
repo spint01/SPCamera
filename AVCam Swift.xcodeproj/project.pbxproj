@@ -20,7 +20,33 @@
 		CD73CB8D1FE0FC7700652E51 /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureDelegate.swift */; };
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
+		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
+		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CDD490161FE31C46000F4ACB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7AA677091CFF765500B353FB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD73CB641FE0F65600652E51;
+			remoteInfo = SPCamera;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CDD490181FE31C46000F4ACB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7AA677161CFF765600B353FB /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -55,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +95,7 @@
 				CD73CB881FE0F8F000652E51 /* SupportFiles */,
 				CD73CB771FE0F7CD00652E51 /* Example */,
 				7AA677121CFF765600B353FB /* Products */,
+				CDD4900D1FE31B9C000F4ACB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +129,13 @@
 				7AA677181CFF765600B353FB /* Main.storyboard */,
 			);
 			path = SupportFiles;
+			sourceTree = "<group>";
+		};
+		CDD4900D1FE31B9C000F4ACB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CDDB3DBF1FE0CE02005D7679 /* Source */ = {
@@ -156,10 +191,12 @@
 				CD73CB721FE0F7CD00652E51 /* Sources */,
 				CD73CB731FE0F7CD00652E51 /* Frameworks */,
 				CD73CB741FE0F7CD00652E51 /* Resources */,
+				CDD490181FE31C46000F4ACB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CDD490171FE31C46000F4ACB /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = Example;
@@ -252,6 +289,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CDD490171FE31C46000F4ACB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD73CB641FE0F65600652E51 /* SPCamera */;
+			targetProxy = CDD490161FE31C46000F4ACB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		7AA677181CFF765600B353FB /* Main.storyboard */ = {
@@ -447,6 +492,7 @@
 		CD73CB861FE0F7CD00652E51 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -468,6 +514,7 @@
 		CD73CB871FE0F7CD00652E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
