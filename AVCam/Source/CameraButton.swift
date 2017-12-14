@@ -1,11 +1,11 @@
 import UIKit
 
-protocol ButtonPickerDelegate: class {
+protocol CameraButtonDelegate: class {
 
   func buttonDidPress()
 }
 
-class ButtonPicker: UIButton {
+class CameraButton: UIButton {
 
   struct Dimensions {
     static let borderWidth: CGFloat = 2
@@ -13,7 +13,7 @@ class ButtonPicker: UIButton {
     static let buttonBorderSize: CGFloat = 68
   }
 
-  weak var delegate: ButtonPickerDelegate?
+  weak var delegate: CameraButtonDelegate?
 
   // MARK: - Initializers
 

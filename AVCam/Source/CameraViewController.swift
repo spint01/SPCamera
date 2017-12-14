@@ -9,14 +9,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-// MARK: - ButtonPickerDelegate methods
-
-extension CameraViewController: ButtonPickerDelegate {
-
-    func buttonDidPress() {
-       // delegate?.pickerButtonDidPress()
-    }
-}
+// MARK: - CameraButtonDelegate methods
 
 class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
@@ -24,92 +17,14 @@ class CameraViewController: UIViewController {
     private var locationManager: LocationManager?
     private var configuration = Configuration()
 
-
-    lazy var pickerButton: ButtonPicker = { [unowned self] in
-        let pickerButton = ButtonPicker()
-        pickerButton.setTitleColor(UIColor.white, for: UIControlState())
-        pickerButton.delegate = self
-
-        return pickerButton
-        }()
-
-    lazy var borderPickerButton: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = ButtonPicker.Dimensions.borderWidth
-        view.layer.cornerRadius = ButtonPicker.Dimensions.buttonBorderSize / 2
-
-        return view
-    }()
-
-    private func setupConstraints() {
-        var margins: UILayoutGuide!
-        if #available(iOS 11.0, *) {
-            margins = view.safeAreaLayoutGuide
-        } else {
-            margins = view.layoutMarginsGuide
-        }
-
-        NSLayoutConstraint.activate([
-            previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 8),
-            previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: -8),
-            previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
-            previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8)
-            ])
-//            NSLayoutConstraint.activate([
-//                previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
-//                previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8),
-//                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
-//                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
-//                ])
-
-        // photoButton
-//        NSLayoutConstraint.activate([
-//            photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            photoButton.heightAnchor.constraint(equalToConstant: 30),
-//            photoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-//            ])
-        // pickerButton
-        NSLayoutConstraint.activate([
-            pickerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            pickerButton.widthAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonSize),
-            pickerButton.heightAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonSize),
-            pickerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-            ])
-        // borderPickerButton
-        NSLayoutConstraint.activate([
-            borderPickerButton.centerXAnchor.constraint(equalTo: pickerButton.centerXAnchor),
-            borderPickerButton.widthAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonBorderSize),
-            borderPickerButton.heightAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonBorderSize),
-            borderPickerButton.centerYAnchor.constraint(equalTo: pickerButton.centerYAnchor)
-            ])
-        // cameraUnavailableLabel
-        NSLayoutConstraint.activate([
-            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
-   }
-
     override func viewDidLoad() {
 		super.viewDidLoad()
 
         // recreate storyboard
-        previewView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(previewView)
-
-//        photoButton.translatesAutoresizingMaskIntoConstraints = false
-//        photoButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
-//        view.addSubview(photoButton)
-
-        pickerButton.translatesAutoresizingMaskIntoConstraints = false
-//        pickerButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
-        view.addSubview(pickerButton)
-        borderPickerButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(borderPickerButton)
-
-        cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cameraUnavailableLabel)
+        [previewView, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
         previewView.addGestureRecognizer(tapGesture)
@@ -121,7 +36,7 @@ class CameraViewController: UIViewController {
         setupConstraints()
 
         // Disable UI. The UI is enabled if and only if the session starts running.
-		photoButton.isEnabled = false
+		cameraButton.isEnabled = false
 
 		// Set up the video preview view.
 		previewView.session = session
@@ -257,7 +172,42 @@ class CameraViewController: UIViewController {
 		}
 	}
 
-	// MARK: Session Management
+    private func setupConstraints() {
+        var margins: UILayoutGuide!
+        if #available(iOS 11.0, *) {
+            margins = view.safeAreaLayoutGuide
+        } else {
+            margins = view.layoutMarginsGuide
+        }
+
+        NSLayoutConstraint.activate([
+            previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 8),
+            previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: -8),
+            previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
+            previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8)
+            ])
+        // cameraButton
+        NSLayoutConstraint.activate([
+            cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+            cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            ])
+        // borderCameraButton
+        NSLayoutConstraint.activate([
+            borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+            borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
+            borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
+            ])
+        // cameraUnavailableLabel
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            ])
+    }
+
+    // MARK: Session Management
 	
 	private enum SessionSetupResult {
 		case success
@@ -472,25 +422,30 @@ class CameraViewController: UIViewController {
         return device.videoZoomFactor
     }
 
-//    func maxZoomFactor() -> CGFloat {
-//        let device = videoDeviceInput.device
-//
-//        return device.activeFormat.videoMaxZoomFactor
-//    }
-
 	// MARK: Capturing Photos
 
 	private let photoOutput = AVCapturePhotoOutput()
 	
 	private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
 	
-//    @IBOutlet private weak var photoButton: UIButton!
-    lazy private var photoButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Photo", for: .normal)
+    lazy var cameraButton: CameraButton = { [unowned self] in
+        let button = CameraButton()
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.delegate = self
 
         return button
+        }()
+
+    lazy var borderCameraButton: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.clear
+        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderWidth = CameraButton.Dimensions.borderWidth
+        view.layer.cornerRadius = CameraButton.Dimensions.buttonBorderSize / 2
+
+        return view
     }()
+
     @objc
     private func capturePhoto(_ photoButton: UIButton) {
         /*
@@ -559,7 +514,7 @@ class CameraViewController: UIViewController {
 
 			DispatchQueue.main.async {
 				// Only enable the ability to change camera if the device has more than one camera.
-				self.photoButton.isEnabled = isSessionRunning
+				self.cameraButton.isEnabled = isSessionRunning
 			}
 		}
 		keyValueObservations.append(keyValueObservation)
@@ -628,6 +583,13 @@ class CameraViewController: UIViewController {
 			)
 		}
 	}
+}
+
+extension CameraViewController: CameraButtonDelegate {
+
+    func buttonDidPress() {
+        capturePhoto(cameraButton)
+    }
 }
 
 extension AVCaptureVideoOrientation {
