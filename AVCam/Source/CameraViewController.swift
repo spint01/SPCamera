@@ -15,9 +15,63 @@ class CameraViewController: UIViewController {
     private var locationManager: LocationManager?
     private var configuration = Configuration()
 
+    private func setupConstraints() {
+        var margins: UILayoutGuide!
+        if #available(iOS 11.0, *) {
+            margins = view.safeAreaLayoutGuide
+        } else {
+            margins = view.layoutMarginsGuide
+        }
+
+        NSLayoutConstraint.activate([
+            previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 8),
+            previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: -8),
+            previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
+            previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8)
+            ])
+//            NSLayoutConstraint.activate([
+//                previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
+//                previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8),
+//                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
+//                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
+//                ])
+
+        // photoButton
+        NSLayoutConstraint.activate([
+            photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            photoButton.heightAnchor.constraint(equalToConstant: 30),
+            photoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            ])
+        // cameraUnavailableLabel
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            ])
+   }
+
     override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
+        // recreate storyboard
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(previewView)
+
+        photoButton.translatesAutoresizingMaskIntoConstraints = false
+        photoButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
+        view.addSubview(photoButton)
+
+        cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cameraUnavailableLabel)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
+        previewView.addGestureRecognizer(tapGesture)
+
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler(_:)))
+        previewView.addGestureRecognizer(pinchGesture)
+
+        // TODO: change photoButton to match ImagePicker
+        setupConstraints()
+
         // Disable UI. The UI is enabled if and only if the session starts running.
 		photoButton.isEnabled = false
 
@@ -168,9 +222,16 @@ class CameraViewController: UIViewController {
 	private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
 	private var setupResult: SessionSetupResult = .success
 	var videoDeviceInput: AVCaptureDeviceInput!
-	@IBOutlet private weak var previewView: PreviewView!
-    @IBOutlet weak var containerView: UIView!
-    
+//    @IBOutlet private weak var previewView: PreviewView!
+//    @IBOutlet weak var containerView: UIView!
+    lazy private var previewView: PreviewView = {
+        let view = PreviewView()
+        view.backgroundColor = UIColor.black
+
+        return view
+    }()
+//    var containerView: UIView!
+
 	// Call this on the session queue.
 	private func configureSession() {
 		if setupResult != .success {
@@ -273,12 +334,22 @@ class CameraViewController: UIViewController {
 	
 	// MARK: Device Configuration
 	
-	@IBOutlet private weak var cameraUnavailableLabel: UILabel!
-	@IBAction private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+//    @IBOutlet private weak var cameraUnavailableLabel: UILabel!
+//    @IBAction private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+//        let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
+//        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
+//    }
+    lazy private var cameraUnavailableLabel: UILabel = {
+        let label = UILabel()
+        label.tintColor = UIColor.yellow
+
+        return label
+    }()
+    @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
-		focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
-	}
-	
+        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
+    }
+
     private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
         sessionQueue.async {
             let device = self.videoDeviceInput.device
@@ -306,15 +377,74 @@ class CameraViewController: UIViewController {
             }
         }
     }
-	
+
+    // MARK: pinch to zoom
+
+    var pivotPinchScale: CGFloat = 1.0
+    var maxZoomFactor: CGFloat = 3.5
+
+    @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            pivotPinchScale = zoomFactor()
+        //        print("pivotPinchScale: \(pivotPinchScale) maxZoom: \(cameraMan.maxZoomFactor())")
+        case .changed:
+            let newValue: CGFloat = pivotPinchScale * gesture.scale
+            let factor = newValue < 1 ? 1 : newValue > maxZoomFactor ? maxZoomFactor : newValue
+
+            if factor != zoomFactor() {
+                // print("pinchGesture: \(gesture.scale) new: \(factor)")
+                zoomFactor(factor)
+                // NotificationCenter.default.post(name: Notification.Name(rawValue: ZoomView.Notifications.zoomValueChanged), object: self, userInfo: ["newValue": newValue])
+            }
+        case .failed, .ended:
+            break
+        default:
+            break
+        }
+    }
+
+    func zoomFactor(_ zoom: CGFloat) {
+        let device = videoDeviceInput.device
+
+        sessionQueue.async {
+            do {
+                try device.lockForConfiguration()
+                var factor = zoom
+                factor = max(1, min(factor, device.activeFormat.videoMaxZoomFactor))
+                device.videoZoomFactor = factor
+            } catch {
+                print("Could not lock device for configuration: \(error)")
+            }
+        }
+    }
+
+    func zoomFactor() -> CGFloat {
+        let device = videoDeviceInput.device
+        return device.videoZoomFactor
+    }
+
+//    func maxZoomFactor() -> CGFloat {
+//        let device = videoDeviceInput.device
+//
+//        return device.activeFormat.videoMaxZoomFactor
+//    }
+
 	// MARK: Capturing Photos
 
 	private let photoOutput = AVCapturePhotoOutput()
 	
 	private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
 	
-	@IBOutlet private weak var photoButton: UIButton!
-	@IBAction private func capturePhoto(_ photoButton: UIButton) {
+//    @IBOutlet private weak var photoButton: UIButton!
+    lazy private var photoButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Photo", for: .normal)
+
+        return button
+    }()
+    @objc
+    private func capturePhoto(_ photoButton: UIButton) {
         /*
 			Retrieve the video preview layer's video orientation on the main queue before
 			entering the session queue. We do this to ensure UI elements are accessed on
