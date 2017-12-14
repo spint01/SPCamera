@@ -332,11 +332,6 @@ class CameraViewController: UIViewController {
 	
 	// MARK: Device Configuration
 	
-//    @IBOutlet private weak var cameraUnavailableLabel: UILabel!
-//    @IBAction private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-//        let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
-//        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
-//    }
     lazy private var cameraUnavailableLabel: UILabel = {
         let label = UILabel()
         label.tintColor = UIColor.yellow
@@ -463,19 +458,19 @@ class CameraViewController: UIViewController {
 			
             var photoSettings = AVCapturePhotoSettings()
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
-            if #available(iOS 11.0, *) {
-                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-                }
-            }
+//            if #available(iOS 11.0, *) {
+//                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+//                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+//                }
+//            }
             
             if self.videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
             }
             
 			photoSettings.isHighResolutionPhotoEnabled = true
-			if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
-				photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.__availablePreviewPhotoPixelFormatTypes.first!]
+			if !photoSettings.availablePreviewPhotoPixelFormatTypes.isEmpty {
+				photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.availablePreviewPhotoPixelFormatTypes.first!]
 			}
 
 			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
