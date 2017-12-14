@@ -14,6 +14,7 @@
 		7AA6771F1CFF765600B353FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AA6771D1CFF765600B353FB /* LaunchScreen.storyboard */; };
 		7AA677271CFF774800B353FB /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureDelegate.swift */; };
 		7AA677291CFF7B5C00B353FB /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
+		CD80736F1FE226740038BCA7 /* ButtonPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* ButtonPicker.swift */; };
 		CDDB3DBD1FE0CDDE005D7679 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */; };
 		CDDB3DBE1FE0CDDE005D7679 /* EXIFHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */; };
 		CDDB3DC11FE0D742005D7679 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DC01FE0D742005D7679 /* Configuration.swift */; };
@@ -29,6 +30,7 @@
 		7AA677201CFF765600B353FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AA677261CFF774800B353FB /* PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCaptureDelegate.swift; sourceTree = "<group>"; };
 		7AA677281CFF7B5C00B353FB /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		CD80736E1FE226740038BCA7 /* ButtonPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonPicker.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 		CDDB3DBF1FE0CE02005D7679 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				CD80736E1FE226740038BCA7 /* ButtonPicker.swift */,
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
 				CDDB3DC01FE0D742005D7679 /* Configuration.swift */,
 				CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */,
@@ -167,6 +170,7 @@
 				7AA677171CFF765600B353FB /* CameraViewController.swift in Sources */,
 				7AA677151CFF765600B353FB /* AppDelegate.swift in Sources */,
 				CDDB3DBE1FE0CDDE005D7679 /* EXIFHelper.swift in Sources */,
+				CD80736F1FE226740038BCA7 /* ButtonPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

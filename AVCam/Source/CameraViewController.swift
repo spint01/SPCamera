@@ -9,11 +9,39 @@ import UIKit
 import AVFoundation
 import Photos
 
+// MARK: - ButtonPickerDelegate methods
+
+extension CameraViewController: ButtonPickerDelegate {
+
+    func buttonDidPress() {
+       // delegate?.pickerButtonDidPress()
+    }
+}
+
 class CameraViewController: UIViewController {
 	// MARK: View Controller Life Cycle
 
     private var locationManager: LocationManager?
     private var configuration = Configuration()
+
+
+    lazy var pickerButton: ButtonPicker = { [unowned self] in
+        let pickerButton = ButtonPicker()
+        pickerButton.setTitleColor(UIColor.white, for: UIControlState())
+        pickerButton.delegate = self
+
+        return pickerButton
+        }()
+
+    lazy var borderPickerButton: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.clear
+        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderWidth = ButtonPicker.Dimensions.borderWidth
+        view.layer.cornerRadius = ButtonPicker.Dimensions.buttonBorderSize / 2
+
+        return view
+    }()
 
     private func setupConstraints() {
         var margins: UILayoutGuide!
@@ -37,10 +65,24 @@ class CameraViewController: UIViewController {
 //                ])
 
         // photoButton
+//        NSLayoutConstraint.activate([
+//            photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            photoButton.heightAnchor.constraint(equalToConstant: 30),
+//            photoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+//            ])
+        // pickerButton
         NSLayoutConstraint.activate([
-            photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            photoButton.heightAnchor.constraint(equalToConstant: 30),
-            photoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            pickerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pickerButton.widthAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonSize),
+            pickerButton.heightAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonSize),
+            pickerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            ])
+        // borderPickerButton
+        NSLayoutConstraint.activate([
+            borderPickerButton.centerXAnchor.constraint(equalTo: pickerButton.centerXAnchor),
+            borderPickerButton.widthAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonBorderSize),
+            borderPickerButton.heightAnchor.constraint(equalToConstant: ButtonPicker.Dimensions.buttonBorderSize),
+            borderPickerButton.centerYAnchor.constraint(equalTo: pickerButton.centerYAnchor)
             ])
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
@@ -56,9 +98,15 @@ class CameraViewController: UIViewController {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(previewView)
 
-        photoButton.translatesAutoresizingMaskIntoConstraints = false
-        photoButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
-        view.addSubview(photoButton)
+//        photoButton.translatesAutoresizingMaskIntoConstraints = false
+//        photoButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
+//        view.addSubview(photoButton)
+
+        pickerButton.translatesAutoresizingMaskIntoConstraints = false
+//        pickerButton.addTarget(self, action: #selector(capturePhoto(_:)), for: .touchUpInside)
+        view.addSubview(pickerButton)
+        borderPickerButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(borderPickerButton)
 
         cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cameraUnavailableLabel)
