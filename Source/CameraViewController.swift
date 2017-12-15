@@ -17,25 +17,20 @@ open class CameraViewController: UIViewController {
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
-    open var compactMode = false
 
     open override func viewDidLoad() {
 		super.viewDidLoad()
 
         // recreate storyboard
+        [previewView, doneButton, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
 
-        if compactMode {
-            view.addSubview(previewView)
-            previewView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(cameraUnavailableLabel)
-            cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        if configuration.compactMode {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto(_:)))
             previewView.addGestureRecognizer(tapGesture)
         } else {
-            [previewView, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
-                view.addSubview($0)
-                $0.translatesAutoresizingMaskIntoConstraints = false
-            }
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
             previewView.addGestureRecognizer(tapGesture)
         }
@@ -43,7 +38,6 @@ open class CameraViewController: UIViewController {
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler(_:)))
         previewView.addGestureRecognizer(pinchGesture)
 
-        // TODO: change photoButton to match ImagePicker
         setupConstraints()
 
         // Disable UI. The UI is enabled if and only if the session starts running.
@@ -202,21 +196,25 @@ open class CameraViewController: UIViewController {
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
-
-        if !compactMode {
             // cameraButton
             NSLayoutConstraint.activate([
                 cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-                cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-                cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            cameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
+            cameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
+            cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: configuration.compactMode ? -20 : -20)
                 ])
             // borderCameraButton
             NSLayoutConstraint.activate([
                 borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
                 borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
-                borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
+            borderCameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize),
+            borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
+            ])
+        if !configuration.compactMode {
+            // doneButton
+            NSLayoutConstraint.activate([
+                doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                doneButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 14)
                 ])
         }
     }
@@ -438,7 +436,7 @@ open class CameraViewController: UIViewController {
 	private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
 
     lazy var cameraButton: CameraButton = { [unowned self] in
-        let button = CameraButton()
+        let button = CameraButton(configuration: self.configuration)
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.delegate = self
 
@@ -449,8 +447,8 @@ open class CameraViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = UIColor.clear
         view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = CameraButton.Dimensions.borderWidth
-        view.layer.cornerRadius = CameraButton.Dimensions.buttonBorderSize / 2
+        view.layer.borderWidth = configuration.compactMode ? CameraButton.CompactDimensions.borderWidth : CameraButton.Dimensions.borderWidth
+        view.layer.cornerRadius = (configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize) / 2
 
         return view
     }()
@@ -470,7 +468,7 @@ open class CameraViewController: UIViewController {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation!
 			}
 
-            var photoSettings = AVCapturePhotoSettings()
+            let photoSettings = AVCapturePhotoSettings()
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
 //            if #available(iOS 11.0, *) {
 //                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {

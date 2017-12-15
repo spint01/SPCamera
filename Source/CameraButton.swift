@@ -7,47 +7,61 @@ protocol CameraButtonDelegate: class {
 
 class CameraButton: UIButton {
 
-  struct Dimensions {
-    static let borderWidth: CGFloat = 2
-    static let buttonSize: CGFloat = 58
-    static let buttonBorderSize: CGFloat = 68
-  }
+    struct Dimensions {
+        static let borderWidth: CGFloat = 2
+        static let buttonSize: CGFloat = 58
+        static let buttonBorderSize: CGFloat = 68
+    }
+    struct CompactDimensions {
+        static let borderWidth: CGFloat = 2
+        static let buttonSize: CGFloat = 25
+        static let buttonBorderSize: CGFloat = 32
+    }
 
-  weak var delegate: CameraButtonDelegate?
+    var configuration = Configuration()
+    weak var delegate: CameraButtonDelegate?
 
   // MARK: - Initializers
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    configure()
-  }
+    public init(configuration: Configuration? = nil) {
+        if let configuration = configuration {
+            self.configuration = configuration
+        }
+        super.init(frame: .zero)
+        configure()
+    }
 
-  func configure() {
-    setupButton()
-  }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
 
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
+    func configure() {
+        setupButton()
+    }
 
-  // MARK: - Configuration
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-  func setupButton() {
-    backgroundColor = UIColor.white
-    layer.cornerRadius = Dimensions.buttonSize / 2
-    accessibilityLabel = "Take photo"
-    addTarget(self, action: #selector(pickerButtonDidPress(_:)), for: .touchUpInside)
-    addTarget(self, action: #selector(pickerButtonDidHighlight(_:)), for: .touchDown)
-  }
+    // MARK: - Configuration
 
-  // MARK: - Actions
+    func setupButton() {
+        backgroundColor = UIColor.white
+        layer.cornerRadius = configuration.compactMode ? CompactDimensions.buttonSize / 2 : Dimensions.buttonSize / 2
+        accessibilityLabel = "Take photo"
+        addTarget(self, action: #selector(pickerButtonDidPress(_:)), for: .touchUpInside)
+        addTarget(self, action: #selector(pickerButtonDidHighlight(_:)), for: .touchDown)
+    }
 
-  @objc func pickerButtonDidPress(_ button: UIButton) {
-    backgroundColor = UIColor.white
-    delegate?.buttonDidPress()
-  }
+    // MARK: - Actions
 
-  @objc func pickerButtonDidHighlight(_ button: UIButton) {
-    backgroundColor = UIColor(red:0.3, green:0.3, blue:0.3, alpha:1)
-  }
+    @objc func pickerButtonDidPress(_ button: UIButton) {
+        backgroundColor = UIColor.white
+        delegate?.buttonDidPress()
+    }
+
+    @objc func pickerButtonDidHighlight(_ button: UIButton) {
+        backgroundColor = UIColor(red:0.3, green:0.3, blue:0.3, alpha:1)
+    }
 }
