@@ -17,18 +17,28 @@ open class CameraViewController: UIViewController {
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
+    open var compactMode = false
 
     open override func viewDidLoad() {
 		super.viewDidLoad()
 
         // recreate storyboard
-        [previewView, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
-            view.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
-        previewView.addGestureRecognizer(tapGesture)
+        if compactMode {
+            view.addSubview(previewView)
+            previewView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(cameraUnavailableLabel)
+            cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto(_:)))
+            previewView.addGestureRecognizer(tapGesture)
+        } else {
+            [previewView, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
+                view.addSubview($0)
+                $0.translatesAutoresizingMaskIntoConstraints = false
+            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
+            previewView.addGestureRecognizer(tapGesture)
+        }
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler(_:)))
         previewView.addGestureRecognizer(pinchGesture)
@@ -187,25 +197,28 @@ open class CameraViewController: UIViewController {
             previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
             previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8)
             ])
-        // cameraButton
-        NSLayoutConstraint.activate([
-            cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-            cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-            ])
-        // borderCameraButton
-        NSLayoutConstraint.activate([
-            borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-            borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-            borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
-            borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
-            ])
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
+
+        if !compactMode {
+            // cameraButton
+            NSLayoutConstraint.activate([
+                cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+                ])
+            // borderCameraButton
+            NSLayoutConstraint.activate([
+                borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
+                borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
+                ])
+        }
     }
 
     // MARK: Session Management

@@ -25,15 +25,28 @@
                                     <action selector="launchTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dU8-fZ-n0m"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zT9-t2-600">
+                                <rect key="frame" x="0.0" y="527" width="375" height="140"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="140" id="3Og-NH-Ah2"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="r4y-2F-QmU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="4Lo-eH-HxW"/>
+                            <constraint firstItem="zT9-t2-600" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Db6-L2-0ZC"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zT9-t2-600" secondAttribute="trailing" id="DxC-7D-2hS"/>
                             <constraint firstItem="r4y-2F-QmU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="RzK-Qa-HOq"/>
+                            <constraint firstItem="zT9-t2-600" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="kYL-a6-rTH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Main" id="6T3-iG-UIX"/>
+                    <connections>
+                        <outlet property="containerView" destination="zT9-t2-600" id="4f5-Vu-hVp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
