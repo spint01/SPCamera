@@ -15,30 +15,44 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        containerView.backgroundColor = UIColor.yellow
+        containerView.backgroundColor = UIColor.lightGray
 
-        let ctr = CameraViewController()
-        ctr.compactMode = true
+        var config = Configuration()
+        config.photoAlbumName = "SPCamera"
+        config.compactMode = true
+
+        let ctr = CameraViewController(configuration: config,
+            onCancel: {},
+            onCapture: { (asset) in
+                print("Captured asset")
+            }, onFinish: { (assets) in
+        })
+
         addChildViewController(ctr)
         containerView.addSubview(ctr.view)
         ctr.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            ctr.view.widthAnchor.constraint(equalToConstant: 110),
-            ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
-            ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
+            ctr.view.widthAnchor.constraint(equalToConstant: 164),
+            ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: -8),
+            ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
             ])
 
         ctr.didMove(toParentViewController: self)
-        //containerView.addSubview(ctr.view)
     }
 
     @IBAction func launchTouched(_ sender: UIButton) {
-//        var config = Configuration()
-//        config.photoAlbumName = "SPCamera"
+        var config = Configuration()
+        config.photoAlbumName = "SPCamera"
 
-
-        let ctr = CameraViewController()
+        let ctr = CameraViewController(configuration: config,
+        onCancel: {
+            self.dismiss(animated: true, completion: nil)
+        }, onCapture: { (asset) in
+            print("Captured asset")
+        }, onFinish: { assets in
+            //
+        })
         present(ctr, animated: true, completion: nil)
     }
 }

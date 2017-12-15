@@ -12,7 +12,7 @@ class PhotoCaptureProcessor: NSObject {
 
 	private(set) var requestedPhotoSettings: AVCapturePhotoSettings
 	private let willCapturePhotoAnimation: () -> Void
-	private let completionHandler: (PhotoCaptureProcessor) -> Void
+	private let completionHandler: (PhotoCaptureProcessor, PHAsset?) -> Void
 	private var photoData: Data?
 	private var locationManager: LocationManager?
     private var latestLocation: CLLocation?
@@ -21,15 +21,19 @@ class PhotoCaptureProcessor: NSObject {
 	init(with requestedPhotoSettings: AVCapturePhotoSettings,
          locationManager: LocationManager?,
 	     willCapturePhotoAnimation: @escaping () -> Void,
-	     completionHandler: @escaping (PhotoCaptureProcessor) -> Void) {
+	     completionHandler: @escaping (PhotoCaptureProcessor, PHAsset?) -> Void) {
 		self.requestedPhotoSettings = requestedPhotoSettings
         self.locationManager = locationManager
 		self.willCapturePhotoAnimation = willCapturePhotoAnimation
 		self.completionHandler = completionHandler
 	}
 	
-	private func didFinish() {
-		completionHandler(self)
+    private func didFinish(_ assetIdentifer: String?) {
+        if let identifier = assetIdentifer, let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject {
+            completionHandler(self, asset)
+        } else {
+            completionHandler(self, nil)
+        }
 	}
 
     // MARK: Helper
@@ -70,7 +74,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         if let error = error {
             print("Error occurered while capturing photo: \(error)")
-            didFinish()
+            didFinish(nil)
             return
         }
 
@@ -94,21 +98,23 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
         if let error = error {
             print("Error capturing photo: \(error)")
-            didFinish()
+            didFinish(nil)
             return
         }
         
         guard let photoData = photoData else {
             print("No photo data resource")
-            didFinish()
+            didFinish(nil)
             return
         }
         
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
+                var localIdentifier: String?
                 PHPhotoLibrary.shared().performChanges({
                     let options = PHAssetResourceCreationOptions()
                     let creationRequest = PHAssetCreationRequest.forAsset()
+
                     if #available(iOS 11.0, *) {
                         options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
                     }
@@ -126,20 +132,20 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                             albumChangeRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
                         }
                         if let albumChangeRequest = albumChangeRequest, let assetPlaceholder = creationRequest.placeholderForCreatedAsset {
+                            localIdentifier = assetPlaceholder.localIdentifier
                             let enumeration: NSArray = [assetPlaceholder]
                             albumChangeRequest.addAssets(enumeration)
                         }
                     }
-                    }, completionHandler: { _, error in
-                        if let error = error {
-                            print("Error occurered while saving photo to photo library: \(error)")
-                        }
-                        
-                        self.didFinish()
+                }, completionHandler: { _, error in
+                    if let error = error {
+                        print("Error occurered while saving photo to photo library: \(error)")
                     }
-                )
+
+                    self.didFinish(localIdentifier)
+                })
             } else {
-                self.didFinish()
+                self.didFinish(nil)
             }
         }
     }

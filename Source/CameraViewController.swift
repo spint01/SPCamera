@@ -17,6 +17,31 @@ open class CameraViewController: UIViewController {
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
+    private var capturedPhotoAssets = [PHAsset]()
+    private let onCancel: (() -> Void)?
+    private let onCapture: ((PHAsset) -> Void)?
+    private let onFinish: (([PHAsset]) -> Void)?
+    // MARK: - Initialization
+
+    public init(configuration: Configuration? = nil,
+                onCancel: @escaping () -> Void,
+                onCapture: @escaping (PHAsset) -> Void,
+                onFinish: @escaping ([PHAsset]) -> Void) {
+        if let configuration = configuration {
+            self.configuration = configuration
+        }
+        self.onCancel = onCancel
+        self.onCapture = onCapture
+        self.onFinish = onFinish
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        self.onCancel = nil
+        self.onCapture = nil
+        self.onFinish = nil
+        super.init(coder: aDecoder)
+    }
 
     open override func viewDidLoad() {
 		super.viewDidLoad()
@@ -196,17 +221,17 @@ open class CameraViewController: UIViewController {
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
-            // cameraButton
-            NSLayoutConstraint.activate([
-                cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        // cameraButton
+        NSLayoutConstraint.activate([
+            cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
             cameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
             cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: configuration.compactMode ? -20 : -20)
-                ])
-            // borderCameraButton
-            NSLayoutConstraint.activate([
-                borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-                borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+            ])
+        // borderCameraButton
+        NSLayoutConstraint.activate([
+            borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
             borderCameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize),
             borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
             ])
@@ -382,6 +407,22 @@ open class CameraViewController: UIViewController {
             }
         }
     }
+    open lazy var doneButton: UIButton = { [unowned self] in
+        let button = UIButton()
+        button.setTitle(self.configuration.cancelButtonTitle, for: UIControlState())
+        button.titleLabel?.font = self.configuration.doneButton
+        button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
+
+        return button
+        }()
+    @objc func doneButtonDidPress(_ button: UIButton) {
+        if button.currentTitle == configuration.cancelButtonTitle {
+            onCancel?()
+//            delegate?.cancelButtonDidPress()
+        } else {
+//            delegate?.doneButtonDidPress()
+        }
+    }
 
     // MARK: pinch to zoom
 
@@ -493,11 +534,16 @@ open class CameraViewController: UIViewController {
 							self.previewView.videoPreviewLayer.opacity = 1
 						}
 					}
-				}, completionHandler: { photoCaptureProcessor in
+				}, completionHandler: { (photoCaptureProcessor, asset) in
 					// When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
 					self.sessionQueue.async {
 						self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
 					}
+                    DispatchQueue.main.async {
+                        if let asset = asset {
+                            self.onCapture?(asset)
+                        }
+                    }
 				}
 			)
 
