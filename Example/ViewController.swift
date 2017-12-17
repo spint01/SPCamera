@@ -33,9 +33,9 @@ class ViewController: UIViewController {
         ctr.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            ctr.view.widthAnchor.constraint(equalToConstant: 164),
-            ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: -8),
-            ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
+            ctr.view.widthAnchor.constraint(equalToConstant: 150),
+            ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
+            ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
             ])
 
         ctr.didMove(toParentViewController: self)

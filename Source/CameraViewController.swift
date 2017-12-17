@@ -214,7 +214,7 @@ open class CameraViewController: UIViewController {
         }
 
 //        print("ScreenSize.SCREEN_MAX_LENGTH: \(ScreenSize.SCREEN_MAX_LENGTH)")
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if UIDevice.current.userInterfaceIdiom == .pad || configuration.compactMode {
             NSLayoutConstraint.activate([
                 previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
                 previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
