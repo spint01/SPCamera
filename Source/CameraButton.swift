@@ -8,8 +8,8 @@ protocol CameraButtonDelegate: class {
 class CameraButton: UIButton {
 
     struct Dimensions {
-        static let borderWidth: CGFloat = 2
-        static let buttonSize: CGFloat = 58
+        static let borderWidth: CGFloat = 4
+        static let buttonSize: CGFloat = 54
         static let buttonBorderSize: CGFloat = 68
     }
     struct CompactDimensions {

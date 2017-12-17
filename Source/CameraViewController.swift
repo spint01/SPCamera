@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-// MARK: - CameraButtonDelegate methods
+let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) == 812.0
 
 @available(iOS 10.0, *)
 open class CameraViewController: UIViewController {
@@ -46,6 +46,8 @@ open class CameraViewController: UIViewController {
 
     open override func viewDidLoad() {
 		super.viewDidLoad()
+
+        self.view.backgroundColor = UIColor.black
 
         // recreate storyboard
         [previewView, doneButton, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
@@ -211,12 +213,29 @@ open class CameraViewController: UIViewController {
             margins = view.layoutMarginsGuide
         }
 
-        NSLayoutConstraint.activate([
-            previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 8),
-            previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: -8),
-            previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
-            previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8)
-            ])
+//        print("ScreenSize.SCREEN_MAX_LENGTH: \(ScreenSize.SCREEN_MAX_LENGTH)")
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            NSLayoutConstraint.activate([
+                previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+                ])
+        } else if IS_IPHONE_X {
+            NSLayoutConstraint.activate([
+                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
+                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
+                previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
+                previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
+                ])
+        } else {
+            NSLayoutConstraint.activate([
+                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
+                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
+                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                previewView.bottomAnchor.constraint(equalTo: borderCameraButton.topAnchor, constant: 0)
+                ])
+        }
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -227,7 +246,7 @@ open class CameraViewController: UIViewController {
             cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
             cameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-            cameraButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: configuration.compactMode ? -20 : -20)
+            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.compactMode ? -20 : -20)
             ])
         // borderCameraButton
         NSLayoutConstraint.activate([
@@ -258,8 +277,6 @@ open class CameraViewController: UIViewController {
 	private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
 	private var setupResult: SessionSetupResult = .success
 	var videoDeviceInput: AVCaptureDeviceInput!
-//    @IBOutlet private weak var previewView: PreviewView!
-//    @IBOutlet weak var containerView: UIView!
     lazy private var previewView: PreviewView = {
         let view = PreviewView()
         view.backgroundColor = UIColor.black
