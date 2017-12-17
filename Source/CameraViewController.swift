@@ -11,6 +11,7 @@ import Photos
 
 // MARK: - CameraButtonDelegate methods
 
+@available(iOS 10.0, *)
 open class CameraViewController: UIViewController {
 
 	// MARK: View Controller Life Cycle
@@ -638,6 +639,9 @@ open class CameraViewController: UIViewController {
 	}
 }
 
+// MARK: - CameraButtonDelegate methods
+
+@available(iOS 10.0, *)
 extension CameraViewController: CameraButtonDelegate {
 
     func buttonDidPress() {
@@ -667,6 +671,7 @@ extension AVCaptureVideoOrientation {
 	}
 }
 
+@available(iOS 10.0, *)
 extension AVCaptureDevice.DiscoverySession {
 	var uniqueDevicePositionsCount: Int {
         var uniqueDevicePositions: [AVCaptureDevice.Position] = []
