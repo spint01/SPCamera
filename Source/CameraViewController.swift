@@ -50,13 +50,13 @@ open class CameraViewController: UIViewController {
         self.view.backgroundColor = UIColor.black
 
         // recreate storyboard
-        [previewView, doneButton, borderCameraButton, cameraButton, cameraUnavailableLabel].forEach {
+        [previewView, cameraUnavailableLabel, bottomContainer as UIView].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
         if configuration.compactMode {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto(_:)))
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
@@ -69,7 +69,7 @@ open class CameraViewController: UIViewController {
         setupConstraints()
 
         // Disable UI. The UI is enabled if and only if the session starts running.
-		cameraButton.isEnabled = false
+		bottomContainer.cameraButton.isEnabled = false
 
 		// Set up the video preview view.
 		previewView.session = session
@@ -233,7 +233,7 @@ open class CameraViewController: UIViewController {
                 previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
                 previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
                 previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                previewView.bottomAnchor.constraint(equalTo: borderCameraButton.topAnchor, constant: 0)
+                previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 0)
                 ])
         }
         // cameraUnavailableLabel
@@ -241,27 +241,13 @@ open class CameraViewController: UIViewController {
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
-        // cameraButton
+        // bottomContainer
         NSLayoutConstraint.activate([
-            cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-            cameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.compactMode ? -20 : -20)
+            bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
+            bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
+            bottomContainer.heightAnchor.constraint(equalToConstant: configuration.compactMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
+            bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
             ])
-        // borderCameraButton
-        NSLayoutConstraint.activate([
-            borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-            borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-            borderCameraButton.widthAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize),
-            borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
-            ])
-        if !configuration.compactMode {
-            // doneButton
-            NSLayoutConstraint.activate([
-                doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                doneButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 14)
-                ])
-        }
     }
 
     // MARK: Session Management
@@ -283,7 +269,6 @@ open class CameraViewController: UIViewController {
 
         return view
     }()
-//    var containerView: UIView!
 
 	// Call this on the session queue.
 	private func configureSession() {
@@ -425,22 +410,6 @@ open class CameraViewController: UIViewController {
             }
         }
     }
-    open lazy var doneButton: UIButton = { [unowned self] in
-        let button = UIButton()
-        button.setTitle(self.configuration.cancelButtonTitle, for: UIControlState())
-        button.titleLabel?.font = self.configuration.doneButton
-        button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
-
-        return button
-        }()
-    @objc func doneButtonDidPress(_ button: UIButton) {
-        if button.currentTitle == configuration.cancelButtonTitle {
-            onCancel?()
-//            delegate?.cancelButtonDidPress()
-        } else {
-//            delegate?.doneButtonDidPress()
-        }
-    }
 
     // MARK: pinch to zoom
 
@@ -494,26 +463,16 @@ open class CameraViewController: UIViewController {
 
 	private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
 
-    lazy var cameraButton: CameraButton = { [unowned self] in
-        let button = CameraButton(configuration: self.configuration)
-        button.setTitleColor(UIColor.white, for: UIControlState())
-        button.delegate = self
-
-        return button
-        }()
-
-    lazy var borderCameraButton: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = configuration.compactMode ? CameraButton.CompactDimensions.borderWidth : CameraButton.Dimensions.borderWidth
-        view.layer.cornerRadius = (configuration.compactMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize) / 2
+    open lazy var bottomContainer: BottomContainerView = { [unowned self] in
+        let view = BottomContainerView(configuration: self.configuration)
+        view.backgroundColor = UIColor.clear // self.configuration.bottomContainerColor
+        view.delegate = self
 
         return view
-    }()
+        }()
 
     @objc
-    private func capturePhoto(_ photoButton: UIButton) {
+    private func capturePhoto() {
         /*
 			Retrieve the video preview layer's video orientation on the main queue before
 			entering the session queue. We do this to ensure UI elements are accessed on
@@ -585,7 +544,7 @@ open class CameraViewController: UIViewController {
 
 			DispatchQueue.main.async {
 				// Only enable the ability to change camera if the device has more than one camera.
-				self.cameraButton.isEnabled = isSessionRunning
+				self.bottomContainer.cameraButton.isEnabled = isSessionRunning
 			}
 		}
 		keyValueObservations.append(keyValueObservation)
@@ -659,10 +618,18 @@ open class CameraViewController: UIViewController {
 // MARK: - CameraButtonDelegate methods
 
 @available(iOS 10.0, *)
-extension CameraViewController: CameraButtonDelegate {
+extension CameraViewController: BottomContainerViewDelegate {
 
-    func buttonDidPress() {
-        capturePhoto(cameraButton)
+    func cameraButtonDidPress() {
+        capturePhoto()
+    }
+
+    func doneButtonDidPress() {
+        //onFinish?()
+    }
+
+    func cancelButtonDidPress() {
+        onCancel?()
     }
 }
 
