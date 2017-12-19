@@ -20,6 +20,7 @@
 		CD73CB8D1FE0FC7700652E51 /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureDelegate.swift */; };
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
 		CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */; };
+		CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D171FE8EA4000ADFF1A /* Helper.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
 		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
 		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -66,6 +67,7 @@
 		CD73CB821FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CD80736E1FE226740038BCA7 /* CameraButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContainerView.swift; sourceTree = "<group>"; };
+		CDC11D171FE8EA4000ADFF1A /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
 				CDDB3DC01FE0D742005D7679 /* Configuration.swift */,
 				CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */,
+				CDC11D171FE8EA4000ADFF1A /* Helper.swift */,
 				CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */,
 				7AA677261CFF774800B353FB /* PhotoCaptureDelegate.swift */,
 				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
@@ -285,6 +288,7 @@
 				CD73CB8A1FE0FC7700652E51 /* Configuration.swift in Sources */,
 				CD73CB8B1FE0FC7700652E51 /* EXIFHelper.swift in Sources */,
 				CD73CB8C1FE0FC7700652E51 /* LocationManager.swift in Sources */,
+				CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */,
 				CD73CB8D1FE0FC7700652E51 /* PhotoCaptureDelegate.swift in Sources */,
 				CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */,
 				CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */,
