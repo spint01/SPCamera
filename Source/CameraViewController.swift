@@ -183,14 +183,19 @@ open class CameraViewController: UIViewController {
 		super.viewWillDisappear(animated)
 	}
 
-    open override var shouldAutorotate: Bool {
-		return true
-	}
+    // MARK: - Rotation
+
+//    open override var shouldAutorotate: Bool {
+//        return true
+//    }
 
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return .all
-	}
-
+        if Helper.runningOnIpad {
+            return .all
+        } else {
+            return .portrait
+        }
+    }
 	open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		super.viewWillTransition(to: size, with: coordinator)
 
@@ -207,9 +212,11 @@ open class CameraViewController: UIViewController {
 
     private func setupConstraints() {
         var margins: UILayoutGuide!
+        var indent: CGFloat = 0
         if #available(iOS 11.0, *) {
             margins = view.safeAreaLayoutGuide
         } else {
+            indent = 20
             margins = view.layoutMarginsGuide
         }
 
@@ -230,9 +237,9 @@ open class CameraViewController: UIViewController {
                 ])
         } else {
             NSLayoutConstraint.activate([
-                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
-                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
-                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
+                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
+                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: -indent),
                 previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 0)
                 ])
         }
@@ -243,8 +250,8 @@ open class CameraViewController: UIViewController {
             ])
         // bottomContainer
         NSLayoutConstraint.activate([
-            bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
-            bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
+            bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
+            bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
             bottomContainer.heightAnchor.constraint(equalToConstant: configuration.compactMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
             bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
             ])
@@ -465,7 +472,7 @@ open class CameraViewController: UIViewController {
 
     open lazy var bottomContainer: BottomContainerView = { [unowned self] in
         let view = BottomContainerView(configuration: self.configuration)
-        view.backgroundColor = UIColor.clear // self.configuration.bottomContainerColor
+        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.35) : configuration.compactMode ? UIColor.clear : self.configuration.bottomContainerColor
         view.delegate = self
 
         return view
@@ -478,12 +485,12 @@ open class CameraViewController: UIViewController {
 			entering the session queue. We do this to ensure UI elements are accessed on
 			the main thread and session configuration is done on the session queue.
 		*/
-        let videoPreviewLayerOrientation = previewView.videoPreviewLayer.connection?.videoOrientation
+        let videoPreviewLayerOrientation = Helper.videoOrientation() // previewView.videoPreviewLayer.connection?.videoOrientation
 
 		sessionQueue.async {
 			// Update the photo output's connection to match the video orientation of the video preview layer.
             if let photoOutputConnection = self.photoOutput.connection(with: .video) {
-                photoOutputConnection.videoOrientation = videoPreviewLayerOrientation!
+                photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
 			}
 
             let photoSettings = AVCapturePhotoSettings()
