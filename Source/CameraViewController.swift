@@ -134,9 +134,9 @@ open class CameraViewController: UIViewController {
 
                 case .notAuthorized:
                     DispatchQueue.main.async {
-                        let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
+                        let changePrivacySetting = "SPCamera doesn't have permission to use the camera, please change privacy settings"
                         let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
-                        let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                        let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
 
                         alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
                                                                 style: .cancel,
@@ -155,7 +155,7 @@ open class CameraViewController: UIViewController {
                     DispatchQueue.main.async {
                         let alertMsg = "Alert message when something goes wrong during capture session configuration"
                         let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
-                        let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                        let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
 
                         alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
                                                                 style: .cancel,
@@ -320,6 +320,10 @@ open class CameraViewController: UIViewController {
                      */
                     defaultVideoDevice = frontCameraDevice
                 }
+            }
+            if defaultVideoDevice == nil {
+                print("No AVCaptureDevice")
+                return
             }
 
             let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice!)

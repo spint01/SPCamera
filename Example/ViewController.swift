@@ -51,7 +51,7 @@ class ViewController: UIViewController {
         }, onCapture: { (asset) in
             print("Captured asset")
         }, onFinish: { assets in
-            //
+            print("Finished")
         })
         present(ctr, animated: true, completion: nil)
     }
