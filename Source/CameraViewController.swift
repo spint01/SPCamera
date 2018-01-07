@@ -15,6 +15,7 @@ let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.
 open class CameraViewController: UIViewController {
 
 	// MARK: View Controller Life Cycle
+    var statusBarHidden = true
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
@@ -124,6 +125,9 @@ open class CameraViewController: UIViewController {
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
+        statusBarHidden = UIApplication.shared.isStatusBarHidden
+        UIApplication.shared.setStatusBarHidden(true, with: .fade)
+
 		sessionQueue.async {
 			switch self.setupResult {
                 case .success:
@@ -181,7 +185,16 @@ open class CameraViewController: UIViewController {
 		}
 
 		super.viewWillDisappear(animated)
+        UIApplication.shared.setStatusBarHidden(statusBarHidden, with: .fade)
 	}
+
+    open override var prefersStatusBarHidden: Bool {
+        return true
+    }
+
+    open override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .fade
+    }
 
     // MARK: - Rotation
 
