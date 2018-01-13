@@ -8,6 +8,7 @@
 
 import UIKit
 import SPCamera
+import Photos
 
 class ViewController: UIViewController {
 
@@ -25,6 +26,7 @@ class ViewController: UIViewController {
             onCancel: {},
             onCapture: { (asset) in
                 print("Captured asset")
+                self.metaData(asset)
             }, onFinish: { (assets) in
         })
 
@@ -41,6 +43,19 @@ class ViewController: UIViewController {
         ctr.didMove(toParentViewController: self)
     }
 
+    func metaData(_ photoAsset: PHAsset) {
+        photoAsset.requestMetadata(withCompletionBlock: { (info) in
+            // print("photo metadata: \(info)")
+            if let info = info, let gpsInfo = info["{GPS}"] as? [String: Any] {
+                if let direction = gpsInfo["ImgDirection"] as? Double {
+                    print("photo {GPS} direction metadata: \(direction)")
+                } else {
+                    print("photo {GPS} metadata: \(gpsInfo)")
+                }
+            }
+        })
+    }
+
     @IBAction func launchTouched(_ sender: UIButton) {
         var config = Configuration()
         config.photoAlbumName = "SPCamera"
@@ -50,10 +65,33 @@ class ViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         }, onCapture: { (asset) in
             print("Captured asset")
+            self.metaData(asset)
         }, onFinish: { assets in
             print("Finished")
         })
         present(ctr, animated: true, completion: nil)
+    }
+}
+
+public extension PHAsset {
+
+    public func requestMetadata(withCompletionBlock completionBlock: @escaping (([String: Any]?) -> Void)) {
+        DispatchQueue.global(qos: .default).async(execute: {() -> Void in
+            let editOptions = PHContentEditingInputRequestOptions()
+            editOptions.isNetworkAccessAllowed = true
+            self.requestContentEditingInput(with: editOptions, completionHandler: { (contentEditingInput, info) -> Void in
+                if let input = contentEditingInput, let url = input.fullSizeImageURL {
+                    let image = CIImage(contentsOf: url)
+                    DispatchQueue.main.async(execute: {() -> Void in
+                        completionBlock(image?.properties)
+                    })
+                } else {
+                    DispatchQueue.main.async(execute: {() -> Void in
+                        completionBlock(nil)
+                    })
+                }
+            })
+        })
     }
 }
 
