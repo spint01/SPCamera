@@ -56,7 +56,7 @@ open class CameraViewController: UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
-        if configuration.compactMode {
+        if configuration.inlineMode {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
@@ -186,6 +186,7 @@ open class CameraViewController: UIViewController {
 
 		super.viewWillDisappear(animated)
         UIApplication.shared.setStatusBarHidden(statusBarHidden, with: .fade)
+        locationManager?.stopUpdatingLocation()
 	}
 
     open override var prefersStatusBarHidden: Bool {
@@ -234,7 +235,7 @@ open class CameraViewController: UIViewController {
         }
 
 //        print("ScreenSize.SCREEN_MAX_LENGTH: \(ScreenSize.SCREEN_MAX_LENGTH)")
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.compactMode {
+        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
             NSLayoutConstraint.activate([
                 previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
                 previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
@@ -265,7 +266,7 @@ open class CameraViewController: UIViewController {
         NSLayoutConstraint.activate([
             bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
             bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
-            bottomContainer.heightAnchor.constraint(equalToConstant: configuration.compactMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
+            bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
             bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
             ])
     }
@@ -489,7 +490,7 @@ open class CameraViewController: UIViewController {
 
     open lazy var bottomContainer: BottomContainerView = { [unowned self] in
         let view = BottomContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.35) : configuration.compactMode ? UIColor.clear : self.configuration.bottomContainerColor
+        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.35) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
         view.delegate = self
 
         return view

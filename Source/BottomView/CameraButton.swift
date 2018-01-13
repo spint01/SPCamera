@@ -48,7 +48,7 @@ class CameraButton: UIButton {
 
     func setupButton() {
         backgroundColor = UIColor.white
-        layer.cornerRadius = configuration.compactMode ? CompactDimensions.buttonSize / 2 : Dimensions.buttonSize / 2
+        layer.cornerRadius = configuration.inlineMode ? CompactDimensions.buttonSize / 2 : Dimensions.buttonSize / 2
         accessibilityLabel = "Take photo"
         addTarget(self, action: #selector(pickerButtonDidPress(_:)), for: .touchUpInside)
         addTarget(self, action: #selector(pickerButtonDidHighlight(_:)), for: .touchDown)

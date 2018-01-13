@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 
         var config = Configuration()
         config.photoAlbumName = "SPCamera"
-        config.compactMode = true
+        config.inlineMode = true
 
         let ctr = CameraViewController(configuration: config,
             onCancel: {},

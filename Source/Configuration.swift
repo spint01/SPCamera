@@ -7,7 +7,7 @@ public struct Configuration {
         // This initializer intentionally left empty
     }
 
-    public var compactMode = false
+    public var inlineMode = false
 
     // MARK: Colors
 
