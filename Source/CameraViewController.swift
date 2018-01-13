@@ -247,14 +247,14 @@ open class CameraViewController: UIViewController {
                 previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
                 previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
                 previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
-                previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
+                previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10)
                 ])
         } else {
             NSLayoutConstraint.activate([
                 previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
                 previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
                 previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: -indent),
-                previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 0)
+                previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 46)
                 ])
         }
         // cameraUnavailableLabel

@@ -12,7 +12,7 @@ protocol BottomContainerViewDelegate: class {
 open class BottomContainerView: UIView {
 
     struct Dimensions {
-        static let height: CGFloat = 101
+        static let height: CGFloat = 120
     }
     struct CompactDimensions {
         static let height: CGFloat = 40
@@ -37,7 +37,6 @@ open class BottomContainerView: UIView {
 
         return view
     }()
-
     open lazy var doneButton: UIButton = { [unowned self] in
         let button = UIButton()
         button.setTitle(self.configuration.cancelButtonTitle, for: UIControlState())
@@ -46,13 +45,22 @@ open class BottomContainerView: UIView {
 
         return button
     }()
+    lazy var photoTitleLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = UIColor.clear
+        label.textColor = configuration.photoTypesLabelColor
+        label.text = "PHOTO"
+        label.font = UIFont.systemFont(ofSize: 19, weight: UIFont.Weight.medium)
 
-    lazy var topSeparator: UIView = { [unowned self] in
-        let view = UIView()
-        view.backgroundColor = self.configuration.backgroundColor
-
-        return view
+        return label
     }()
+
+//    lazy var topSeparator: UIView = { [unowned self] in
+//        let view = UIView()
+//        view.backgroundColor = self.configuration.backgroundColor
+//
+//        return view
+//    }()
 
     weak var delegate: BottomContainerViewDelegate?
 
@@ -71,13 +79,22 @@ open class BottomContainerView: UIView {
     }
 
     func configure() {
-        [borderCameraButton, cameraButton, doneButton, topSeparator].forEach {
+        var views: [UIView]
+        if configuration.inlineMode {
+            views = [borderCameraButton, cameraButton]
+        } else {
+            views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel]
+        }
+        views.forEach {
             addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
         backgroundColor = configuration.backgroundColor
         setupConstraints()
+
+//        self.layer.borderColor = UIColor.red.cgColor
+//        self.layer.borderWidth = 1.0
     }
 
     // MARK: - Action methods
@@ -103,7 +120,7 @@ open class BottomContainerView: UIView {
         // cameraButton
         NSLayoutConstraint.activate([
             cameraButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            cameraButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
+            cameraButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: configuration.inlineMode ? 0 : 14),
             cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
             cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
 //            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.inlineMode ? -20 : -20)
@@ -120,6 +137,11 @@ open class BottomContainerView: UIView {
             NSLayoutConstraint.activate([
                 doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
                 doneButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20)
+                ])
+            // photoTitleLabel
+            NSLayoutConstraint.activate([
+                photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+                photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8)
                 ])
         }
     }

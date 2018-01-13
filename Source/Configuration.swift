@@ -15,7 +15,7 @@ public struct Configuration {
     public var mainColor = UIColor(red: 0.09, green: 0.11, blue: 0.13, alpha: 1)
     public var noCameraColor = UIColor(red: 0.86, green: 0.86, blue: 0.86, alpha: 1)
     public var bottomContainerColor = UIColor(red: 0.09, green: 0.11, blue: 0.13, alpha: 1)
-
+    public var photoTypesLabelColor = UIColor(red: 0.99, green: 0.94, blue: 0.21, alpha: 1)
     // MARK: Fonts
 
     public var noCameraFont = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.medium)
