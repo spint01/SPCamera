@@ -512,7 +512,7 @@ open class CameraViewController: UIViewController {
     }
 
     private func capturePhoto() {
-        if !configuration.allowMultiplePhotoCapture, capturingPhoto {
+        if (!configuration.allowMultiplePhotoCapture && capturingPhoto) || !cameraUnavailableLabel.isHidden {
             return
         }
         capturingPhoto = true
