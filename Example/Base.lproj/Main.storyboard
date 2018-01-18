@@ -45,6 +45,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Main" id="6T3-iG-UIX"/>
                     <connections>
+                        <outlet property="containerHeightConstraint" destination="3Og-NH-Ah2" id="hQE-yb-jy5"/>
                         <outlet property="containerView" destination="zT9-t2-600" id="4f5-Vu-hVp"/>
                     </connections>
                 </viewController>

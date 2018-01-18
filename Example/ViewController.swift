@@ -14,7 +14,15 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var containerView: UIView!
 
+    var viewHeightConstraint: NSLayoutConstraint!
+    var viewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var containerHeightConstraint: NSLayoutConstraint!
+
     let inlineDemo = true
+    let containerPortraitHeight: CGFloat = 250
+    let containerLandscapeHeight: CGFloat = 200
+
+    var cameraViewController: CameraViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +34,7 @@ class ViewController: UIViewController {
             config.photoAlbumName = "SPCamera"
             config.inlineMode = true
 
-            let ctr = CameraViewController(configuration: config,
+            cameraViewController = CameraViewController(configuration: config,
                 onCancel: {},
                 onCapture: { (asset) in
                     print("Captured asset")
@@ -34,32 +42,62 @@ class ViewController: UIViewController {
                 }, onFinish: { (assets) in
             })
 
-            addChildViewController(ctr)
-            containerView.addSubview(ctr.view)
-            ctr.view.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-                ctr.view.widthAnchor.constraint(equalToConstant: 150),
-                ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
-                ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
-                ])
+            if let ctr = cameraViewController {
+                addChildViewController(ctr)
+                containerView.addSubview(ctr.view)
+                ctr.view.translatesAutoresizingMaskIntoConstraints = false
 
-            ctr.didMove(toParentViewController: self)
+                viewHeightConstraint = ctr.view.heightAnchor.constraint(equalToConstant: containerPortraitHeight)
+                viewWidthConstraint = ctr.view.widthAnchor.constraint(equalToConstant: containerLandscapeHeight)
+                NSLayoutConstraint.activate([
+                    ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
+                    viewHeightConstraint,
+                    viewWidthConstraint,
+                    ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0)
+//                    ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
+                    ])
+
+                ctr.didMove(toParentViewController: self)
+            }
         }
     }
 
-    func metaData(_ photoAsset: PHAsset) {
-        photoAsset.requestMetadata(withCompletionBlock: { (info) in
-            // print("photo metadata: \(info)")
-            if let info = info, let gpsInfo = info["{GPS}"] as? [String: Any] {
-                if let direction = gpsInfo["ImgDirection"] as? Double {
-                    print("photo {GPS} direction metadata: \(direction)")
-                } else {
-                    print("photo {GPS} metadata: \(gpsInfo)")
-                }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if inlineDemo {
+            let deviceOrientation = UIDevice.current.orientation
+            if deviceOrientation.isPortrait {
+                containerHeightConstraint.constant = containerPortraitHeight
+                viewHeightConstraint.constant = containerPortraitHeight
+                viewWidthConstraint.constant = containerLandscapeHeight
+            } else {
+                containerHeightConstraint.constant = containerLandscapeHeight
+                viewHeightConstraint.constant = containerLandscapeHeight
+                viewWidthConstraint.constant = containerPortraitHeight
             }
-        })
+
+//            print("container bounds: \(NSStringFromCGRect(containerView.bounds))")
+//            print("preview bounds: \(NSStringFromCGRect(cameraViewController?.previewRect ?? CGRect.zero))")
+
+//            viewWidthConstraint.constant = containerView.bounds.size.width
+    //        cameraViewController?.view.frame = containerView.bounds
+        }
     }
+
+//    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//        super.viewWillTransition(to: size, with: coordinator)
+//
+//        if let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
+//            let deviceOrientation = UIDevice.current.orientation
+//            guard let newVideoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation),
+//                deviceOrientation.isPortrait || deviceOrientation.isLandscape else {
+//                    return
+//            }
+//
+//            videoPreviewLayerConnection.videoOrientation = newVideoOrientation
+//        }
+//    }
 
     @IBAction func launchTouched(_ sender: UIButton) {
         var config = Configuration()
@@ -76,6 +114,21 @@ class ViewController: UIViewController {
         })
         present(ctr, animated: true, completion: nil)
     }
+
+    // calls to capture photo metadata
+    func metaData(_ photoAsset: PHAsset) {
+        photoAsset.requestMetadata(withCompletionBlock: { (info) in
+            // print("photo metadata: \(info)")
+            if let info = info, let gpsInfo = info["{GPS}"] as? [String: Any] {
+                if let direction = gpsInfo["ImgDirection"] as? Double {
+                    print("photo {GPS} direction metadata: \(direction)")
+                } else {
+                    print("photo {GPS} metadata: \(gpsInfo)")
+                }
+            }
+        })
+    }
+
 }
 
 public extension PHAsset {
