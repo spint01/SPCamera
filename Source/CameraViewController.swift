@@ -16,6 +16,7 @@ open class CameraViewController: UIViewController {
 
 	// MARK: View Controller Life Cycle
     var statusBarHidden = true
+    var capturingPhoto = false
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
@@ -498,6 +499,11 @@ open class CameraViewController: UIViewController {
 
     @objc
     private func capturePhoto() {
+        print("Capture photo - capturing photo: \(capturingPhoto)")
+        if !configuration.allowMultiplePhotoCapture, capturingPhoto {
+            return
+        }
+        capturingPhoto = true
         /*
 			Retrieve the video preview layer's video orientation on the main queue before
 			entering the session queue. We do this to ensure UI elements are accessed on
@@ -546,6 +552,7 @@ open class CameraViewController: UIViewController {
                             self.onCapture?(asset)
                         }
                     }
+                    self.capturingPhoto = false
 				}
 			)
 

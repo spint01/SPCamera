@@ -36,4 +36,5 @@ public struct Configuration {
 
     public var recordLocation = true
     public var photoAlbumName: String?
+    public var allowMultiplePhotoCapture = false
 }
