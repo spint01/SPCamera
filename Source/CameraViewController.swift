@@ -205,7 +205,7 @@ open class CameraViewController: UIViewController {
 //    }
 
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if Helper.runningOnIpad || configuration.inlineMode {
+        if Helper.runningOnIpad {
             return .all
         } else {
             return .portrait
