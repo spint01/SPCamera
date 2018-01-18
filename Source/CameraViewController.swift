@@ -188,7 +188,6 @@ open class CameraViewController: UIViewController {
 
 		super.viewWillDisappear(animated)
         UIApplication.shared.isStatusBarHidden = statusBarHidden
-        locationManager?.stopUpdatingLocation()
 	}
 
     open override var prefersStatusBarHidden: Bool {
@@ -206,7 +205,7 @@ open class CameraViewController: UIViewController {
 //    }
 
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if Helper.runningOnIpad {
+        if Helper.runningOnIpad || configuration.inlineMode {
             return .all
         } else {
             return .portrait
