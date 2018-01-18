@@ -13,34 +13,39 @@ import Photos
 class ViewController: UIViewController {
 
     @IBOutlet weak var containerView: UIView!
+
+    let inlineDemo = true
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         containerView.backgroundColor = UIColor.lightGray
 
-        var config = Configuration()
-        config.photoAlbumName = "SPCamera"
-        config.inlineMode = true
+        if inlineDemo {
+            var config = Configuration()
+            config.photoAlbumName = "SPCamera"
+            config.inlineMode = true
 
-        let ctr = CameraViewController(configuration: config,
-            onCancel: {},
-            onCapture: { (asset) in
-                print("Captured asset")
-                self.metaData(asset)
-            }, onFinish: { (assets) in
-        })
+            let ctr = CameraViewController(configuration: config,
+                onCancel: {},
+                onCapture: { (asset) in
+                    print("Captured asset")
+                    self.metaData(asset)
+                }, onFinish: { (assets) in
+            })
 
-        addChildViewController(ctr)
-        containerView.addSubview(ctr.view)
-        ctr.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
-            ctr.view.widthAnchor.constraint(equalToConstant: 150),
-            ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
-            ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
-            ])
+            addChildViewController(ctr)
+            containerView.addSubview(ctr.view)
+            ctr.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                ctr.view.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0),
+                ctr.view.widthAnchor.constraint(equalToConstant: 150),
+                ctr.view.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
+                ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
+                ])
 
-        ctr.didMove(toParentViewController: self)
+            ctr.didMove(toParentViewController: self)
+        }
     }
 
     func metaData(_ photoAsset: PHAsset) {
