@@ -58,7 +58,7 @@ open class CameraViewController: UIViewController {
         }
 
         if configuration.inlineMode {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhotoTouched))
             previewView.addGestureRecognizer(tapGesture)
         } else {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
@@ -129,17 +129,20 @@ open class CameraViewController: UIViewController {
         statusBarHidden = UIApplication.shared.isStatusBarHidden
         UIApplication.shared.isStatusBarHidden = true
 
-		sessionQueue.async {
+        sessionQueue.async {
 			switch self.setupResult {
                 case .success:
 				    // Only setup observers and start the session running if setup succeeded.
+                    self.cameraUnavailableLabel.isHidden = true
                     self.addObservers()
                     self.session.startRunning()
                     self.isSessionRunning = self.session.isRunning
 
                 case .notAuthorized:
                     DispatchQueue.main.async {
+                        self.cameraUnavailableLabel.isHidden = false
                         let changePrivacySetting = "SPCamera doesn't have permission to use the camera, please change privacy settings"
+                        self.cameraUnavailableLabel.text = changePrivacySetting
                         let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
                         let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
 
@@ -158,6 +161,8 @@ open class CameraViewController: UIViewController {
 
                 case .configurationFailed:
                     DispatchQueue.main.async {
+                        self.cameraUnavailableLabel.isHidden = false
+
                         let alertMsg = "Alert message when something goes wrong during capture session configuration"
                         let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
                         let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
@@ -173,7 +178,7 @@ open class CameraViewController: UIViewController {
 
         // will ask permission the first time
         locationManager = LocationManager()
-	}
+    }
 
 	open override func viewWillDisappear(_ animated: Bool) {
 		sessionQueue.async {
@@ -261,7 +266,9 @@ open class CameraViewController: UIViewController {
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            cameraUnavailableLabel.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
+            cameraUnavailableLabel.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
             ])
         // bottomContainer
         NSLayoutConstraint.activate([
@@ -400,11 +407,15 @@ open class CameraViewController: UIViewController {
 
     lazy private var cameraUnavailableLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = UIColor.white
         label.tintColor = UIColor.yellow
 
         return label
     }()
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+        if !cameraUnavailableLabel.isHidden { return }
+
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
         focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
     }
@@ -443,6 +454,8 @@ open class CameraViewController: UIViewController {
     var maxZoomFactor: CGFloat = 3.5
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
+        if !cameraUnavailableLabel.isHidden { return }
+
         switch gesture.state {
         case .began:
             pivotPinchScale = zoomFactor()
@@ -498,6 +511,10 @@ open class CameraViewController: UIViewController {
         }()
 
     @objc
+    private func capturePhotoTouched() {
+        capturePhoto()
+    }
+
     private func capturePhoto() {
         print("Capture photo - capturing photo: \(capturingPhoto)")
         if !configuration.allowMultiplePhotoCapture, capturingPhoto {
@@ -653,7 +670,7 @@ open class CameraViewController: UIViewController {
 extension CameraViewController: BottomContainerViewDelegate {
 
     func cameraButtonDidPress() {
-        capturePhoto()
+        capturePhotoTouched()
     }
 
     func doneButtonDidPress() {
