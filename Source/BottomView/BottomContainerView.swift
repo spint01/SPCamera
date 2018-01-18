@@ -110,12 +110,12 @@ open class BottomContainerView: UIView {
     // MARK: - private methods
 
     private func setupConstraints() {
-        var margins: UILayoutGuide!
-        if #available(iOS 11.0, *) {
-            margins = self.safeAreaLayoutGuide
-        } else {
-            margins = self.layoutMarginsGuide
-        }
+//        var margins: UILayoutGuide!
+//        if #available(iOS 11.0, *) {
+//            margins = self.safeAreaLayoutGuide
+//        } else {
+//            margins = self.layoutMarginsGuide
+//        }
 
         // cameraButton
         NSLayoutConstraint.activate([

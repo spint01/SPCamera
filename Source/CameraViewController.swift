@@ -126,7 +126,7 @@ open class CameraViewController: UIViewController {
 		super.viewWillAppear(animated)
 
         statusBarHidden = UIApplication.shared.isStatusBarHidden
-        UIApplication.shared.setStatusBarHidden(true, with: .fade)
+        UIApplication.shared.isStatusBarHidden = true
 
 		sessionQueue.async {
 			switch self.setupResult {
@@ -185,7 +185,7 @@ open class CameraViewController: UIViewController {
 		}
 
 		super.viewWillDisappear(animated)
-        UIApplication.shared.setStatusBarHidden(statusBarHidden, with: .fade)
+        UIApplication.shared.isStatusBarHidden = statusBarHidden
         locationManager?.stopUpdatingLocation()
 	}
 
