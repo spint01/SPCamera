@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "SPCamera"
   s.summary          = "Simple Camera framework that only takes photos, no Live Photo, no Videos."
-  s.version          = "0.0.2"
+  s.version          = "0.1.0"
   s.homepage         = "https://github.com/spint01/SPCamera"
   s.license          = 'Copyright SGP Enterprises, Inc.'
   s.author           = { "SGP Enterprises, Inc." => "steve.pint@gmail.com" }
