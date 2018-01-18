@@ -27,10 +27,12 @@ public struct Configuration {
     public var cancelButtonTitle = "Cancel"
     public var doneButtonTitle = "Done"
     public var noImagesTitle = "No images available"
-    public var noCameraTitle = "Camera is not available"
-    public var noPhotoLibraryTitle = "No Photo Library Access"
+    public var noCameraTitle = "No permission to use the camera, please change privacy settings"
+    public var noPhotoLibraryTitle = "No permission to access photo library, please change privacy settings"
+    public var mediaCaptureFailer = "Unable to capture media"
+    public var settingsTitle = "Settings"
     public var requestPermissionTitle = "Permission denied"
-    public var requestPermissionMessage = "Please, allow the application to access to your photo library."
+    public var requestPermissionMessage = "Please, allow the application to access to your photo library"
 
     // MARK: Custom behaviour
 

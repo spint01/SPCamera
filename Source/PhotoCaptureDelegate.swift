@@ -17,7 +17,7 @@ class PhotoCaptureProcessor: NSObject {
 	private var photoData: Data?
 	private var locationManager: LocationManager?
     private var latestLocation: CLLocation?
-    private var albumName: String? = "SPCamera"
+    private var albumName: String? = Bundle.main.displayName
 
 	init(with requestedPhotoSettings: AVCapturePhotoSettings,
          locationManager: LocationManager?,

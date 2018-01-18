@@ -133,24 +133,26 @@ open class CameraViewController: UIViewController {
 			switch self.setupResult {
                 case .success:
 				    // Only setup observers and start the session running if setup succeeded.
-                    self.cameraUnavailableLabel.isHidden = true
                     self.addObservers()
                     self.session.startRunning()
                     self.isSessionRunning = self.session.isRunning
 
+                    DispatchQueue.main.async {
+                        self.cameraUnavailableLabel.isHidden = true
+                        // will ask permission the first time
+                        self.locationManager = LocationManager()
+                    }
+
                 case .notAuthorized:
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = false
-                        let changePrivacySetting = "SPCamera doesn't have permission to use the camera, please change privacy settings"
-                        self.cameraUnavailableLabel.text = changePrivacySetting
-                        let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
-                        let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
-
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
+                        self.cameraUnavailableLabel.text = self.configuration.noCameraTitle
+                        let message = self.configuration.noCameraTitle
+                        let alertController = UIAlertController(title: Bundle.main.displayName, message: message, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                                 style: .cancel,
                                                                 handler: nil))
-
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"),
+                        alertController.addAction(UIAlertAction(title: self.configuration.settingsTitle,
                                                                 style: .`default`,
                                                                 handler: { _ in
                             UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
@@ -162,22 +164,16 @@ open class CameraViewController: UIViewController {
                 case .configurationFailed:
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = false
+                        self.cameraUnavailableLabel.text = self.configuration.mediaCaptureFailer
 
-                        let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                        let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
-                        let alertController = UIAlertController(title: "SPCamera", message: message, preferredStyle: .alert)
-
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
+                        let alertController = UIAlertController(title: Bundle.main.displayName, message: self.configuration.mediaCaptureFailer, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                                 style: .cancel,
                                                                 handler: nil))
-
                         self.present(alertController, animated: true, completion: nil)
                     }
 			}
 		}
-
-        // will ask permission the first time
-        locationManager = LocationManager()
     }
 
 	open override func viewWillDisappear(_ animated: Bool) {
@@ -265,10 +261,10 @@ open class CameraViewController: UIViewController {
         }
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
-            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            cameraUnavailableLabel.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
-            cameraUnavailableLabel.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
+            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
+            cameraUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
+//            cameraUnavailableLabel.trailingAnchor.constraint(greaterThanOrEqualTo: margins.trailingAnchor, constant: -16)
             ])
         // bottomContainer
         NSLayoutConstraint.activate([
@@ -408,8 +404,8 @@ open class CameraViewController: UIViewController {
     lazy private var cameraUnavailableLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textColor = UIColor.white
-        label.tintColor = UIColor.yellow
+        label.textAlignment = .center
+        label.textColor = self.configuration.noCameraColor
 
         return label
     }()
@@ -516,7 +512,6 @@ open class CameraViewController: UIViewController {
     }
 
     private func capturePhoto() {
-        print("Capture photo - capturing photo: \(capturingPhoto)")
         if !configuration.allowMultiplePhotoCapture, capturingPhoto {
             return
         }
