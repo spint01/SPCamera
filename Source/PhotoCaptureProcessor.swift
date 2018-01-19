@@ -2,7 +2,7 @@
 See LICENSE.txt for this sample’s licensing information.
 
 Abstract:
-Photo capture delegate.
+Photo capture processor.
 */
 
 import AVFoundation
@@ -147,6 +147,11 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     self.didFinish(localIdentifier)
                 })
             } else {
+                if status != .notDetermined {
+                    // unable to save photo
+                    print("unable to save photo to library")
+                    NotificationCenter.default.post(name: NotificationPhotoLibUnavailable, object: nil)
+                }
                 self.didFinish(nil)
             }
         }

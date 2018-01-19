@@ -11,6 +11,7 @@ import Photos
 import MediaPlayer
 
 let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) == 812.0
+let NotificationPhotoLibUnavailable = NSNotification.Name(rawValue: "photoLibUnavailable")
 
 @available(iOS 10.0, *)
 open class CameraViewController: UIViewController {
@@ -53,7 +54,7 @@ open class CameraViewController: UIViewController {
         self.view.backgroundColor = UIColor.black
 
         // recreate storyboard
-        [previewView, cameraUnavailableLabel, bottomContainer as UIView].forEach {
+        [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer as UIView].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -269,7 +270,12 @@ open class CameraViewController: UIViewController {
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
             cameraUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
-//            cameraUnavailableLabel.trailingAnchor.constraint(greaterThanOrEqualTo: margins.trailingAnchor, constant: -16)
+            ])
+        // photoLibUnavailableLabel
+        NSLayoutConstraint.activate([
+            photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
+            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
+            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
             ])
         // bottomContainer
         NSLayoutConstraint.activate([
@@ -414,6 +420,17 @@ open class CameraViewController: UIViewController {
 
         return label
     }()
+    lazy private var photoLibUnavailableLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = self.configuration.noCameraColor
+        label.text = self.configuration.noPhotoLibraryTitle
+        label.isHidden = true
+
+        return label
+    }()
+
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         if !cameraUnavailableLabel.isHidden { return }
 
@@ -501,7 +518,7 @@ open class CameraViewController: UIViewController {
 
 	private let photoOutput = AVCapturePhotoOutput()
 
-	private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
+	private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
 
     open lazy var bottomContainer: BottomContainerView = { [unowned self] in
         let view = BottomContainerView(configuration: self.configuration)
@@ -575,7 +592,7 @@ open class CameraViewController: UIViewController {
 				}, completionHandler: { (photoCaptureProcessor, asset) in
 					// When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
 					self.sessionQueue.async {
-						self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
+						self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
 					}
                     DispatchQueue.main.async {
                         if let asset = asset {
@@ -591,7 +608,7 @@ open class CameraViewController: UIViewController {
 				we store it in an array to maintain a strong reference to this object
 				until the capture is completed.
 			*/
-			self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
+			self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
 			self.photoOutput.capturePhoto(with: photoSettings, delegate: photoCaptureProcessor)
 		}
 	}
@@ -627,6 +644,7 @@ open class CameraViewController: UIViewController {
             _ = try? AVAudioSession.sharedInstance().setActive(true)
            NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged(_:)), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(photoLibUnavailable(_:)), name: NotificationPhotoLibUnavailable, object: nil)
 	}
 
     private func removeObservers() {
@@ -681,6 +699,13 @@ open class CameraViewController: UIViewController {
 			)
 		}
 	}
+
+    @objc
+    private func photoLibUnavailable(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.photoLibUnavailableLabel.isHidden = false
+        }
+    }
 }
 
 // MARK: - CameraButtonDelegate methods
