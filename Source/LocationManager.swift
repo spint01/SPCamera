@@ -43,19 +43,21 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         latestHeading = newHeading
 
-//        print("Magnetic heading: \(newHeading.magneticHeading)")
-//        print("True heading: \(newHeading.trueHeading)")
-//        print("Orientation heading: \(manager.headingOrientation.rawValue)")
-//        print("Accuracy heading: \(newHeading.headingAccuracy)")
-//        latestLocation = manager.location
-//        print("Manager course: \(String(describing: manager.location?.course))")
-////        latestLocation?.course = newHeading.trueHeading
-//
-//        if let adjustment = latestLocation?.headingAdjusted(latestHeading?.trueHeading ?? 0) {
-////        let adjustment = Double(orientationAdjustment())
-//            let adjustedHeading = (newHeading.trueHeading + adjustment).truncatingRemainder(dividingBy: 360)
-//            print("Adjustment: \(adjustment)  Adjusted heading: \(adjustedHeading)")
-//        }
+        #if DEBUG_HEADING
+        print("Magnetic heading: \(newHeading.magneticHeading)")
+        print("True heading: \(newHeading.trueHeading)")
+        print("Orientation heading: \(manager.headingOrientation.rawValue)")
+        print("Accuracy heading: \(newHeading.headingAccuracy)")
+        latestLocation = manager.location
+        print("Manager course: \(String(describing: manager.location?.course))")
+//        latestLocation?.course = newHeading.trueHeading
+
+        if let adjustment = latestLocation?.headingAdjusted(latestHeading?.trueHeading ?? 0) {
+//        let adjustment = Double(orientationAdjustment())
+            let adjustedHeading = (newHeading.trueHeading + adjustment).truncatingRemainder(dividingBy: 360)
+            print("Adjustment: \(adjustment)  Adjusted heading: \(adjustedHeading)")
+        }
+        #endif
     }
 
 }
