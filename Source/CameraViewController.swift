@@ -8,6 +8,7 @@ View controller for camera interface.
 import UIKit
 import AVFoundation
 import Photos
+import MediaPlayer
 
 let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) == 812.0
 
@@ -57,8 +58,13 @@ open class CameraViewController: UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
+        if !configuration.inlineMode {
+            view.addSubview(volumeView)
+            view.sendSubview(toBack: volumeView)
+        }
+
         if configuration.inlineMode {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhotoTouched))
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
@@ -505,12 +511,25 @@ open class CameraViewController: UIViewController {
         return view
         }()
 
-    @objc
-    private func capturePhotoTouched() {
+    // All of this is needed to support photo capture with volume buttons
+    lazy var volumeView: MPVolumeView = { [unowned self] in
+        let view = MPVolumeView()
+        view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+
+        return view
+        }()
+
+    var volume = AVAudioSession.sharedInstance().outputVolume
+    @objc private func volumeChanged(_ notification: Notification) {
+        guard let slider = volumeView.subviews.filter({ $0 is UISlider }).first as? UISlider,
+            let userInfo = (notification as NSNotification).userInfo,
+            let changeReason = userInfo["AVSystemController_AudioVolumeChangeReasonNotificationParameter"] as? String, changeReason == "ExplicitVolumeChange" else { return }
+
+        slider.setValue(volume, animated: false)
         capturePhoto()
     }
 
-    private func capturePhoto() {
+    @objc private func capturePhoto() {
         if (!configuration.allowMultiplePhotoCapture && capturingPhoto) || !cameraUnavailableLabel.isHidden {
             return
         }
@@ -603,15 +622,21 @@ open class CameraViewController: UIViewController {
 			of AVCaptureSessionWasInterruptedNotification for other interruption reasons.
 		*/
 		NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
+
+        if !configuration.inlineMode {
+            _ = try? AVAudioSession.sharedInstance().setActive(true)
+           NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged(_:)), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
+        }
 	}
 
-	private func removeObservers() {
+    private func removeObservers() {
 		NotificationCenter.default.removeObserver(self)
 
 		for keyValueObservation in keyValueObservations {
 			keyValueObservation.invalidate()
 		}
 		keyValueObservations.removeAll()
+        _ = try? AVAudioSession.sharedInstance().setActive(false)
 	}
 
 	@objc
@@ -664,7 +689,7 @@ open class CameraViewController: UIViewController {
 extension CameraViewController: BottomContainerViewDelegate {
 
     func cameraButtonDidPress() {
-        capturePhotoTouched()
+        capturePhoto()
     }
 
     func doneButtonDidPress() {
