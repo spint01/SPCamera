@@ -54,6 +54,13 @@ open class BottomContainerView: UIView {
 
         return label
     }()
+    lazy var compassImageView: UIImageView = {
+        let view = UIImageView(image: AssetManager.getImage("compass").withRenderingMode(.alwaysTemplate))
+        view.tintColor = UIColor.white
+
+        return view
+    }()
+
 
 //    lazy var topSeparator: UIView = { [unowned self] in
 //        let view = UIView()
@@ -83,7 +90,7 @@ open class BottomContainerView: UIView {
         if configuration.inlineMode {
             views = [borderCameraButton, cameraButton]
         } else {
-            views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel]
+            views = [compassImageView, borderCameraButton, cameraButton, doneButton, photoTitleLabel]
         }
         views.forEach {
             addSubview($0)
@@ -95,6 +102,13 @@ open class BottomContainerView: UIView {
 
 //        self.layer.borderColor = UIColor.red.cgColor
 //        self.layer.borderWidth = 1.0
+    }
+
+    // MARK: - public methods
+    func rotateCompass(direction: Double) {
+        let angle = CGFloat(direction).degreesToRadians
+        print("photo direction: \(direction)  angle: \(angle)")
+        compassImageView.transform = CGAffineTransform(rotationAngle: angle)
     }
 
     // MARK: - Action methods
@@ -133,6 +147,11 @@ open class BottomContainerView: UIView {
             borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
             ])
         if !configuration.inlineMode {
+            // compassImageView
+            NSLayoutConstraint.activate([
+                compassImageView.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                compassImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20)
+                ])
             // doneButton
             NSLayoutConstraint.activate([
                 doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),

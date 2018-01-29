@@ -7,8 +7,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     var latestLocation: CLLocation?
     var latestHeading: CLHeading?
+    private let onHeadingChange: ((Double) -> Void)?
 
-    override init() {
+    init(onHeadingChange: ((Double) -> Void)? = nil) {
+        self.onHeadingChange = onHeadingChange
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -41,23 +43,19 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        latestLocation = manager.location
         latestHeading = newHeading
 
         #if DEBUG_HEADING
-        print("Magnetic heading: \(newHeading.magneticHeading)")
-        print("True heading: \(newHeading.trueHeading)")
-        print("Orientation heading: \(manager.headingOrientation.rawValue)")
-        print("Accuracy heading: \(newHeading.headingAccuracy)")
-        latestLocation = manager.location
-        print("Manager course: \(String(describing: manager.location?.course))")
-//        latestLocation?.course = newHeading.trueHeading
-
-        if let adjustment = latestLocation?.headingAdjusted(latestHeading?.trueHeading ?? 0) {
-//        let adjustment = Double(orientationAdjustment())
-            let adjustedHeading = (newHeading.trueHeading + adjustment).truncatingRemainder(dividingBy: 360)
-            print("Adjustment: \(adjustment)  Adjusted heading: \(adjustedHeading)")
-        }
+            print("Magnetic heading: \(newHeading.magneticHeading)")
+            print("True heading: \(newHeading.trueHeading)")
+            print("Orientation heading: \(manager.headingOrientation.rawValue)")
+            print("Accuracy heading: \(newHeading.headingAccuracy)")
+            print("Manager course: \(String(describing: manager.location?.course))")
         #endif
-    }
 
+        if let adjustedHeading = latestLocation?.headingAdjusted(newHeading.trueHeading) {
+            self.onHeadingChange?(adjustedHeading)
+        }
+    }
 }

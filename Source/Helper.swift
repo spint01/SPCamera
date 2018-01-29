@@ -36,3 +36,29 @@ extension Bundle {
         return name ?? object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
     }
 }
+
+class AssetManager {
+
+    open static func getImage(_ name: String) -> UIImage {
+        let traitCollection = UITraitCollection(displayScale: 3)
+        var bundle = Bundle(for: AssetManager.self)
+
+        if let resource = bundle.resourcePath, let resourceBundle = Bundle(path: resource + "/SPCamera.bundle") {
+            bundle = resourceBundle
+        }
+
+        return UIImage(named: name, in: bundle, compatibleWith: traitCollection) ?? UIImage()
+    }
+}
+
+extension CGFloat {
+
+    var degreesToRadians: CGFloat {
+        return self * .pi / 180
+    }
+
+    var radiansToDegrees: CGFloat {
+        return self * 180 / .pi
+    }
+}
+

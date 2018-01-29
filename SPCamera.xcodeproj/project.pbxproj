@@ -20,6 +20,7 @@
 		CD73CB8C1FE0FC7700652E51 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */; };
 		CD73CB8D1FE0FC7700652E51 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */; };
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
+		CD8DE2DC201BB7EB000B792D /* compass@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD8DE2DB201BB7EB000B792D /* compass@2x.png */; };
 		CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */; };
 		CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D171FE8EA4000ADFF1A /* Helper.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
@@ -68,6 +69,7 @@
 		CD73CB7F1FE0F7CD00652E51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD73CB821FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CD80736E1FE226740038BCA7 /* CameraButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
+		CD8DE2DB201BB7EB000B792D /* compass@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass@2x.png"; sourceTree = "<group>"; };
 		CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContainerView.swift; sourceTree = "<group>"; };
 		CDC11D171FE8EA4000ADFF1A /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		CDDB3DBF1FE0CE02005D7679 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				CD8DE2DB201BB7EB000B792D /* compass@2x.png */,
 				CDC11D161FE8D52D00ADFF1A /* BottomView */,
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
 				CDDB3DC01FE0D742005D7679 /* Configuration.swift */,
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD6CA311200DC348007DB210 /* SPCamera.podspec in Resources */,
+				CD8DE2DC201BB7EB000B792D /* compass@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

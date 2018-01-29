@@ -147,7 +147,13 @@ open class CameraViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = true
                         // will ask permission the first time
-                        self.locationManager = LocationManager()
+                        if !self.configuration.inlineMode {
+                            self.locationManager = LocationManager(onHeadingChange: { (direction) in
+                                self.bottomContainer.rotateCompass(direction: direction)
+                            })
+                        } else {
+                            self.locationManager = LocationManager()
+                        }
                     }
 
                 case .notAuthorized:
