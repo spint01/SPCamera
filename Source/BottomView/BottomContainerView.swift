@@ -50,7 +50,7 @@ open class BottomContainerView: UIView {
         label.backgroundColor = UIColor.clear
         label.textColor = configuration.photoTypesLabelColor
         label.text = "PHOTO"
-        label.font = UIFont.systemFont(ofSize: 19, weight: UIFont.Weight.medium)
+        label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
 
         return label
     }()
@@ -141,7 +141,7 @@ open class BottomContainerView: UIView {
             // photoTitleLabel
             NSLayoutConstraint.activate([
                 photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-                photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8)
+                photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 12)
                 ])
         }
     }
