@@ -40,7 +40,6 @@ open class BottomContainerView: UIView {
     open lazy var doneButton: UIButton = { [unowned self] in
         let button = UIButton()
         button.setTitle(self.configuration.cancelButtonTitle, for: UIControlState())
-        button.titleLabel?.font = self.configuration.doneButton
         button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
 
         return button

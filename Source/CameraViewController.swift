@@ -159,13 +159,12 @@ open class CameraViewController: UIViewController {
                 case .notAuthorized:
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = false
-                        self.cameraUnavailableLabel.text = self.configuration.noCameraTitle
-                        let message = self.configuration.noCameraTitle
-                        let alertController = UIAlertController(title: Bundle.main.displayName, message: message, preferredStyle: .alert)
+                        self.cameraUnavailableLabel.text = self.configuration.cameraPermissionLabel
+                        let alertController = UIAlertController(title: self.configuration.cameraPermissionTitle, message: self.configuration.cameraPermissionMessage, preferredStyle: .alert)
                         alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                                 style: .cancel,
                                                                 handler: nil))
-                        alertController.addAction(UIAlertAction(title: self.configuration.settingsTitle,
+                        alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
                                                                 style: .`default`,
                                                                 handler: { _ in
                             UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
@@ -422,7 +421,7 @@ open class CameraViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = self.configuration.noCameraColor
+        label.textColor = self.configuration.noPermissionsTextColor
 
         return label
     }()
@@ -430,8 +429,9 @@ open class CameraViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = self.configuration.noCameraColor
-        label.text = self.configuration.noPhotoLibraryTitle
+        label.textColor = self.configuration.noPermissionsTextColor
+        label.text = self.configuration.photoPermissionLabel
+        label.backgroundColor = UIColor.black.withAlphaComponent(0.50)
         label.isHidden = true
 
         return label
@@ -710,6 +710,18 @@ open class CameraViewController: UIViewController {
     private func photoLibUnavailable(_ notification: Notification) {
         DispatchQueue.main.async {
             self.photoLibUnavailableLabel.isHidden = false
+            self.photoLibUnavailableLabel.text = self.configuration.photoPermissionLabel
+            let alertController = UIAlertController(title: self.configuration.photoPermissionTitle, message: self.configuration.photoPermissionMessage, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
+                                                    style: .cancel,
+                                                    handler: nil))
+            alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
+                                                    style: .`default`,
+                                                    handler: { _ in
+                                                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+            }))
+
+            self.present(alertController, animated: true, completion: nil)
         }
     }
 }
