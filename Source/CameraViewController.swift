@@ -13,7 +13,6 @@ import MediaPlayer
 let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) == 812.0
 let NotificationPhotoLibUnavailable = NSNotification.Name(rawValue: "photoLibUnavailable")
 
-@available(iOS 10.0, *)
 open class CameraViewController: UIViewController {
 
 	// MARK: View Controller Life Cycle
@@ -722,7 +721,6 @@ open class CameraViewController: UIViewController {
 
 // MARK: - CameraButtonDelegate methods
 
-@available(iOS 10.0, *)
 extension CameraViewController: BottomContainerViewDelegate {
 
     func cameraButtonDidPress() {
@@ -760,7 +758,6 @@ extension AVCaptureVideoOrientation {
 	}
 }
 
-@available(iOS 10.0, *)
 extension AVCaptureDevice.DiscoverySession {
 	var uniqueDevicePositionsCount: Int {
         var uniqueDevicePositions: [AVCaptureDevice.Position] = []

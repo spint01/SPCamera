@@ -8,7 +8,6 @@ Photo capture processor.
 import AVFoundation
 import Photos
 
-@available(iOS 10.0, *)
 class PhotoCaptureProcessor: NSObject {
 
 	private(set) var requestedPhotoSettings: AVCapturePhotoSettings
@@ -48,7 +47,6 @@ class PhotoCaptureProcessor: NSObject {
     }
 }
 
-@available(iOS 10.0, *)
 extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     /*
      This extension includes all the delegate callbacks for AVCapturePhotoCaptureDelegate protocol
