@@ -54,9 +54,9 @@ open class BottomContainerView: UIView {
         return label
     }()
     lazy var compassImageView: UIImageView = {
-        let view = UIImageView(image: AssetManager.getImage("compass").withRenderingMode(.alwaysTemplate))
-        view.tintColor = UIColor.white
-
+//        let view = UIImageView(image: AssetManager.getImage("compass").withRenderingMode(.alwaysTemplate))
+//        view.tintColor = UIColor.white
+        let view = UIImageView(image: AssetManager.getImage("compass"))
         return view
     }()
 
@@ -107,7 +107,7 @@ open class BottomContainerView: UIView {
     func rotateCompass(direction: Double) {
         let angle = CGFloat(direction).degreesToRadians
         print("photo direction: \(direction)  angle: \(angle)")
-        compassImageView.transform = CGAffineTransform(rotationAngle: angle)
+        compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
     }
 
     // MARK: - Action methods
@@ -149,7 +149,9 @@ open class BottomContainerView: UIView {
             // compassImageView
             NSLayoutConstraint.activate([
                 compassImageView.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                compassImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20)
+                compassImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20),
+                compassImageView.widthAnchor.constraint(equalToConstant: 60),
+                compassImageView.heightAnchor.constraint(equalToConstant: 60)
                 ])
             // doneButton
             NSLayoutConstraint.activate([
