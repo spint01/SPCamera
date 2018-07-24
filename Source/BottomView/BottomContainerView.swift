@@ -132,16 +132,29 @@ open class BottomContainerView: UIView {
             borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
             ])
         if !configuration.inlineMode {
-            // doneButton
-            NSLayoutConstraint.activate([
-                doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                doneButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20)
-                ])
-            // photoTitleLabel
-            NSLayoutConstraint.activate([
-                photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-                photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 12)
-                ])
+            if Helper.runningOnIpad {
+                // doneButton
+                NSLayoutConstraint.activate([
+                    doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                    doneButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 20)
+                    ])
+                // photoTitleLabel
+                NSLayoutConstraint.activate([
+                    photoTitleLabel.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                    photoTitleLabel.topAnchor.constraint(equalTo: cameraButton.bottomAnchor, constant: 180)
+                    ])
+            } else {
+                // doneButton
+                NSLayoutConstraint.activate([
+                    doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                    doneButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20)
+                    ])
+                // photoTitleLabel
+                NSLayoutConstraint.activate([
+                    photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+                    photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 12)
+                    ])
+            }
         }
     }
 }

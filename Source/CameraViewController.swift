@@ -275,13 +275,23 @@ open class CameraViewController: UIViewController {
             photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
             photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
             ])
+
         // bottomContainer
-        NSLayoutConstraint.activate([
-            bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
-            bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
-            bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
-            bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
-            ])
+        if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
+            NSLayoutConstraint.activate([
+                bottomContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: -indent),
+                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: indent),
+                bottomContainer.widthAnchor.constraint(equalToConstant: BottomContainerView.Dimensions.height),
+                bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0)
+                ])
+        } else {
+            NSLayoutConstraint.activate([
+                bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
+                bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
+                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
+                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
+                ])
+        }
     }
 
     // MARK: Session Management
@@ -521,7 +531,7 @@ open class CameraViewController: UIViewController {
 
     open lazy var bottomContainer: BottomContainerView = { [unowned self] in
         let view = BottomContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.35) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
+        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
         view.delegate = self
 
         return view
