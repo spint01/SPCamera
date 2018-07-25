@@ -118,7 +118,7 @@ open class BottomContainerView: UIView {
 
         // cameraButton
         NSLayoutConstraint.activate([
-            cameraButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            cameraButton.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
             cameraButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: configuration.inlineMode ? 0 : 14),
             cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
             cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
@@ -139,9 +139,10 @@ open class BottomContainerView: UIView {
                     doneButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 20)
                     ])
                 // photoTitleLabel
+                photoTitleLabel.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
                 NSLayoutConstraint.activate([
-                    photoTitleLabel.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-                    photoTitleLabel.topAnchor.constraint(equalTo: cameraButton.bottomAnchor, constant: 180)
+                    photoTitleLabel.rightAnchor.constraint(equalTo: borderCameraButton.leftAnchor, constant: 5),
+                    photoTitleLabel.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor)
                     ])
             } else {
                 // doneButton
