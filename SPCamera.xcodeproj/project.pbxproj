@@ -61,7 +61,7 @@
 		CD73CB651FE0F65600652E51 /* SPCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SPCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD73CB671FE0F65600652E51 /* SPCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPCamera.h; sourceTree = "<group>"; };
 		CD73CB681FE0F65600652E51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SPCamera/Info.plist; sourceTree = "<group>"; };
-		CD73CB761FE0F7CD00652E51 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD73CB761FE0F7CD00652E51 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD73CB781FE0F7CD00652E51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CD73CB7A1FE0F7CD00652E51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CD73CB7D1FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 				CDDB3DBF1FE0CE02005D7679 /* Source */,
 				CD73CB881FE0F8F000652E51 /* SupportFiles */,
 				CD6CA310200DC347007DB210 /* SPCamera.podspec */,
-				CD73CB771FE0F7CD00652E51 /* Example */,
+				CD73CB771FE0F7CD00652E51 /* Demo */,
 				7AA677121CFF765600B353FB /* Products */,
 				CDD4900D1FE31B9C000F4ACB /* Frameworks */,
 			);
@@ -110,12 +110,12 @@
 			isa = PBXGroup;
 			children = (
 				CD73CB651FE0F65600652E51 /* SPCamera.framework */,
-				CD73CB761FE0F7CD00652E51 /* Example.app */,
+				CD73CB761FE0F7CD00652E51 /* Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CD73CB771FE0F7CD00652E51 /* Example */ = {
+		CD73CB771FE0F7CD00652E51 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
 				CD73CB781FE0F7CD00652E51 /* AppDelegate.swift */,
@@ -125,7 +125,7 @@
 				CD73CB811FE0F7CD00652E51 /* LaunchScreen.storyboard */,
 				7AA677201CFF765600B353FB /* Info.plist */,
 			);
-			path = Example;
+			path = Demo;
 			sourceTree = "<group>";
 		};
 		CD73CB881FE0F8F000652E51 /* SupportFiles */ = {
@@ -201,9 +201,9 @@
 			productReference = CD73CB651FE0F65600652E51 /* SPCamera.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CD73CB751FE0F7CD00652E51 /* Example */ = {
+		CD73CB751FE0F7CD00652E51 /* Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "Example" */;
+			buildConfigurationList = CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
 				CD73CB721FE0F7CD00652E51 /* Sources */,
 				CD73CB731FE0F7CD00652E51 /* Frameworks */,
@@ -215,9 +215,9 @@
 			dependencies = (
 				CDD490171FE31C46000F4ACB /* PBXTargetDependency */,
 			);
-			name = Example;
+			name = Demo;
 			productName = Example;
-			productReference = CD73CB761FE0F7CD00652E51 /* Example.app */;
+			productReference = CD73CB761FE0F7CD00652E51 /* Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -256,7 +256,7 @@
 			projectRoot = "";
 			targets = (
 				CD73CB641FE0F65600652E51 /* SPCamera */,
-				CD73CB751FE0F7CD00652E51 /* Example */,
+				CD73CB751FE0F7CD00652E51 /* Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -470,7 +470,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.lib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -499,7 +499,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.lib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -524,7 +524,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/SupportFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -546,7 +546,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/SupportFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "Example" */ = {
+		CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CD73CB861FE0F7CD00652E51 /* Debug */,

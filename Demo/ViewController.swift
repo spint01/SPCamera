@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Example
+//  Demo
 //
 //  Created by Steven G Pint on 12/12/17.
 //  Copyright © 2017 Apple. All rights reserved.
