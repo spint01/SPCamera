@@ -61,7 +61,7 @@
 		CD73CB651FE0F65600652E51 /* SPCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SPCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD73CB671FE0F65600652E51 /* SPCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPCamera.h; sourceTree = "<group>"; };
 		CD73CB681FE0F65600652E51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SPCamera/Info.plist; sourceTree = "<group>"; };
-		CD73CB761FE0F7CD00652E51 /* SPCamera Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SPCamera Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD73CB761FE0F7CD00652E51 /* SPCamera App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SPCamera App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD73CB781FE0F7CD00652E51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CD73CB7A1FE0F7CD00652E51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CD73CB7D1FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				CD73CB651FE0F65600652E51 /* SPCamera.framework */,
-				CD73CB761FE0F7CD00652E51 /* SPCamera Demo.app */,
+				CD73CB761FE0F7CD00652E51 /* SPCamera App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,9 +201,9 @@
 			productReference = CD73CB651FE0F65600652E51 /* SPCamera.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CD73CB751FE0F7CD00652E51 /* SPCamera Demo */ = {
+		CD73CB751FE0F7CD00652E51 /* SPCamera App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "SPCamera Demo" */;
+			buildConfigurationList = CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "SPCamera App" */;
 			buildPhases = (
 				CD73CB721FE0F7CD00652E51 /* Sources */,
 				CD73CB731FE0F7CD00652E51 /* Frameworks */,
@@ -215,9 +215,9 @@
 			dependencies = (
 				CDD490171FE31C46000F4ACB /* PBXTargetDependency */,
 			);
-			name = "SPCamera Demo";
+			name = "SPCamera App";
 			productName = Example;
-			productReference = CD73CB761FE0F7CD00652E51 /* SPCamera Demo.app */;
+			productReference = CD73CB761FE0F7CD00652E51 /* SPCamera App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -255,7 +255,7 @@
 			projectRoot = "";
 			targets = (
 				CD73CB641FE0F65600652E51 /* SPCamera */,
-				CD73CB751FE0F7CD00652E51 /* SPCamera Demo */,
+				CD73CB751FE0F7CD00652E51 /* SPCamera App */,
 			);
 		};
 /* End PBXProject section */
@@ -583,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "SPCamera Demo" */ = {
+		CD73CB851FE0F7CD00652E51 /* Build configuration list for PBXNativeTarget "SPCamera App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CD73CB861FE0F7CD00652E51 /* Debug */,
