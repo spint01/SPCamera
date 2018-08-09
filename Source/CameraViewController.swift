@@ -10,8 +10,15 @@ import AVFoundation
 import Photos
 import MediaPlayer
 
-let IS_IPHONE_X = UIDevice.current.userInterfaceIdiom == .phone && max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) == 812.0
+struct ScreenSize {
+    static let SCREEN_WIDTH         = UIScreen.main.bounds.size.width
+    static let SCREEN_HEIGHT        = UIScreen.main.bounds.size.height
+    static let SCREEN_MAX_LENGTH    = max(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
+    static let SCREEN_MIN_LENGTH    = min(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
+}
+
 let NotificationPhotoLibUnavailable = NSNotification.Name(rawValue: "photoLibUnavailable")
+let IS_IPHONE_PLUS       = UIDevice.current.userInterfaceIdiom == .phone && ScreenSize.SCREEN_MAX_LENGTH == 736.0
 
 open class CameraViewController: UIViewController {
 
@@ -50,7 +57,7 @@ open class CameraViewController: UIViewController {
     open override func viewDidLoad() {
 		super.viewDidLoad()
 
-        self.view.backgroundColor = UIColor.black
+        view.backgroundColor = configuration.bottomContainerColor
 
         // recreate storyboard
         [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer as UIView].forEach {
@@ -230,66 +237,80 @@ open class CameraViewController: UIViewController {
 		}
 	}
 
-    private func setupConstraints() {
-        var margins: UILayoutGuide!
-        var indent: CGFloat = 0
+    private var bottomContainerBottonConstraint: NSLayoutConstraint?
+
+    override open func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        var topOffset: CGFloat = 0
+        var bottomOffset: CGFloat = 0
+        var IS_IPHONE_X = false
         if #available(iOS 11.0, *) {
-            margins = view.safeAreaLayoutGuide
-        } else {
-            indent = 20
-            margins = view.layoutMarginsGuide
+            print("insets \(view.safeAreaInsets)")
+            if view.safeAreaInsets.top > 0 {
+                IS_IPHONE_X = true
+            }
         }
 
-//        print("ScreenSize.SCREEN_MAX_LENGTH: \(ScreenSize.SCREEN_MAX_LENGTH)")
         if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
-            NSLayoutConstraint.activate([
-                previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-                previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-                ])
-        } else if IS_IPHONE_X {
-            NSLayoutConstraint.activate([
-                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 0),
-                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0),
-                previewView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
-                previewView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10)
-                ])
+            topOffset = 0
+            bottomOffset = 0
         } else {
-            NSLayoutConstraint.activate([
-                previewView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
-                previewView.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
-                previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: -indent),
-                previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 46)
-                ])
+            if IS_IPHONE_X {
+                topOffset = 34
+                bottomOffset = -60
+            } else if IS_IPHONE_PLUS {
+                topOffset = 50
+                bottomOffset = -10
+            } else {
+                topOffset = 40
+                bottomOffset = -10
+            }
         }
+
+        let bounds = view.layer.bounds
+        previewView.videoPreviewLayer.position = CGPoint(x:bounds.midX, y:bounds.midY - topOffset)
+        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
+        bottomContainerBottonConstraint?.constant = bottomOffset
+    }
+
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+            previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+            previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            ])
+
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
             cameraUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
             cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
-            cameraUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
+            cameraUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
         // photoLibUnavailableLabel
         NSLayoutConstraint.activate([
             photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
             photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
-            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: margins.leadingAnchor, constant: 16),
+            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
 
         // bottomContainer
+        bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+
+        NSLayoutConstraint.activate([
+            bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+            bottomContainerBottonConstraint!
+            ])
         if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
             NSLayoutConstraint.activate([
-                bottomContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: -indent),
-                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: indent),
+                bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
                 bottomContainer.widthAnchor.constraint(equalToConstant: BottomContainerView.Dimensions.height),
-                bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: 0)
                 ])
         } else {
             NSLayoutConstraint.activate([
-                bottomContainer.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: -indent),
-                bottomContainer.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: indent),
-                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height),
-                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
+                bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height)
                 ])
         }
     }
@@ -309,7 +330,7 @@ open class CameraViewController: UIViewController {
 	var videoDeviceInput: AVCaptureDeviceInput!
     lazy private var previewView: PreviewView = {
         let view = PreviewView()
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = configuration.bottomContainerColor
 
         return view
     }()
