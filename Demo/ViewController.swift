@@ -14,7 +14,6 @@ class ViewController: UIViewController {
 
 //    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
-    var isKeyboardShowing = false
 
     var viewHeightConstraint: NSLayoutConstraint!
     var viewWidthConstraint: NSLayoutConstraint!
@@ -33,6 +32,7 @@ class ViewController: UIViewController {
         return view
     }()
     let ACCESSORY_HEIGHT: CGFloat = 50
+    var isKeyboardShowing = false
 
     var cameraViewController: CameraViewController?
 
@@ -77,11 +77,12 @@ class ViewController: UIViewController {
             }
         }
         #endif
-        registerNotifications()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        registerNotifications()
 
         if accessoryView.accessoryViewHeightConstraint == nil {
             for constraint in accessoryView.constraints {
@@ -227,6 +228,10 @@ class ViewController: UIViewController {
             print("Finished")
         })
         present(ctr, animated: true, completion: nil)
+    }
+
+    @IBAction func signInTouched(_ sender: Any) {
+        AppDelegate.displaySignInScreen(transition: true)
     }
 
     // calls to capture photo metadata

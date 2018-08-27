@@ -61,12 +61,8 @@ class SPAccessoryView: UIInputView {
 
         // containerView
         NSLayoutConstraint.activate([
-            //        textView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 4))
-//            containerView.heightAnchor.constraint(equalToConstant: 48.0),
-//            containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
             ])
         if #available(iOS 11.0, *) {
-//            containerView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
             containerView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
             containerView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
             containerView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true

@@ -8,6 +8,9 @@
 
 import UIKit
 
+// keep a reference so we can return to it when logging out
+var mainViewController: UIViewController?
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        AppDelegate.displayMainScreen(self.window)
+
         return true
     }
 
@@ -41,6 +48,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    class func displayMainScreen(_ window: UIWindow? = UIApplication.shared.keyWindow) {
+        // NOTE: We start the timer here since we have successfully logged in
+        if let w = window {
+//            if mainViewController == nil {
+                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+                mainViewController = storyboard.instantiateViewController(withIdentifier: "NavMenuViewController")
+//            }
+            if let ctr = mainViewController {
+                w.rootViewController = ctr
+                w.makeKeyAndVisible()
+            }
+        }
+    }
 
+    class func displaySignInScreen(_ window: UIWindow? = UIApplication.shared.keyWindow, transition: Bool = false) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let navCtr = storyboard.instantiateViewController(withIdentifier: "SignInViewController")
+        if let w = window {
+            w.rootViewController = navCtr
+            w.makeKeyAndVisible()
+        }
+    }
 }
 
