@@ -22,6 +22,7 @@
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
 		CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */; };
 		CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D171FE8EA4000ADFF1A /* Helper.swift */; };
+		CDD3C34B2132019B00ABE37A /* SPAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD3C3492131FFE400ABE37A /* SPAccessoryView.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
 		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
 		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -70,6 +71,7 @@
 		CD80736E1FE226740038BCA7 /* CameraButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContainerView.swift; sourceTree = "<group>"; };
 		CDC11D171FE8EA4000ADFF1A /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		CDD3C3492131FFE400ABE37A /* SPAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPAccessoryView.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			children = (
 				CD73CB781FE0F7CD00652E51 /* AppDelegate.swift */,
 				CD73CB7A1FE0F7CD00652E51 /* ViewController.swift */,
+				CDD3C3492131FFE400ABE37A /* SPAccessoryView.swift */,
 				CD73CB7C1FE0F7CD00652E51 /* Main.storyboard */,
 				CD73CB7F1FE0F7CD00652E51 /* Assets.xcassets */,
 				CD73CB811FE0F7CD00652E51 /* LaunchScreen.storyboard */,
@@ -303,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD73CB7B1FE0F7CD00652E51 /* ViewController.swift in Sources */,
+				CDD3C34B2132019B00ABE37A /* SPAccessoryView.swift in Sources */,
 				CD73CB791FE0F7CD00652E51 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

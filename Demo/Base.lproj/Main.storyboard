@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="efa-Oa-YyU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.13.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="efa-Oa-YyU">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,40 +13,46 @@
         <!--Main-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SPCamera_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r4y-2F-QmU">
-                                <rect key="frame" x="16" y="64" width="127" height="30"/>
-                                <state key="normal" title="Launch SPCamera"/>
-                                <connections>
-                                    <action selector="launchTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dU8-fZ-n0m"/>
-                                </connections>
-                            </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zT9-t2-600">
-                                <rect key="frame" x="0.0" y="467" width="375" height="200"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="PXN-dG-XCM">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CGm-rt-MFM">
+                                        <rect key="frame" x="15" y="19" width="54" height="30"/>
+                                        <state key="normal" title="Camera"/>
+                                        <connections>
+                                            <action selector="launchTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0xn-T9-GZM"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H99-a1-jXl">
+                                        <rect key="frame" x="15" y="65" width="46" height="30"/>
+                                        <state key="normal" title="Button"/>
+                                    </button>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="3Og-NH-Ah2"/>
+                                    <constraint firstItem="H99-a1-jXl" firstAttribute="top" secondItem="CGm-rt-MFM" secondAttribute="bottom" constant="16" id="9gD-zF-xLB"/>
+                                    <constraint firstItem="CGm-rt-MFM" firstAttribute="top" secondItem="PXN-dG-XCM" secondAttribute="top" constant="19" id="iZG-9e-Q8z"/>
+                                    <constraint firstItem="H99-a1-jXl" firstAttribute="leading" secondItem="CGm-rt-MFM" secondAttribute="leading" id="kt7-57-4nJ"/>
+                                    <constraint firstItem="CGm-rt-MFM" firstAttribute="leading" secondItem="PXN-dG-XCM" secondAttribute="leading" constant="15" id="sEc-AH-fiV"/>
                                 </constraints>
-                            </view>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="r4y-2F-QmU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="4Lo-eH-HxW"/>
-                            <constraint firstItem="zT9-t2-600" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Db6-L2-0ZC"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zT9-t2-600" secondAttribute="trailing" id="DxC-7D-2hS"/>
-                            <constraint firstItem="r4y-2F-QmU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="RzK-Qa-HOq"/>
-                            <constraint firstItem="zT9-t2-600" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="kYL-a6-rTH"/>
+                            <constraint firstItem="PXN-dG-XCM" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1ZA-Ty-Yud"/>
+                            <constraint firstItem="PXN-dG-XCM" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="F6w-DL-385"/>
+                            <constraint firstItem="PXN-dG-XCM" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Np7-Jr-zr3"/>
+                            <constraint firstItem="PXN-dG-XCM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="fbT-5J-oi5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Main" id="6T3-iG-UIX"/>
                     <connections>
-                        <outlet property="containerHeightConstraint" destination="3Og-NH-Ah2" id="hQE-yb-jy5"/>
-                        <outlet property="containerView" destination="zT9-t2-600" id="4f5-Vu-hVp"/>
+                        <outlet property="scrollView" destination="PXN-dG-XCM" id="AAf-xi-c3e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

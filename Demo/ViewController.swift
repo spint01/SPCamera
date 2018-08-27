@@ -12,23 +12,38 @@ import Photos
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var containerView: UIView!
+//    @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
 
     var viewHeightConstraint: NSLayoutConstraint!
     var viewWidthConstraint: NSLayoutConstraint!
-    @IBOutlet var containerHeightConstraint: NSLayoutConstraint!
+//    @IBOutlet var containerHeightConstraint: NSLayoutConstraint!
 
-    let inlineDemo = true
+    let inlineDemo = false
     let containerPortraitHeight: CGFloat = 250
     let containerLandscapeHeight: CGFloat = 200
+
+    lazy var accessoryView: SPAccessoryView = { [unowned self] in
+        let view = SPAccessoryView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: ACCESSORY_HEIGHT))
+//        noteView.backgroundColor = self.navigationController?.navigationBar.backgroundColor
+//        noteView.backgroundColor = UIColor.yellow
+//        noteView.delegateAccessory = self
+
+        return view
+    }()
+    let ACCESSORY_HEIGHT: CGFloat = 50
 
     var cameraViewController: CameraViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        containerView.backgroundColor = UIColor.lightGray
+        scrollView.keyboardDismissMode = .interactive
+        scrollView.contentSize = self.view.bounds.size
+//
+//        containerView.backgroundColor = UIColor.lightGray
 
+        #if NO
         if inlineDemo {
             var config = Configuration()
             config.photoAlbumName = "SPCamera"
@@ -60,11 +75,28 @@ class ViewController: UIViewController {
                 ctr.didMove(toParentViewController: self)
             }
         }
+        #endif
+        registerNotifications()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if accessoryView.accessoryViewHeightConstraint == nil {
+            for constraint in accessoryView.constraints {
+                if constraint.firstAttribute == .height {
+                    accessoryView.accessoryViewHeightConstraint = constraint
+                    break
+                }
+            }
+        }
+        setAccessoryHeight()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        #if NO
         if inlineDemo {
             let deviceOrientation = UIDevice.current.orientation
             if deviceOrientation.isPortrait {
@@ -83,21 +115,83 @@ class ViewController: UIViewController {
 //            viewWidthConstraint.constant = containerView.bounds.size.width
     //        cameraViewController?.view.frame = containerView.bounds
         }
+        #endif
     }
 
-//    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//        super.viewWillTransition(to: size, with: coordinator)
-//
-//        if let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
-//            let deviceOrientation = UIDevice.current.orientation
-//            guard let newVideoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation),
-//                deviceOrientation.isPortrait || deviceOrientation.isLandscape else {
-//                    return
-//            }
-//
-//            videoPreviewLayerConnection.videoOrientation = newVideoOrientation
-//        }
-//    }
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        layoutWithKeyboardFrame(notification)
+    }
+
+    @objc func keyboardWillHide(_ notification: NSNotification) {
+        layoutWithKeyboardFrame(notification)
+    }
+
+    func layoutWithKeyboardFrame(_ notification: NSNotification) {
+        if !isViewLoaded {
+            return
+        }
+
+        if let info = notification.userInfo, let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let animationDuration = info[UIKeyboardAnimationDurationUserInfoKey] as? Double {
+
+            var contentInset = scrollView.contentInset
+            contentInset.bottom = keyboardFrame.height
+
+            let diff = view.bounds.height - keyboardFrame.height - (navigationController?.navigationBar.frame.height ?? 0) - 44 //UIApplication.statusBarHeight()
+            //            logv("diff: \(diff)")
+
+            UIView.animate(withDuration: animationDuration) {
+                self.scrollView.contentInset = contentInset
+                self.scrollView.scrollIndicatorInsets = contentInset
+
+                self.setAccessoryHeight()
+
+//                self.accessoryView.accessoryViewHeightConstraint?.constant = 88
+//                self.accessoryView.maxHeight = diff
+//                print("maxHeight: \(self.accessoryView.maxHeight)")
+            }
+        }
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+    }
+
+    @available(iOS 11.0, *)
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        setAccessoryHeight()
+    }
+
+    func setAccessoryHeight() {
+        print("setAccessoryHeight")
+        if #available(iOS 11.0, *) {
+            // TODO: isKeyboardPresented returns true after hiding the keyboard
+            print("safe area insets 3: \(view.safeAreaInsets) isKeyboardPresented: \(UIApplication.shared.isKeyboardPresented)")
+            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + (UIApplication.shared.isKeyboardPresented ? 0 : view.safeAreaInsets.bottom)
+        } else {
+            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT
+        }
+    }
+
+    // MARK: - accessory view
+
+    override var inputAccessoryView: UIView? {
+        get {
+            return accessoryView
+        }
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
 
     @IBAction func launchTouched(_ sender: UIButton) {
         var config = Configuration()
@@ -152,4 +246,17 @@ public extension PHAsset {
         })
     }
 }
+
+public extension UIApplication {
+
+    // True if the Keyboard is being displayed
+    var isKeyboardPresented: Bool {
+        if let keyboardWindowClass = NSClassFromString("UIRemoteKeyboardWindow"), self.windows.contains(where: { $0.isKind(of: keyboardWindowClass) }) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 
