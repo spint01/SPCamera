@@ -14,6 +14,7 @@ class ViewController: UIViewController {
 
 //    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
+    var isKeyboardShowing = false
 
     var viewHeightConstraint: NSLayoutConstraint!
     var viewWidthConstraint: NSLayoutConstraint!
@@ -119,23 +120,43 @@ class ViewController: UIViewController {
     }
 
     private func registerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIKeyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardDidHide, object: nil)
     }
 
-    @objc func keyboardWillShow(_ notification: NSNotification) {
-        layoutWithKeyboardFrame(notification)
+    @objc func UIKeyboardWillShow(_ notification: NSNotification) {
+        let userInfo = notification.userInfo!
+        let beginFrameValue = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!
+        let beginFrame = beginFrameValue.cgRectValue
+        let endFrameValue = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)!
+        let endFrame = endFrameValue.cgRectValue
+        if beginFrame.size.equalTo(endFrame.size) {
+            return
+        }
+        if #available(iOS 11.0, *) {
+            let begHeight = beginFrame.size.height - view.safeAreaInsets.bottom
+            if begHeight == endFrame.size.height {
+                return
+            }
+            let endHeight = endFrame.size.height - view.safeAreaInsets.bottom
+            if endHeight == beginFrame.size.height {
+                return
+            }
+        }
+
+        layoutWithKeyboardFrame(notification, willShow: true)
     }
 
     @objc func keyboardWillHide(_ notification: NSNotification) {
-        layoutWithKeyboardFrame(notification)
+        layoutWithKeyboardFrame(notification, willShow: false)
     }
 
-    func layoutWithKeyboardFrame(_ notification: NSNotification) {
+    func layoutWithKeyboardFrame(_ notification: NSNotification, willShow: Bool) {
         if !isViewLoaded {
             return
         }
 
+        isKeyboardShowing = willShow
         if let info = notification.userInfo, let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let animationDuration = info[UIKeyboardAnimationDurationUserInfoKey] as? Double {
 
@@ -173,9 +194,8 @@ class ViewController: UIViewController {
     func setAccessoryHeight() {
         print("setAccessoryHeight")
         if #available(iOS 11.0, *) {
-            // TODO: isKeyboardPresented returns true after hiding the keyboard
-            print("safe area insets 3: \(view.safeAreaInsets) isKeyboardPresented: \(UIApplication.shared.isKeyboardPresented)")
-            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + (UIApplication.shared.isKeyboardPresented ? 0 : view.safeAreaInsets.bottom)
+            print("safe area insets 3: \(view.safeAreaInsets) isKeyboardShowing: \(isKeyboardShowing)")
+            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + (isKeyboardShowing ? 0 : view.safeAreaInsets.bottom)
         } else {
             self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT
         }
@@ -246,17 +266,3 @@ public extension PHAsset {
         })
     }
 }
-
-public extension UIApplication {
-
-    // True if the Keyboard is being displayed
-    var isKeyboardPresented: Bool {
-        if let keyboardWindowClass = NSClassFromString("UIRemoteKeyboardWindow"), self.windows.contains(where: { $0.isKind(of: keyboardWindowClass) }) {
-            return true
-        } else {
-            return false
-        }
-    }
-}
-
-
