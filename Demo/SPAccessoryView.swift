@@ -10,6 +10,8 @@ import UIKit
 
 class SPAccessoryView: UIInputView {
 
+    let ACCESSORY_HEIGHT: CGFloat = 50
+
     private lazy var textView: UITextView = { [unowned self] in
         let view = UITextView()
         view.backgroundColor = UIColor.white
@@ -78,6 +80,33 @@ class SPAccessoryView: UIInputView {
             textView.heightAnchor.constraint(equalToConstant: 40.0),
             textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -4)
         ])
+    }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        if #available(iOS 11.0, *) {
+            print("layoutSubviews: \(safeAreaInsets)")
+        }
+
+        if accessoryViewHeightConstraint == nil {
+            for constraint in constraints {
+                if constraint.firstAttribute == .height {
+                    accessoryViewHeightConstraint = constraint
+                    if #available(iOS 11.0, *) {
+                        accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + safeAreaInsets.bottom + 4
+                    }
+                    break
+                }
+            }
+        }
+    }
+
+    @available(iOS 11.0, *)
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+
+        print("safeAreaInsets: \(safeAreaInsets)")
+        accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + safeAreaInsets.bottom + 4
     }
 }

@@ -13,14 +13,14 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     lazy var accessoryView: SPAccessoryView = { [unowned self] in
-        let view = SPAccessoryView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: ACCESSORY_HEIGHT))
+        let view = SPAccessoryView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44))
         //        noteView.backgroundColor = self.navigationController?.navigationBar.backgroundColor
         //        noteView.backgroundColor = UIColor.yellow
         //        noteView.delegateAccessory = self
 
         return view
         }()
-    let ACCESSORY_HEIGHT: CGFloat = 50
+
     var isKeyboardShowing = false
 
     override func viewDidLoad() {
@@ -33,16 +33,6 @@ class DetailViewController: UIViewController {
         super.viewDidAppear(animated)
 
         registerNotifications()
-
-        if accessoryView.accessoryViewHeightConstraint == nil {
-            for constraint in accessoryView.constraints {
-                if constraint.firstAttribute == .height {
-                    accessoryView.accessoryViewHeightConstraint = constraint
-                    break
-                }
-            }
-        }
-        setAccessoryHeight()
     }
 
     private func registerNotifications() {
@@ -95,12 +85,6 @@ class DetailViewController: UIViewController {
             UIView.animate(withDuration: animationDuration) {
                 self.tableView.contentInset = contentInset
                 self.tableView.scrollIndicatorInsets = contentInset
-
-                self.setAccessoryHeight()
-
-                //                self.accessoryView.accessoryViewHeightConstraint?.constant = 88
-                //                self.accessoryView.maxHeight = diff
-                //                print("maxHeight: \(self.accessoryView.maxHeight)")
             }
         }
     }
@@ -108,23 +92,6 @@ class DetailViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-    }
-
-    @available(iOS 11.0, *)
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-
-        setAccessoryHeight()
-    }
-
-    func setAccessoryHeight() {
-        if #available(iOS 11.0, *) {
-            print("safe area insets 3: \(view.safeAreaInsets) isKeyboardShowing: \(isKeyboardShowing)")
-            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + (isKeyboardShowing ? 0 : view.safeAreaInsets.bottom)
-        } else {
-            self.accessoryView.accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT
-        }
-        print("setAccessoryHeight: \(self.accessoryView.accessoryViewHeightConstraint?.constant ?? 0)")
     }
 
     // MARK: - accessory view

@@ -95,7 +95,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="ety-hu-ZQg"/>
                     <connections>
-                        <outlet property="tableView" destination="5D1-4F-3cx" id="PaT-md-fSG"/>
+                        <outlet property="tableView" destination="5D1-4F-3cx" id="mfW-WZ-Udl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="unQ-QO-ruD" userLabel="First Responder" sceneMemberID="firstResponder"/>
