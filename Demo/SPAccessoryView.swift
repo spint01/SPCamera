@@ -66,10 +66,12 @@ class SPAccessoryView: UIInputView {
             ])
         if #available(iOS 11.0, *) {
             containerView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-            containerView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
-            containerView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
+            containerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
+            containerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
         } else {
-            containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
         }
 
         // textView
@@ -85,10 +87,6 @@ class SPAccessoryView: UIInputView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        if #available(iOS 11.0, *) {
-            print("layoutSubviews: \(safeAreaInsets)")
-        }
-
         if accessoryViewHeightConstraint == nil {
             for constraint in constraints {
                 if constraint.firstAttribute == .height {
@@ -99,14 +97,18 @@ class SPAccessoryView: UIInputView {
                     break
                 }
             }
+        } else {
+            if #available(iOS 11.0, *) {
+                accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + safeAreaInsets.bottom + 4
+            }
         }
     }
 
     @available(iOS 11.0, *)
     override func safeAreaInsetsDidChange() {
         super.safeAreaInsetsDidChange()
-
         print("safeAreaInsets: \(safeAreaInsets)")
-        accessoryViewHeightConstraint?.constant = ACCESSORY_HEIGHT + safeAreaInsets.bottom + 4
+
+        setNeedsLayout()
     }
 }

@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -145,7 +144,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Sign In"/>
                                 <connections>
-                                    <action selector="signInTouched:" destination="zT6-Dw-Bga" eventType="touchUpInside" id="CHF-jY-qTb"/>
+                                    <action selector="signInTouched:" destination="zT6-Dw-Bga" eventType="touchUpInside" id="2we-PG-3yc"/>
                                 </connections>
                             </button>
                         </subviews>

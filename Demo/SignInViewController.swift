@@ -20,6 +20,17 @@ class SignInViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        if DeviceType.IS_IPAD {
+            return .all
+        } else {
+            return .portrait
+        }
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 
     @IBAction func signInTouched(_ sender: UIButton) {
         AppDelegate.displayMainScreen()
