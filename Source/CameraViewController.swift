@@ -67,7 +67,7 @@ open class CameraViewController: UIViewController {
 
         if !configuration.inlineMode {
             view.addSubview(volumeView)
-            view.sendSubview(toBack: volumeView)
+            view.sendSubviewToBack(volumeView)
         }
 
         if configuration.inlineMode {
@@ -140,7 +140,7 @@ open class CameraViewController: UIViewController {
 		super.viewWillAppear(animated)
 
         statusBarHidden = UIApplication.shared.isStatusBarHidden
-        UIApplication.shared.isStatusBarHidden = true
+//        UIApplication.shared.isStatusBarHidden = true
 
         sessionQueue.async {
 			switch self.setupResult {
@@ -167,7 +167,7 @@ open class CameraViewController: UIViewController {
                         alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
                                                                 style: .`default`,
                                                                 handler: { _ in
-                            UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
                         }))
 
                         self.present(alertController, animated: true, completion: nil)
@@ -199,7 +199,7 @@ open class CameraViewController: UIViewController {
 		}
 
 		super.viewWillDisappear(animated)
-        UIApplication.shared.isStatusBarHidden = statusBarHidden
+//        UIApplication.shared.isStatusBarHidden = statusBarHidden
 	}
 
     open override var prefersStatusBarHidden: Bool {
@@ -742,7 +742,7 @@ open class CameraViewController: UIViewController {
             alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
                                                     style: .`default`,
                                                     handler: { _ in
-                                                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+                                                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
             }))
 
             self.present(alertController, animated: true, completion: nil)
@@ -801,4 +801,9 @@ extension AVCaptureDevice.DiscoverySession {
 
         return uniqueDevicePositions.count
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

@@ -43,7 +43,7 @@ class ViewController: UIViewController {
             })
 
             if let ctr = cameraViewController {
-                addChildViewController(ctr)
+                addChild(ctr)
                 containerView.addSubview(ctr.view)
                 ctr.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
 //                    ctr.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0)
                     ])
 
-                ctr.didMove(toParentViewController: self)
+                ctr.didMove(toParent: self)
             }
         }
     }

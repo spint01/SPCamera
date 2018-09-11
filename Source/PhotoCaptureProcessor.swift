@@ -81,14 +81,14 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
         guard let photoSampleBuffer = photoSampleBuffer else { return }
 
         // Add location metadata
-        if let location = locationManager?.latestLocation, var metaDict = CMCopyDictionaryOfAttachments(nil, photoSampleBuffer, kCMAttachmentMode_ShouldPropagate) as? [String: Any] {
+        if let location = locationManager?.latestLocation, var metaDict = CMCopyDictionaryOfAttachments(allocator: nil, target: photoSampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any] {
             // Get the existing metadata dictionary (if there is one)
 
             // Append the GPS metadata to the existing metadata
             metaDict[kCGImagePropertyGPSDictionary as String] = location.exifMetadata(heading: locationManager?.latestHeading)
 
             // Save the new metadata back to the buffer without duplicating any data
-            CMSetAttachments(photoSampleBuffer, metaDict as CFDictionary, kCMAttachmentMode_ShouldPropagate)
+            CMSetAttachments(photoSampleBuffer, attachments: metaDict as CFDictionary, attachmentMode: kCMAttachmentMode_ShouldPropagate)
             latestLocation = location
         }
 
