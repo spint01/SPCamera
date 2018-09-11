@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "SPCamera"
   s.summary          = "Simple Camera framework which only takes still photos. No Live Photo or Videos currently."
-  s.version          = "0.5.0"
+  s.version          = "0.6.0"
   s.homepage         = "https://github.com/spint01/SPCamera"
   s.license          = 'Copyright SGP Enterprises, Inc.'
   s.author           = { "SGP Enterprises, Inc." => "steve.pint@gmail.com" }
@@ -12,5 +12,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'Source/**/*'
   # s.resource_bundles = { 'ImagePicker' => ['Images/*.{png}'] }
   s.frameworks       = 'AVFoundation'
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
+  s.swift_version    = "4.1"
+  s.ios.deployment_target = "10.0"
+
 end
