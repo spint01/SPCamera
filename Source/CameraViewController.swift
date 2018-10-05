@@ -10,15 +10,7 @@ import AVFoundation
 import Photos
 import MediaPlayer
 
-struct ScreenSize {
-    static let SCREEN_WIDTH         = UIScreen.main.bounds.size.width
-    static let SCREEN_HEIGHT        = UIScreen.main.bounds.size.height
-    static let SCREEN_MAX_LENGTH    = max(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
-    static let SCREEN_MIN_LENGTH    = min(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
-}
-
 let NotificationPhotoLibUnavailable = NSNotification.Name(rawValue: "photoLibUnavailable")
-let IS_IPHONE_PLUS       = UIDevice.current.userInterfaceIdiom == .phone && ScreenSize.SCREEN_MAX_LENGTH == 736.0
 
 open class CameraViewController: UIViewController {
 
@@ -244,22 +236,18 @@ open class CameraViewController: UIViewController {
 
         var topOffset: CGFloat = 0
         var bottomOffset: CGFloat = 0
-        var IS_IPHONE_X = false
-        if #available(iOS 11.0, *) {
-            print("insets \(view.safeAreaInsets)")
-            if view.safeAreaInsets.top > 0 {
-                IS_IPHONE_X = true
-            }
-        }
 
         if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
             topOffset = 0
             bottomOffset = 0
         } else {
-            if IS_IPHONE_X {
+            if DeviceType.IS_IPHONE_X_MAX {
+                topOffset = 54
+                bottomOffset = -80
+            } else if DeviceType.IS_IPHONE_X {
                 topOffset = 34
                 bottomOffset = -60
-            } else if IS_IPHONE_PLUS {
+            } else if DeviceType.IS_IPHONE_PLUS {
                 topOffset = 50
                 bottomOffset = -10
             } else {
