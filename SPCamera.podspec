@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'Source/**/*'
   # s.resource_bundles = { 'ImagePicker' => ['Images/*.{png}'] }
   s.frameworks       = 'AVFoundation'
-  s.swift_version    = "4.1"
+  s.swift_version    = "4.2"
   s.ios.deployment_target = "10.0"
 
 end
