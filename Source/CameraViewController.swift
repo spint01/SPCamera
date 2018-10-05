@@ -52,7 +52,7 @@ open class CameraViewController: UIViewController {
         view.backgroundColor = configuration.bottomContainerColor
 
         // recreate storyboard
-        [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer as UIView].forEach {
+        [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -254,6 +254,7 @@ open class CameraViewController: UIViewController {
                 topOffset = 40
                 bottomOffset = -10
             }
+            bottomOffset = 0
         }
 
         let bounds = view.layer.bounds
@@ -283,8 +284,35 @@ open class CameraViewController: UIViewController {
             photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
 
+        // topContainer
+
+        if #available(iOS 11.0, *) {
+            topContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        } else {
+            topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
+        }
+
+        NSLayoutConstraint.activate([
+            topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+            ])
+        if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
+            NSLayoutConstraint.activate([
+                topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                topContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                ])
+        } else {
+            NSLayoutConstraint.activate([
+                topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                topContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? TopContainerView.CompactDimensions.height : topContainer.containerHeight)
+                ])
+        }
+
         // bottomContainer
-        bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        if #available(iOS 11.0, *) {
+            bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+        } else {
+            bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        }
 
         NSLayoutConstraint.activate([
             bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
@@ -293,12 +321,12 @@ open class CameraViewController: UIViewController {
         if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
             NSLayoutConstraint.activate([
                 bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                bottomContainer.widthAnchor.constraint(equalToConstant: BottomContainerView.Dimensions.height),
+                bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
                 ])
         } else {
             NSLayoutConstraint.activate([
                 bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : BottomContainerView.Dimensions.height)
+                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : bottomContainer.containerHeight)
                 ])
         }
     }
@@ -537,6 +565,13 @@ open class CameraViewController: UIViewController {
 	private let photoOutput = AVCapturePhotoOutput()
 
 	private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
+
+    open lazy var topContainer: TopContainerView = { [unowned self] in
+        let view = TopContainerView(configuration: self.configuration)
+        view.backgroundColor = Helper.runningOnIpad ? self.configuration.topContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+
+        return view
+        }()
 
     open lazy var bottomContainer: BottomContainerView = { [unowned self] in
         let view = BottomContainerView(configuration: self.configuration)

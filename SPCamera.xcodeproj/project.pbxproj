@@ -25,6 +25,7 @@
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
 		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
 		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CDECD6542167C051000F10DC /* TopContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDECD6532167C051000F10DC /* TopContainerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		CDECD6532167C051000F10DC /* TopContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopContainerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				CDC11D161FE8D52D00ADFF1A /* BottomView */,
+				CDECD6522167C051000F10DC /* TopView */,
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
 				CDDB3DC01FE0D742005D7679 /* Configuration.swift */,
 				CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */,
@@ -167,6 +170,14 @@
 				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		CDECD6522167C051000F10DC /* TopView */ = {
+			isa = PBXGroup;
+			children = (
+				CDECD6532167C051000F10DC /* TopContainerView.swift */,
+			);
+			path = TopView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -288,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDECD6542167C051000F10DC /* TopContainerView.swift in Sources */,
 				CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */,
 				CD73CB891FE0FC7700652E51 /* CameraViewController.swift in Sources */,
 				CD73CB8A1FE0FC7700652E51 /* Configuration.swift in Sources */,
