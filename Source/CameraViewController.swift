@@ -229,46 +229,32 @@ open class CameraViewController: UIViewController {
 		}
 	}
 
-    private var bottomContainerBottonConstraint: NSLayoutConstraint?
-
     override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        var topOffset: CGFloat = 0
-        var bottomOffset: CGFloat = 0
-
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
-            topOffset = 0
-            bottomOffset = 0
-        } else {
-            if DeviceType.IS_IPHONE_X_MAX {
-                topOffset = 54
-                bottomOffset = -80
-            } else if DeviceType.IS_IPHONE_X {
-                topOffset = 34
-                bottomOffset = -60
-            } else if DeviceType.IS_IPHONE_PLUS {
-                topOffset = 50
-                bottomOffset = -10
-            } else {
-                topOffset = 40
-                bottomOffset = -10
-            }
-            bottomOffset = 0
-        }
-
         let bounds = view.layer.bounds
-        previewView.videoPreviewLayer.position = CGPoint(x:bounds.midX, y:bounds.midY - topOffset)
-        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
-        bottomContainerBottonConstraint?.constant = bottomOffset
+        previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)
+//        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
     }
 
     private func setupConstraints() {
+        var margins: UILayoutGuide!
+        if #available(iOS 11.0, *) {
+            margins = view.safeAreaLayoutGuide
+        } else {
+            margins = view.layoutMarginsGuide
+        }
+//        previewView.layer.borderColor = UIColor.green.cgColor
+//        previewView.layer.borderWidth = 1.0
+
         NSLayoutConstraint.activate([
             previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
             previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
             previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
+//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor, constant: 0),
+//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 0)
             ])
 
         // cameraUnavailableLabel
@@ -285,14 +271,8 @@ open class CameraViewController: UIViewController {
             ])
 
         // topContainer
-
-        if #available(iOS 11.0, *) {
-            topContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
-        } else {
-            topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        }
-
         NSLayoutConstraint.activate([
+            topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
             topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
             ])
         if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
@@ -308,15 +288,9 @@ open class CameraViewController: UIViewController {
         }
 
         // bottomContainer
-        if #available(iOS 11.0, *) {
-            bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
-        } else {
-            bottomContainerBottonConstraint = bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-        }
-
         NSLayoutConstraint.activate([
             bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            bottomContainerBottonConstraint!
+            bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
             ])
         if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
             NSLayoutConstraint.activate([
@@ -457,6 +431,21 @@ open class CameraViewController: UIViewController {
 
 	// MARK: Device Configuration
 
+    private var previewViewOffset: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+            return 0
+        } else {
+            if DeviceType.IS_IPHONE_X_MAX {
+                return 50
+            } else if DeviceType.IS_IPHONE_X {
+                return 34
+            } else if DeviceType.IS_IPHONE_PLUS {
+                return 50
+            } else {
+                return 42
+            }
+        }
+    }
     lazy private var cameraUnavailableLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0

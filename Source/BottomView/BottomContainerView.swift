@@ -14,18 +14,35 @@ open class BottomContainerView: UIView {
     struct CompactDimensions {
         static let height: CGFloat = 40
     }
+    // Each device is slightly different in size
     var containerHeight: CGFloat {
         if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
             return 120
         } else {
             if DeviceType.IS_IPHONE_X_MAX {
-                return 190
+                return 180
             } else if DeviceType.IS_IPHONE_X {
                 return 140
             } else if DeviceType.IS_IPHONE_PLUS {
-                return 140
-            } else {
                 return 130
+            } else {
+                return 120
+            }
+        }
+    }
+    // Each device is slightly different in size
+    var topOffset: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+            return 0
+        } else {
+            if DeviceType.IS_IPHONE_X_MAX {
+                return 15
+            } else if DeviceType.IS_IPHONE_X {
+                return 5
+            } else if DeviceType.IS_IPHONE_PLUS {
+                return 15
+            } else {
+                return 10
             }
         }
     }
@@ -121,13 +138,6 @@ open class BottomContainerView: UIView {
     // MARK: - private methods
 
     private func setupConstraints() {
-//        var margins: UILayoutGuide!
-//        if #available(iOS 11.0, *) {
-//            margins = self.safeAreaLayoutGuide
-//        } else {
-//            margins = self.layoutMarginsGuide
-//        }
-
         if !configuration.inlineMode {
             if Helper.runningOnIpad {
                 // cameraButton
@@ -180,7 +190,7 @@ open class BottomContainerView: UIView {
                 // photoTitleLabel
                 NSLayoutConstraint.activate([
                     photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-                    photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10)
+                    photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: topOffset)
                     ])
             }
         }

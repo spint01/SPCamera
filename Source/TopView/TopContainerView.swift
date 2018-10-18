@@ -11,11 +11,11 @@ open class TopContainerView: UIView {
             return 0
         } else {
             if DeviceType.IS_IPHONE_X_MAX {
-                return 72
+                return 74
             } else if DeviceType.IS_IPHONE_X {
                 return 34
             } else if DeviceType.IS_IPHONE_PLUS {
-                return 50
+                return 45
             } else {
                 return 42
             }
