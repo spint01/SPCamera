@@ -123,9 +123,13 @@ open class CameraViewController: UIViewController {
 			take a long time. We dispatch session setup to the sessionQueue so
 			that the main queue isn't blocked, which keeps the UI responsive.
 		*/
-		sessionQueue.async {
-			self.configureSession()
-		}
+        #if targetEnvironment(simulator)
+        print("Camera is not available on Simulator")
+        #else
+        sessionQueue.async {
+            self.configureSession()
+        }
+        #endif
 	}
 
 	open override func viewWillAppear(_ animated: Bool) {
@@ -134,6 +138,10 @@ open class CameraViewController: UIViewController {
         statusBarHidden = UIApplication.shared.isStatusBarHidden
 //        UIApplication.shared.isStatusBarHidden = true
 
+        #if targetEnvironment(simulator)
+        cameraUnavailableLabel.isHidden = false
+        cameraUnavailableLabel.text = "Camera is not available on Simulator"
+        #else
         sessionQueue.async {
 			switch self.setupResult {
                 case .success:
@@ -178,6 +186,7 @@ open class CameraViewController: UIViewController {
                     }
 			}
 		}
+        #endif
     }
 
 	open override func viewWillDisappear(_ animated: Bool) {
