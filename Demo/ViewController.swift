@@ -133,7 +133,7 @@ class ViewController: UIViewController {
 
 public extension PHAsset {
 
-    public func requestMetadata(withCompletionBlock completionBlock: @escaping (([String: Any]?) -> Void)) {
+    func requestMetadata(withCompletionBlock completionBlock: @escaping (([String: Any]?) -> Void)) {
         DispatchQueue.global(qos: .default).async(execute: {() -> Void in
             let editOptions = PHContentEditingInputRequestOptions()
             editOptions.isNetworkAccessAllowed = true
