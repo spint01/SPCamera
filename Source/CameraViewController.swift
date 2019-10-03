@@ -15,8 +15,9 @@ let NotificationPhotoLibUnavailable = NSNotification.Name(rawValue: "photoLibUna
 open class CameraViewController: UIViewController {
 
 	// MARK: View Controller Life Cycle
-    var statusBarHidden = true
-    var capturingPhoto = false
+    private lazy var assets = [PHAsset]()
+    private var statusBarHidden = true
+    private var capturingPhoto = false
 
     private var locationManager: LocationManager?
     open var configuration = Configuration()
@@ -647,6 +648,9 @@ open class CameraViewController: UIViewController {
 					}
                     DispatchQueue.main.async {
                         if let asset = asset {
+                            if self.configuration.allowMultiplePhotoCapture {
+                                self.assets.append(asset)
+                            }
                             self.onCapture?(asset)
                         }
                     }
@@ -780,7 +784,7 @@ extension CameraViewController: BottomContainerViewDelegate {
     }
 
     func doneButtonDidPress() {
-        //onFinish?()
+        onFinish?(assets)
     }
 
     func cancelButtonDidPress() {

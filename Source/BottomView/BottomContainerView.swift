@@ -128,10 +128,10 @@ open class BottomContainerView: UIView {
     // MARK: - Action methods
 
     @objc func doneButtonDidPress(_ button: UIButton) {
-        if button.currentTitle == configuration.cancelButtonTitle {
-            delegate?.cancelButtonDidPress()
-        } else {
+        if configuration.allowMultiplePhotoCapture {
             delegate?.doneButtonDidPress()
+        } else {
+            delegate?.cancelButtonDidPress()
         }
     }
 

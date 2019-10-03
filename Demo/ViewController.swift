@@ -40,7 +40,8 @@ class ViewController: UIViewController {
                     print("Captured asset")
                     self.metaData(asset)
                 }, onFinish: { (assets) in
-            })
+                    print(assets)
+                })
 
             if let ctr = cameraViewController {
                 addChild(ctr)
@@ -102,16 +103,21 @@ class ViewController: UIViewController {
     @IBAction func launchTouched(_ sender: UIButton) {
         var config = Configuration()
         config.photoAlbumName = "SPCamera"
+        config.allowMultiplePhotoCapture = true
+//        config.doneButtonTitle = "Done"
+        config.cancelButtonTitle = "Done"
 
         let ctr = CameraViewController(configuration: config,
-        onCancel: {
-            self.dismiss(animated: true, completion: nil)
-        }, onCapture: { (asset) in
-            print("Captured asset")
-            self.metaData(asset)
-        }, onFinish: { assets in
-            print("Finished")
-        })
+            onCancel: {
+                self.dismiss(animated: true, completion: nil)
+            }, onCapture: { (asset) in
+                print("Captured asset")
+                self.metaData(asset)
+            }, onFinish: { assets in
+                print("Finished")
+                self.dismiss(animated: true, completion: nil)
+            }
+        )
         present(ctr, animated: true, completion: nil)
     }
 
@@ -128,7 +134,6 @@ class ViewController: UIViewController {
             }
         })
     }
-
 }
 
 public extension PHAsset {
