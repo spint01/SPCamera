@@ -25,26 +25,26 @@ open class CameraViewController: UIViewController {
     private let onCancel: (() -> Void)?
     private let onCapture: ((PHAsset) -> Void)?
     private let onFinish: (([PHAsset]) -> Void)?
+    private let onPreview: (([PHAsset]) -> Void)?
     // MARK: - Initialization
 
     public init(configuration: Configuration? = nil,
                 onCancel: @escaping () -> Void,
                 onCapture: @escaping (PHAsset) -> Void,
-                onFinish: @escaping ([PHAsset]) -> Void) {
+                onFinish: @escaping ([PHAsset]) -> Void,
+                onPreview: @escaping ([PHAsset]) -> Void) {
         if let configuration = configuration {
             self.configuration = configuration
         }
         self.onCancel = onCancel
         self.onCapture = onCapture
         self.onFinish = onFinish
+        self.onPreview = onPreview
         super.init(nibName: nil, bundle: nil)
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        self.onCancel = nil
-        self.onCapture = nil
-        self.onFinish = nil
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     open override func viewDidLoad() {
@@ -650,6 +650,7 @@ open class CameraViewController: UIViewController {
                         if let asset = asset {
                             if self.configuration.allowMultiplePhotoCapture {
                                 self.assets.append(asset)
+                                self.bottomContainer.previewTitle("\(self.assets.count)")
                             }
                             self.onCapture?(asset)
                         }
@@ -789,6 +790,10 @@ extension CameraViewController: BottomContainerViewDelegate {
 
     func cancelButtonDidPress() {
         onCancel?()
+    }
+
+    func previewButtonDidPress() {
+        onPreview?(assets)
     }
 }
 

@@ -41,6 +41,8 @@ class ViewController: UIViewController {
                     self.metaData(asset)
                 }, onFinish: { (assets) in
                     print(assets)
+                }, onPreview: { (assets) in
+                    print("Preview")
                 })
 
             if let ctr = cameraViewController {
@@ -116,6 +118,9 @@ class ViewController: UIViewController {
             }, onFinish: { assets in
                 print("Finished")
                 self.dismiss(animated: true, completion: nil)
+            }, onPreview: { (assets) in
+                print("Preview")
+                print(assets)
             }
         )
         present(ctr, animated: true, completion: nil)

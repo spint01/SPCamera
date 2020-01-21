@@ -6,6 +6,7 @@ protocol BottomContainerViewDelegate: class {
     func cameraButtonDidPress()
     func doneButtonDidPress()
     func cancelButtonDidPress()
+    func previewButtonDidPress()
 }
 
 @objcMembers
@@ -51,7 +52,7 @@ open class BottomContainerView: UIView {
 
     lazy var cameraButton: CameraButton = { [unowned self] in
         let button = CameraButton(configuration: self.configuration)
-        button.setTitleColor(UIColor.white, for: UIControl.State())
+        button.setTitleColor(UIColor.white, for: .normal)
         button.delegate = self
 
         return button
@@ -66,9 +67,9 @@ open class BottomContainerView: UIView {
 
         return view
     }()
-    open lazy var doneButton: UIButton = { [unowned self] in
+    lazy var doneButton: UIButton = { [unowned self] in
         let button = UIButton()
-        button.setTitle(self.configuration.cancelButtonTitle, for: UIControl.State())
+        button.setTitle(self.configuration.cancelButtonTitle, for: .normal)
         button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
 
         return button
@@ -81,6 +82,15 @@ open class BottomContainerView: UIView {
         label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
 
         return label
+    }()
+    lazy var previewButton: UIButton = { [unowned self] in
+        let button = UIButton()
+        button.addTarget(self, action: #selector(previewButtonDidPress(_:)), for: .touchUpInside)
+        button.layer.cornerRadius = 10
+
+//        button.layer.borderColor = UIColor.red.cgColor
+//        button.layer.borderWidth = 1.0
+        return button
     }()
 
 //    lazy var topSeparator: UIView = { [unowned self] in
@@ -106,12 +116,25 @@ open class BottomContainerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure() {
+    func previewTitle(_ title: String) {
+        if title.count > 0 {
+            let attribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 22),
+                              NSAttributedString.Key.foregroundColor: UIColor.white ]
+            previewButton.setAttributedTitle(NSAttributedString(string: title, attributes: attribute), for: .normal)
+            previewButton.layer.borderColor = UIColor.white.cgColor
+            previewButton.layer.borderWidth = 1.0
+        } else {
+            previewButton.setTitle("", for: .normal)
+            previewButton.layer.borderWidth = 0.0
+        }
+    }
+
+    private func configure() {
         var views: [UIView]
         if configuration.inlineMode {
             views = [borderCameraButton, cameraButton]
         } else {
-            views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel]
+            views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel, previewButton]
         }
         views.forEach {
             addSubview($0)
@@ -135,6 +158,10 @@ open class BottomContainerView: UIView {
         }
     }
 
+    @objc func previewButtonDidPress(_ button: UIButton) {
+        delegate?.previewButtonDidPress()
+    }
+
     // MARK: - private methods
 
     private func setupConstraints() {
@@ -142,8 +169,8 @@ open class BottomContainerView: UIView {
             if Helper.runningOnIpad {
                 // cameraButton
                 NSLayoutConstraint.activate([
-                    cameraButton.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
-                    cameraButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: configuration.inlineMode ? 0 : 14),
+                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
+                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: configuration.inlineMode ? 0 : 14),
                     cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
                     cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
                     //            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.inlineMode ? -20 : -20)
@@ -158,7 +185,14 @@ open class BottomContainerView: UIView {
                 // doneButton
                 NSLayoutConstraint.activate([
                     doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-                    doneButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 20)
+                    doneButton.topAnchor.constraint(equalTo: topAnchor, constant: 20)
+                    ])
+                // previewButton
+                NSLayoutConstraint.activate([
+                    previewButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                    previewButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+                    previewButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
+                    previewButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
                     ])
                 // photoTitleLabel
                 photoTitleLabel.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
@@ -169,7 +203,7 @@ open class BottomContainerView: UIView {
             } else {
                 // cameraButton
                 NSLayoutConstraint.activate([
-                    cameraButton.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
+                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
                     cameraButton.topAnchor.constraint(equalTo: photoTitleLabel.bottomAnchor, constant: 20),
                     cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
                     cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
@@ -185,12 +219,19 @@ open class BottomContainerView: UIView {
                 // doneButton
                 NSLayoutConstraint.activate([
                     doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                    doneButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20)
+                    doneButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
+                    ])
+                // previewButton
+                NSLayoutConstraint.activate([
+                    previewButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                    previewButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+                    previewButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
+                    previewButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
                     ])
                 // photoTitleLabel
                 NSLayoutConstraint.activate([
-                    photoTitleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-                    photoTitleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: topOffset)
+                    photoTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+                    photoTitleLabel.topAnchor.constraint(equalTo: topAnchor, constant: topOffset)
                     ])
             }
         }
