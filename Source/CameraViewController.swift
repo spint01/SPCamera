@@ -513,8 +513,9 @@ open class CameraViewController: UIViewController {
 
     // MARK: pinch to zoom
 
-    var pivotPinchScale: CGFloat = 1.0
-    var maxZoomFactor: CGFloat = 3.5
+    var pivotPinchScale: CGFloat = 0.5
+    var maxZoomFactor: CGFloat = 5.0
+    var minZoomFactor: CGFloat = 1.0
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
         if !cameraUnavailableLabel.isHidden { return }
@@ -525,7 +526,7 @@ open class CameraViewController: UIViewController {
         //        print("pivotPinchScale: \(pivotPinchScale) maxZoom: \(cameraMan.maxZoomFactor())")
         case .changed:
             let newValue: CGFloat = pivotPinchScale * gesture.scale
-            let factor = newValue < 1 ? 1 : newValue > maxZoomFactor ? maxZoomFactor : newValue
+            let factor = newValue < minZoomFactor ? minZoomFactor : newValue > maxZoomFactor ? maxZoomFactor : newValue
 
             if factor != zoomFactor() {
                 // print("pinchGesture: \(gesture.scale) new: \(factor)")
@@ -546,7 +547,7 @@ open class CameraViewController: UIViewController {
             do {
                 try device.lockForConfiguration()
                 var factor = zoom
-                factor = max(1, min(factor, device.activeFormat.videoMaxZoomFactor))
+                factor = max(self.minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
                 device.videoZoomFactor = factor
             } catch {
                 print("Could not lock device for configuration: \(error)")
