@@ -43,7 +43,7 @@ class ViewController: UIViewController {
                     print(assets)
                 }, onPreview: { (assets) in
                     print("Preview")
-                })
+            })
 
             if let ctr = cameraViewController {
                 addChild(ctr)
@@ -123,6 +123,7 @@ class ViewController: UIViewController {
                 print(assets)
             }
         )
+        ctr.modalPresentationStyle = .fullScreen
         present(ctr, animated: true, completion: nil)
     }
 
