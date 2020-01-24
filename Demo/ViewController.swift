@@ -102,12 +102,20 @@ class ViewController: UIViewController {
 //        }
 //    }
 
-    @IBAction func launchTouched(_ sender: UIButton) {
+    @IBAction func singlePhotoTouched(_ sender: UIButton) {
+        launchSPCamera(false)
+    }
+
+    @IBAction func multiplePhotoTouched(_ sender: UIButton) {
+        launchSPCamera(true)
+    }
+
+    func launchSPCamera(_ allowMultiplePhotoCapture: Bool) {
         var config = Configuration()
         config.photoAlbumName = "SPCamera"
-        config.allowMultiplePhotoCapture = true
-//        config.doneButtonTitle = "Done"
-        config.cancelButtonTitle = "Done"
+        config.allowMultiplePhotoCapture = allowMultiplePhotoCapture
+        config.doneButtonTitle = "Done"
+        config.cancelButtonTitle = "Cancel"
 
         let ctr = CameraViewController(configuration: config,
             onCancel: {
@@ -115,6 +123,9 @@ class ViewController: UIViewController {
             }, onCapture: { (asset) in
                 print("Captured asset")
                 self.metaData(asset)
+                if !allowMultiplePhotoCapture {
+                    self.dismiss(animated: true, completion: nil)
+                }
             }, onFinish: { assets in
                 print("Finished")
                 self.dismiss(animated: true, completion: nil)

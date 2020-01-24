@@ -23,21 +23,31 @@
                                     <constraint firstAttribute="height" constant="200" id="3Og-NH-Ah2"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r4y-2F-QmU">
-                                <rect key="frame" x="106.5" y="144" width="162" height="36"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1cu-8a-ZkN">
+                                <rect key="frame" x="120" y="200" width="135" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Launch SPCamera"/>
+                                <state key="normal" title="Multiple Photos"/>
                                 <connections>
-                                    <action selector="launchTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dU8-fZ-n0m"/>
+                                    <action selector="multiplePhotoTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1FF-ND-JqQ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r4y-2F-QmU">
+                                <rect key="frame" x="133" y="144" width="109" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Single photo"/>
+                                <connections>
+                                    <action selector="singlePhotoTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MkA-hp-Vca"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="r4y-2F-QmU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="1bP-8Q-eKY"/>
+                            <constraint firstItem="1cu-8a-ZkN" firstAttribute="top" secondItem="r4y-2F-QmU" secondAttribute="bottom" constant="20" id="9Av-yo-Ez1"/>
                             <constraint firstItem="zT9-t2-600" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Db6-L2-0ZC"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zT9-t2-600" secondAttribute="trailing" id="DxC-7D-2hS"/>
                             <constraint firstItem="r4y-2F-QmU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="TAh-I2-Ecg"/>
+                            <constraint firstItem="1cu-8a-ZkN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="VOW-Vx-lPD"/>
                             <constraint firstItem="zT9-t2-600" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="kYL-a6-rTH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
