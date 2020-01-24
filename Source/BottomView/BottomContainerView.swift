@@ -175,7 +175,7 @@ open class BottomContainerView: UIView {
                 // cameraButton
                 NSLayoutConstraint.activate([
                     cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 15),
-                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 14),
+                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
                     cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
                     cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
