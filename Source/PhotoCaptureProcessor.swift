@@ -115,9 +115,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     let options = PHAssetResourceCreationOptions()
                     let creationRequest = PHAssetCreationRequest.forAsset()
 
-                    if #available(iOS 11.0, *) {
-                        options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
-                    }
+                    options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
                     creationRequest.addResource(with: .photo, data: photoData, options: options)
                     creationRequest.creationDate = Date()
                     creationRequest.location = self.latestLocation

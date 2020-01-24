@@ -250,12 +250,8 @@ open class CameraViewController: UIViewController {
     }
 
     private func setupConstraints() {
-        var margins: UILayoutGuide!
-        if #available(iOS 11.0, *) {
-            margins = view.safeAreaLayoutGuide
-        } else {
-            margins = view.layoutMarginsGuide
-        }
+        let margins = view.safeAreaLayoutGuide
+
 //        previewView.layer.borderColor = UIColor.green.cgColor
 //        previewView.layer.borderWidth = 1.0
 
@@ -679,11 +675,10 @@ open class CameraViewController: UIViewController {
 
             let photoSettings = AVCapturePhotoSettings()
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
-//            if #available(iOS 11.0, *) {
 //                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
 //                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
 //                }
-//            }
+
 
             if self.videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
