@@ -262,13 +262,13 @@ open class CameraViewController: UIViewController {
 //        previewView.layer.borderWidth = 1.0
 
         NSLayoutConstraint.activate([
-            previewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-            previewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            previewView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            previewView.topAnchor.constraint(equalTo: view.topAnchor),
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             // NOTE: doing this causes the bluetooth picker to display in the upper left corner
-//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor, constant: 0),
-//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: 0)
+//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
+//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
             ])
 
         // cameraUnavailableLabel
@@ -287,41 +287,39 @@ open class CameraViewController: UIViewController {
         if configuration.inlineMode {
             // bottomContainer
             NSLayoutConstraint.activate([
-                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
-                ])
-            NSLayoutConstraint.activate([
-                bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
+                bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
                 bottomContainer.heightAnchor.constraint(equalToConstant: BottomContainerView.CompactDimensions.height)
                 ])
         } else {
             // bottomContainer
-            NSLayoutConstraint.activate([
-                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
-                ])
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if Helper.runningOnIpad{
                 NSLayoutConstraint.activate([
+                    bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
                     bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                    bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
                     bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
                     ])
             } else {
                 NSLayoutConstraint.activate([
-                    bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                    bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+                    bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                    bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
                     bottomContainer.heightAnchor.constraint(equalToConstant: bottomContainer.containerHeight)
                     ])
 
                 // topContainer
                 NSLayoutConstraint.activate([
-                    topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
-                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                    topContainer.topAnchor.constraint(equalTo: margins.topAnchor),
+                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
                     topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
                     ])
 
                 // zoom button
                 NSLayoutConstraint.activate([
-                    zoomButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
+                    zoomButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                     zoomButton.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: -20),
                     zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
                     zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
@@ -457,7 +455,7 @@ open class CameraViewController: UIViewController {
 	// MARK: Device Configuration
 
     private var previewViewOffset: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+        if Helper.runningOnIpad || configuration.inlineMode {
             return 0
         } else {
             if DeviceType.IS_IPHONE_X_MAX {
@@ -622,6 +620,8 @@ open class CameraViewController: UIViewController {
         let view = BottomContainerView(configuration: self.configuration)
         view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
         view.delegate = self
+//        view.layer.borderColor = UIColor.green.cgColor
+//        view.layer.borderWidth = 1.0
 
         return view
         }()

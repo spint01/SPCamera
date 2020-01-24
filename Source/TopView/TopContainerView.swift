@@ -7,7 +7,7 @@ open class TopContainerView: UIView {
         static let height: CGFloat = 0
     }
     var containerHeight: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+        if Helper.runningOnIpad || configuration.inlineMode {
             return 0
         } else {
             if DeviceType.IS_IPHONE_X_MAX {

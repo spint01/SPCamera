@@ -17,8 +17,10 @@ open class BottomContainerView: UIView {
     }
     // Each device is slightly different in size
     var containerHeight: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+        if configuration.inlineMode {
             return 120
+        } else if Helper.runningOnIpad{
+            return 100
         } else {
             if DeviceType.IS_IPHONE_X_MAX {
                 return 180
@@ -33,7 +35,7 @@ open class BottomContainerView: UIView {
     }
     // Each device is slightly different in size
     var topOffset: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad || configuration.inlineMode {
+        if Helper.runningOnIpad || configuration.inlineMode {
             return 0
         } else {
             if DeviceType.IS_IPHONE_X_MAX {
@@ -139,7 +141,11 @@ open class BottomContainerView: UIView {
         if configuration.inlineMode {
             views = [borderCameraButton, cameraButton]
         } else {
-            views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel, previewButton]
+            if Helper.runningOnIpad{
+                views = [borderCameraButton, cameraButton, doneButton, previewButton]
+            } else {
+                views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel, previewButton]
+            }
         }
         views.forEach {
             addSubview($0)
@@ -174,8 +180,8 @@ open class BottomContainerView: UIView {
             if Helper.runningOnIpad {
                 // cameraButton
                 NSLayoutConstraint.activate([
-                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 15),
-                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor),
                     cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
                     cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
@@ -188,7 +194,7 @@ open class BottomContainerView: UIView {
                     ])
                 // doneButton
                 NSLayoutConstraint.activate([
-                    doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor, constant: -10),
+                    doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
                     doneButton.topAnchor.constraint(equalTo: topAnchor, constant: 20)
                     ])
                 // previewButton
@@ -197,12 +203,6 @@ open class BottomContainerView: UIView {
                     previewButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
                     previewButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
                     previewButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
-                    ])
-                // photoTitleLabel
-                photoTitleLabel.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
-                NSLayoutConstraint.activate([
-                    photoTitleLabel.rightAnchor.constraint(equalTo: borderCameraButton.leftAnchor, constant: 5),
-                    photoTitleLabel.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor)
                     ])
             } else {
                 // iPhone
