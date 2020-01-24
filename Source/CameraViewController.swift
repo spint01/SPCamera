@@ -61,9 +61,15 @@ open class CameraViewController: UIViewController {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer, zoomButton].forEach {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer].forEach {
                 view.addSubview($0)
                 $0.translatesAutoresizingMaskIntoConstraints = false
+            }
+            if UIDevice.current.userInterfaceIdiom != .pad {
+                [topContainer, zoomButton].forEach {
+                    view.addSubview($0)
+                    $0.translatesAutoresizingMaskIntoConstraints = false
+                }
             }
             view.addSubview(volumeView)
             view.sendSubviewToBack(volumeView)
@@ -289,22 +295,6 @@ open class CameraViewController: UIViewController {
                 bottomContainer.heightAnchor.constraint(equalToConstant: BottomContainerView.CompactDimensions.height)
                 ])
         } else {
-            // topContainer
-            NSLayoutConstraint.activate([
-                topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
-                topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                ])
-            if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
-                NSLayoutConstraint.activate([
-                    topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                    topContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
-                    ])
-            } else {
-                NSLayoutConstraint.activate([
-                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-                    topContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? TopContainerView.CompactDimensions.height : topContainer.containerHeight)
-                    ])
-            }
             // bottomContainer
             NSLayoutConstraint.activate([
                 bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
@@ -320,19 +310,16 @@ open class CameraViewController: UIViewController {
                     bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
                     bottomContainer.heightAnchor.constraint(equalToConstant: bottomContainer.containerHeight)
                     ])
-            }
 
-            // zoom button
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                // Do not display zoom button on iPad
-                zoomButton.isHidden = true
-//                NSLayoutConstraint.activate([
-//                    zoomButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 16),
-//                    zoomButton.rightAnchor.constraint(equalTo: bottomContainer.leftAnchor, constant: -20),
-//                    zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
-//                    zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
-//                    ])
-            } else {
+                // topContainer
+                NSLayoutConstraint.activate([
+                    topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
+                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                    topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
+                    ])
+
+                // zoom button
                 NSLayoutConstraint.activate([
                     zoomButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
                     zoomButton.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: -20),
@@ -625,6 +612,8 @@ open class CameraViewController: UIViewController {
     open lazy var topContainer: TopContainerView = { [unowned self] in
         let view = TopContainerView(configuration: self.configuration)
         view.backgroundColor = Helper.runningOnIpad ? self.configuration.topContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+//        view.layer.borderColor = UIColor.green.cgColor
+//        view.layer.borderWidth = 1.0
 
         return view
         }()
