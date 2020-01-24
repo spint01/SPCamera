@@ -69,8 +69,13 @@ open class BottomContainerView: UIView {
     }()
     lazy var doneButton: UIButton = { [unowned self] in
         let button = UIButton()
-        button.setTitle(self.configuration.cancelButtonTitle, for: .normal)
-        button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
+        if  self.configuration.allowMultiplePhotoCapture {
+            button.setTitle(self.configuration.doneButtonTitle, for: .normal)
+            button.addTarget(self, action: #selector(doneButtonDidPress(_:)), for: .touchUpInside)
+        } else {
+            button.setTitle(self.configuration.cancelButtonTitle, for: .normal)
+            button.addTarget(self, action: #selector(cancelButtonDidPress(_:)), for: .touchUpInside)
+        }
 
         return button
     }()
@@ -151,11 +156,11 @@ open class BottomContainerView: UIView {
     // MARK: - Action methods
 
     @objc func doneButtonDidPress(_ button: UIButton) {
-        if configuration.allowMultiplePhotoCapture {
-            delegate?.doneButtonDidPress()
-        } else {
-            delegate?.cancelButtonDidPress()
-        }
+        delegate?.doneButtonDidPress()
+    }
+
+    @objc func cancelButtonDidPress(_ button: UIButton) {
+        delegate?.cancelButtonDidPress()
     }
 
     @objc func previewButtonDidPress(_ button: UIButton) {
