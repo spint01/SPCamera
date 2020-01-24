@@ -174,30 +174,29 @@ open class BottomContainerView: UIView {
             if Helper.runningOnIpad {
                 // cameraButton
                 NSLayoutConstraint.activate([
-                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
-                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: configuration.inlineMode ? 0 : 14),
-                    cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-                    cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
-                    //            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.inlineMode ? -20 : -20)
+                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 15),
+                    cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 14),
+                    cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                    cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
                 // borderCameraButton
                 NSLayoutConstraint.activate([
                     borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
                     borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                    borderCameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize),
-                    borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
+                    borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
+                    borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
                     ])
                 // doneButton
                 NSLayoutConstraint.activate([
-                    doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                    doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor, constant: -10),
                     doneButton.topAnchor.constraint(equalTo: topAnchor, constant: 20)
                     ])
                 // previewButton
                 NSLayoutConstraint.activate([
                     previewButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
                     previewButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
-                    previewButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-                    previewButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
+                    previewButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                    previewButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
                 // photoTitleLabel
                 photoTitleLabel.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
@@ -206,20 +205,20 @@ open class BottomContainerView: UIView {
                     photoTitleLabel.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor)
                     ])
             } else {
+                // iPhone
                 // cameraButton
                 NSLayoutConstraint.activate([
-                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: Helper.runningOnIpad && !configuration.inlineMode ? 15 : 0),
+                    cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor),
                     cameraButton.topAnchor.constraint(equalTo: photoTitleLabel.bottomAnchor, constant: 20),
-                    cameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-                    cameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
-                    //            cameraButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: configuration.inlineMode ? -20 : -20)
+                    cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                    cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
                 // borderCameraButton
                 NSLayoutConstraint.activate([
                     borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
                     borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-                    borderCameraButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize),
-                    borderCameraButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize)
+                    borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
+                    borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
                     ])
                 // doneButton
                 NSLayoutConstraint.activate([
@@ -230,8 +229,8 @@ open class BottomContainerView: UIView {
                 NSLayoutConstraint.activate([
                     previewButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
                     previewButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-                    previewButton.widthAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize),
-                    previewButton.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? CameraButton.CompactDimensions.buttonSize : CameraButton.Dimensions.buttonSize)
+                    previewButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                    previewButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
                     ])
                 // photoTitleLabel
                 NSLayoutConstraint.activate([
@@ -239,6 +238,21 @@ open class BottomContainerView: UIView {
                     photoTitleLabel.topAnchor.constraint(equalTo: topAnchor, constant: topOffset)
                     ])
             }
+        } else {
+            // cameraButton
+            NSLayoutConstraint.activate([
+                cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+                cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+                cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.CompactDimensions.buttonSize),
+                cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.CompactDimensions.buttonSize)
+                ])
+            // borderCameraButton
+            NSLayoutConstraint.activate([
+                borderCameraButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+                borderCameraButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+                borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.CompactDimensions.buttonBorderSize),
+                borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.CompactDimensions.buttonBorderSize)
+                ])
         }
     }
 }
