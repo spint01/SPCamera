@@ -53,20 +53,20 @@ open class CameraViewController: UIViewController {
         view.backgroundColor = configuration.bottomContainerColor
 
         // recreate storyboard
-        [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer].forEach {
-            view.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-
-        if !configuration.inlineMode {
-            view.addSubview(volumeView)
-            view.sendSubviewToBack(volumeView)
-        }
-
         if configuration.inlineMode {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer].forEach {
+                view.addSubview($0)
+                $0.translatesAutoresizingMaskIntoConstraints = false
+            }
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer, zoomButton].forEach {
+                view.addSubview($0)
+                $0.translatesAutoresizingMaskIntoConstraints = false
+            }
+            view.addSubview(volumeView)
+            view.sendSubviewToBack(volumeView)
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
             previewView.addGestureRecognizer(tapGesture)
         }
@@ -75,6 +75,8 @@ open class CameraViewController: UIViewController {
         previewView.addGestureRecognizer(pinchGesture)
 
         setupConstraints()
+
+        updateZoomButtonTitle(minZoomFactor)
 
         // Disable UI. The UI is enabled if and only if the session starts running.
 		bottomContainer.cameraButton.isEnabled = false
@@ -280,38 +282,68 @@ open class CameraViewController: UIViewController {
             photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
 
-        // topContainer
-        NSLayoutConstraint.activate([
-            topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
-            topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            ])
-        if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
+        if configuration.inlineMode {
+            // bottomContainer
             NSLayoutConstraint.activate([
-                topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                topContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
                 ])
-        } else {
-            NSLayoutConstraint.activate([
-                topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-                topContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? TopContainerView.CompactDimensions.height : topContainer.containerHeight)
-                ])
-        }
-
-        // bottomContainer
-        NSLayoutConstraint.activate([
-            bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
-            ])
-        if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
-            NSLayoutConstraint.activate([
-                bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
-                ])
-        } else {
             NSLayoutConstraint.activate([
                 bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-                bottomContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? BottomContainerView.CompactDimensions.height : bottomContainer.containerHeight)
+                bottomContainer.heightAnchor.constraint(equalToConstant: BottomContainerView.CompactDimensions.height)
                 ])
+        } else {
+            // topContainer
+            NSLayoutConstraint.activate([
+                topContainer.topAnchor.constraint(equalTo: margins.topAnchor, constant: 0),
+                topContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+                ])
+            if UIDevice.current.userInterfaceIdiom == .pad && !configuration.inlineMode {
+                NSLayoutConstraint.activate([
+                    topContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                    topContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                    ])
+            } else {
+                NSLayoutConstraint.activate([
+                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                    topContainer.heightAnchor.constraint(equalToConstant: configuration.inlineMode ? TopContainerView.CompactDimensions.height : topContainer.containerHeight)
+                    ])
+            }
+            // bottomContainer
+            NSLayoutConstraint.activate([
+                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: 0)
+                ])
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                NSLayoutConstraint.activate([
+                    bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+                    bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                    ])
+            } else {
+                NSLayoutConstraint.activate([
+                    bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+                    bottomContainer.heightAnchor.constraint(equalToConstant: bottomContainer.containerHeight)
+                    ])
+            }
+
+            // zoom button
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // Do not display zoom button on iPad
+                zoomButton.isHidden = true
+//                NSLayoutConstraint.activate([
+//                    zoomButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 16),
+//                    zoomButton.rightAnchor.constraint(equalTo: bottomContainer.leftAnchor, constant: -20),
+//                    zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
+//                    zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
+//                    ])
+            } else {
+                NSLayoutConstraint.activate([
+                    zoomButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
+                    zoomButton.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: -20),
+                    zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
+                    zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
+                    ])
+            }
         }
     }
 
@@ -475,6 +507,33 @@ open class CameraViewController: UIViewController {
 
         return label
     }()
+    enum Constant {
+        static let zoomButtonSize: CGFloat = 42
+    }
+
+    lazy var zoomButton: UIButton = { [unowned self] in
+        let button = UIButton()
+        button.addTarget(self, action: #selector(zoomButtonDidPress(_:)), for: .touchUpInside)
+        button.backgroundColor = self.configuration.bottomContainerColor.withAlphaComponent(0.40)
+        button.layer.cornerRadius = Constant.zoomButtonSize / 2
+
+        return button
+    }()
+
+    private func updateZoomButtonTitle(_ zoom: CGFloat) {
+        var factorStr = String(format: "%.1f", zoom)
+        if factorStr.hasSuffix(".0") {
+            // don't show trailing .0
+            factorStr = String(factorStr.dropLast(2))
+        }
+        let attribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .medium),
+                          NSAttributedString.Key.foregroundColor: UIColor.white ]
+        zoomButton.setAttributedTitle(NSAttributedString(string: "\(factorStr)x", attributes: attribute), for: .normal)
+    }
+
+    @objc private func zoomButtonDidPress(_ button: UIButton) {
+        zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
+    }
 
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         if !cameraUnavailableLabel.isHidden { return }
@@ -529,7 +588,7 @@ open class CameraViewController: UIViewController {
             let factor = newValue < minZoomFactor ? minZoomFactor : newValue > maxZoomFactor ? maxZoomFactor : newValue
 
             if factor != zoomFactor() {
-                // print("pinchGesture: \(gesture.scale) new: \(factor)")
+                print("pinchGesture: \(gesture.scale) new: \(factor)")
                 zoomFactor(factor)
                 // NotificationCenter.default.post(name: Notification.Name(rawValue: ZoomView.Notifications.zoomValueChanged), object: self, userInfo: ["newValue": newValue])
             }
@@ -542,12 +601,13 @@ open class CameraViewController: UIViewController {
 
     func zoomFactor(_ zoom: CGFloat) {
         let device = videoDeviceInput.device
+        var factor = zoom
+        factor = max(self.minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
+        updateZoomButtonTitle(factor)
 
         sessionQueue.async {
             do {
                 try device.lockForConfiguration()
-                var factor = zoom
-                factor = max(self.minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
                 device.videoZoomFactor = factor
             } catch {
                 print("Could not lock device for configuration: \(error)")
