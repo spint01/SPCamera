@@ -46,6 +46,12 @@ class CameraButton: UIButton {
 
     // MARK: - Configuration
 
+    override var isEnabled: Bool {
+        didSet {
+            backgroundColor = isEnabled ? .white : .lightGray
+        }
+    }
+
     func setupButton() {
         backgroundColor = UIColor.white
         layer.cornerRadius = configuration.inlineMode ? CompactDimensions.buttonSize / 2 : Dimensions.buttonSize / 2

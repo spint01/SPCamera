@@ -160,7 +160,7 @@ open class CameraViewController: UIViewController {
                     self.isSessionRunning = self.session.isRunning
 
                     DispatchQueue.main.async {
-                        self.cameraUnavailableLabel.isHidden = true
+                        self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
                         self.locationManager = LocationManager()
                     }
@@ -725,6 +725,14 @@ open class CameraViewController: UIViewController {
 			DispatchQueue.main.async {
 				// Only enable the ability to change camera if the device has more than one camera.
 				self.bottomContainer.cameraButton.isEnabled = isSessionRunning
+
+                if isSessionRunning {
+                    self.cameraUnavailableLabel.isHidden = true
+                } else {
+                    self.cameraUnavailableLabel.isHidden = false
+                    self.cameraUnavailableLabel.text = "Camera is not available in split window view"
+                }
+
 			}
 		}
 		keyValueObservations.append(keyValueObservation)
