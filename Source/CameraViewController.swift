@@ -273,14 +273,14 @@ open class CameraViewController: UIViewController {
 
         // cameraUnavailableLabel
         NSLayoutConstraint.activate([
-            cameraUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
-            cameraUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
+            cameraUnavailableLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
+            cameraUnavailableLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
             ])
         // photoLibUnavailableLabel
         NSLayoutConstraint.activate([
             photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
-            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor),
+            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
             photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
 
@@ -340,7 +340,7 @@ open class CameraViewController: UIViewController {
 	private var isSessionRunning = false
 	private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
 	private var setupResult: SessionSetupResult = .success
-	var videoDeviceInput: AVCaptureDeviceInput!
+	private var videoDeviceInput: AVCaptureDeviceInput!
     lazy private var previewView: PreviewView = {
         let view = PreviewView()
         view.backgroundColor = configuration.bottomContainerColor
@@ -506,11 +506,12 @@ open class CameraViewController: UIViewController {
     }
 
     @objc private func zoomButtonDidPress(_ button: UIButton) {
+        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
         zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
     }
 
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden { return }
+        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
 
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
         focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
@@ -551,7 +552,7 @@ open class CameraViewController: UIViewController {
     var minZoomFactor: CGFloat = 1.0
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden { return }
+        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
 
         switch gesture.state {
         case .began:
@@ -725,7 +726,7 @@ open class CameraViewController: UIViewController {
                     self.cameraUnavailableLabel.isHidden = false
                     self.cameraUnavailableLabel.text = "Camera is not available in split window view"
                 }
-
+                self.cameraUnavailableLabel.setNeedsLayout()
 			}
 		}
 		keyValueObservations.append(keyValueObservation)
