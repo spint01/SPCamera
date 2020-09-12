@@ -162,7 +162,12 @@ open class CameraViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
-                        self.locationManager = LocationManager()
+                        let locationManager = LocationManager()
+                        if locationManager.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
+                            self.showPreciseLocationUnavailableMessage()
+                            print("Need to display a button to enable accuracy - see maps app")
+                        }
+                        self.locationManager = locationManager
                     }
 
                 case .notAuthorized:
@@ -506,18 +511,19 @@ open class CameraViewController: UIViewController {
     }
 
     @objc private func zoomButtonDidPress(_ button: UIButton) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
         zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
     }
 
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
 
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
         focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
     }
 
     private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+        guard videoDeviceInput != nil else { return }
         sessionQueue.async {
             let device = self.videoDeviceInput.device
             do {
@@ -552,7 +558,7 @@ open class CameraViewController: UIViewController {
     var minZoomFactor: CGFloat = 1.0
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
 
         switch gesture.state {
         case .began:
@@ -818,6 +824,16 @@ open class CameraViewController: UIViewController {
                                                         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
             }))
 
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    private func showPreciseLocationUnavailableMessage() {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: self.configuration.locationPrecisePermissionTitle, message: self.configuration.locationPrecisePermissionMessage, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
+                                                    style: .cancel,
+                                                    handler: nil))
             self.present(alertController, animated: true, completion: nil)
         }
     }

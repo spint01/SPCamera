@@ -3,10 +3,18 @@ import CoreLocation
 import AVFoundation
 import UIKit
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+final class LocationManager: NSObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     var latestLocation: CLLocation?
     var latestHeading: CLHeading?
+
+    var accuracyAuthorization: CLAccuracyAuthorization {
+        if #available(iOS 14.0, *) {
+            return locationManager.accuracyAuthorization
+        } else {
+            return CLAccuracyAuthorization.fullAccuracy
+        }
+    }
 
     override init() {
         super.init()
@@ -25,6 +33,16 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.stopUpdatingHeading()
     }
 
+    func authorizeAccuracy(purposeKey: String, authorizationStatus: @escaping (CLAccuracyAuthorization) -> Void) {
+        if #available(iOS 14.0, *) {
+            locationManager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey) { (error) in
+                authorizationStatus(self.locationManager.accuracyAuthorization)
+            }
+        } else {
+            authorizationStatus(.fullAccuracy)
+        }
+    }
+
     // MARK: - CLLocationManagerDelegate
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -34,7 +52,19 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways || status == .authorizedWhenInUse {
-            startUpdatingLocation()
+            if #available(iOS 14.0, *) {
+                if locationManager.accuracyAuthorization == .fullAccuracy {
+                    startUpdatingLocation()
+                } else {
+                    authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
+                        if accuracy == .fullAccuracy {
+                            self.startUpdatingLocation()
+                        }
+                    })
+                }
+            } else {
+                startUpdatingLocation()
+            }
         } else {
             stopUpdatingLocation()
         }

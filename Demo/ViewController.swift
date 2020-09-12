@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     var viewWidthConstraint: NSLayoutConstraint!
     @IBOutlet var containerHeightConstraint: NSLayoutConstraint!
 
-    let inlineDemo = true
+    let inlineDemo = false
     let containerPortraitHeight: CGFloat = 250
     let containerLandscapeHeight: CGFloat = 200
 
