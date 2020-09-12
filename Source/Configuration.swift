@@ -35,7 +35,6 @@ public struct Configuration {
     public var locationPrecisePermissionTitle = "Precise Location"
     public var locationPrecisePermissionMessage = "No location or direction will be included with your photo"
 
-
     // MARK: Custom behaviour
 
 //    public var recordLocation = true

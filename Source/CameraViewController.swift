@@ -61,12 +61,12 @@ open class CameraViewController: UIViewController {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer].forEach {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer, topContainer].forEach {
                 view.addSubview($0)
                 $0.translatesAutoresizingMaskIntoConstraints = false
             }
-            if UIDevice.current.userInterfaceIdiom != .pad {
-                [topContainer, zoomButton].forEach {
+            if !Helper.runningOnIpad {
+                [zoomButton].forEach {
                     view.addSubview($0)
                     $0.translatesAutoresizingMaskIntoConstraints = false
                 }
@@ -163,9 +163,8 @@ open class CameraViewController: UIViewController {
                         self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
                         let locationManager = LocationManager()
-                        if locationManager.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-                            self.showPreciseLocationUnavailableMessage()
-                            print("Need to display a button to enable accuracy - see maps app")
+                        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
+                            self.topContainer.locationAccuracyButton.isHidden = false
                         }
                         self.locationManager = locationManager
                     }
@@ -299,12 +298,19 @@ open class CameraViewController: UIViewController {
                 ])
         } else {
             // bottomContainer
-            if Helper.runningOnIpad{
+            if Helper.runningOnIpad {
                 NSLayoutConstraint.activate([
                     bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
                     bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
                     bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
                     bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                    ])
+                // topContainer
+                NSLayoutConstraint.activate([
+                    topContainer.topAnchor.constraint(equalTo: view.topAnchor),
+                    topContainer.rightAnchor.constraint(equalTo: bottomContainer.leftAnchor),
+                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+                    topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
                     ])
             } else {
                 NSLayoutConstraint.activate([
@@ -609,7 +615,8 @@ open class CameraViewController: UIViewController {
 
     open lazy var topContainer: TopContainerView = { [unowned self] in
         let view = TopContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad ? self.configuration.topContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+        view.backgroundColor = Helper.runningOnIpad || configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+        view.delegate = self
 //        view.layer.borderColor = UIColor.green.cgColor
 //        view.layer.borderWidth = 1.0
 
@@ -858,6 +865,22 @@ extension CameraViewController: BottomContainerViewDelegate {
     func previewButtonDidPress() {
         onPreview?(assets)
     }
+}
+
+extension CameraViewController: TopContainerViewDelegate {
+    func accuracyButtonDidPress() {
+        // TODO: Display dialog tell user why we are asking for precise location
+        locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
+            if accuracy == .fullAccuracy {
+                self.topContainer.locationAccuracyButton.isHidden = true
+            } else {
+                self.topContainer.locationAccuracyButton.backgroundColor = .clear
+                self.topContainer.locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
+                self.showPreciseLocationUnavailableMessage()
+            }
+        })
+    }
+
 }
 
 extension AVCaptureVideoOrientation {

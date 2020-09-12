@@ -4,13 +4,13 @@ import AVFoundation
 import UIKit
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
-    var locationManager = CLLocationManager()
+    var manager = CLLocationManager()
     var latestLocation: CLLocation?
     var latestHeading: CLHeading?
 
     var accuracyAuthorization: CLAccuracyAuthorization {
         if #available(iOS 14.0, *) {
-            return locationManager.accuracyAuthorization
+            return manager.accuracyAuthorization
         } else {
             return CLAccuracyAuthorization.fullAccuracy
         }
@@ -18,25 +18,26 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
 
     override init() {
         super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.requestWhenInUseAuthorization()
     }
 
     func startUpdatingLocation() {
-        locationManager.startUpdatingLocation()
-        locationManager.startUpdatingHeading()
+        manager.startUpdatingLocation()
+        manager.startUpdatingHeading()
     }
 
     func stopUpdatingLocation() {
-        locationManager.stopUpdatingLocation()
-        locationManager.stopUpdatingHeading()
+        manager.stopUpdatingLocation()
+        manager.stopUpdatingHeading()
     }
 
     func authorizeAccuracy(purposeKey: String, authorizationStatus: @escaping (CLAccuracyAuthorization) -> Void) {
         if #available(iOS 14.0, *) {
-            locationManager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey) { (error) in
-                authorizationStatus(self.locationManager.accuracyAuthorization)
+            manager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: purposeKey) { (error) in
+                self.startUpdatingLocation()
+                authorizationStatus(self.manager.accuracyAuthorization)
             }
         } else {
             authorizationStatus(.fullAccuracy)
@@ -53,14 +54,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways || status == .authorizedWhenInUse {
             if #available(iOS 14.0, *) {
-                if locationManager.accuracyAuthorization == .fullAccuracy {
+                if manager.accuracyAuthorization == .fullAccuracy {
                     startUpdatingLocation()
                 } else {
-                    authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
-                        if accuracy == .fullAccuracy {
-                            self.startUpdatingLocation()
-                        }
-                    })
+//                    authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
+//                        if accuracy == .fullAccuracy {
+//                            self.startUpdatingLocation()
+//                        }
+//                    })
                 }
             } else {
                 startUpdatingLocation()
