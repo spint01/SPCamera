@@ -163,10 +163,13 @@ open class CameraViewController: UIViewController {
                         self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
                         let locationManager = LocationManager()
+                        self.locationManager = locationManager
                         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
                             self.topContainer.locationAccuracyButton.isHidden = false
+                            if self.configuration.alwaysAskForPreciseLocation {
+                                self.accuracyButtonDidPress()
+                            }
                         }
-                        self.locationManager = locationManager
                     }
 
                 case .notAuthorized:
@@ -831,7 +834,7 @@ open class CameraViewController: UIViewController {
 
     private func showPreciseLocationUnavailableMessage() {
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: self.configuration.locationPrecisePermissionTitle, message: self.configuration.locationPrecisePermissionMessage, preferredStyle: .alert)
+            let alertController = UIAlertController(title: nil, message: self.configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                     style: .cancel,
                                                     handler: nil))

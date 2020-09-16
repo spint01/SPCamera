@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             var config = Configuration()
             config.photoAlbumName = "SPCamera"
             config.inlineMode = true
-
+            
             cameraViewController = CameraViewController(configuration: config,
                 onCancel: {},
                 onCapture: { (asset) in
@@ -116,6 +116,7 @@ class ViewController: UIViewController {
         config.allowMultiplePhotoCapture = allowMultiplePhotoCapture
         config.doneButtonTitle = "Done"
         config.cancelButtonTitle = "Cancel"
+//        config.alwaysAskForPreciseLocation = false
 
         let ctr = CameraViewController(configuration: config,
             onCancel: {

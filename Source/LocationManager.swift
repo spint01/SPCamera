@@ -56,12 +56,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             if #available(iOS 14.0, *) {
                 if manager.accuracyAuthorization == .fullAccuracy {
                     startUpdatingLocation()
-                } else {
-//                    authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
-//                        if accuracy == .fullAccuracy {
-//                            self.startUpdatingLocation()
-//                        }
-//                    })
                 }
             } else {
                 startUpdatingLocation()
