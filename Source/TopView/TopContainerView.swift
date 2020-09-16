@@ -58,7 +58,7 @@ open class TopContainerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure() {
+    private func configure() {
         backgroundColor = Helper.runningOnIpad ? UIColor.clear : configuration.backgroundColor
         let views = [locationAccuracyButton]
         views.forEach {
@@ -71,8 +71,16 @@ open class TopContainerView: UIView {
 //        self.layer.borderWidth = 1.0
     }
 
+    // MARK: - public methods
+
+    func updateLocationAccuracyButton(_ isGray: Bool) {
+        locationAccuracyButton.backgroundColor = .clear
+        locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
+    }
+
     // MARK: - Action methods
-    @objc func locationAccuracyButtonDidPress() {
+
+    @objc private func locationAccuracyButtonDidPress() {
         delegate?.accuracyButtonDidPress()
     }
 

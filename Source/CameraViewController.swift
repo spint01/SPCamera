@@ -669,21 +669,15 @@ open class CameraViewController: UIViewController {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
 			}
 
-            let photoSettings = AVCapturePhotoSettings()
-            // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
+            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+// Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
 //                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
 //                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
 //                }
-
-
             if self.videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
             }
-
 			photoSettings.isHighResolutionPhotoEnabled = true
-			if !photoSettings.availablePreviewPhotoPixelFormatTypes.isEmpty {
-				photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.availablePreviewPhotoPixelFormatTypes.first!]
-			}
 
 			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
             let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, locationManager: self.locationManager, willCapturePhotoAnimation: {
@@ -874,8 +868,7 @@ extension CameraViewController: TopContainerViewDelegate {
             if accuracy == .fullAccuracy {
                 self.topContainer.locationAccuracyButton.isHidden = true
             } else {
-                self.topContainer.locationAccuracyButton.backgroundColor = .clear
-                self.topContainer.locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
+                self.topContainer.updateLocationAccuracyButton(true)
                 self.showPreciseLocationUnavailableMessage()
             }
         })
