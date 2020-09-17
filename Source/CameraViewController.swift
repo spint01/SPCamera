@@ -61,12 +61,12 @@ open class CameraViewController: UIViewController {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer].forEach {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer].forEach {
                 view.addSubview($0)
                 $0.translatesAutoresizingMaskIntoConstraints = false
             }
-            if UIDevice.current.userInterfaceIdiom != .pad {
-                [topContainer, zoomButton].forEach {
+            if !Helper.runningOnIpad {
+                [zoomButton].forEach {
                     view.addSubview($0)
                     $0.translatesAutoresizingMaskIntoConstraints = false
                 }
@@ -162,7 +162,7 @@ open class CameraViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
-                        self.locationManager = LocationManager()
+                        self.locationManager = LocationManager(delegate: self)
                     }
 
                 case .notAuthorized:
@@ -294,12 +294,19 @@ open class CameraViewController: UIViewController {
                 ])
         } else {
             // bottomContainer
-            if Helper.runningOnIpad{
+            if Helper.runningOnIpad {
                 NSLayoutConstraint.activate([
                     bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
                     bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
                     bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
                     bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+                    ])
+                // topContainer
+                NSLayoutConstraint.activate([
+                    topContainer.topAnchor.constraint(equalTo: view.topAnchor),
+                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+                    topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
                     ])
             } else {
                 NSLayoutConstraint.activate([
@@ -506,18 +513,19 @@ open class CameraViewController: UIViewController {
     }
 
     @objc private func zoomButtonDidPress(_ button: UIButton) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
         zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
     }
 
     @objc private func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
 
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
         focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
     }
 
     private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+        guard videoDeviceInput != nil else { return }
         sessionQueue.async {
             let device = self.videoDeviceInput.device
             do {
@@ -552,7 +560,7 @@ open class CameraViewController: UIViewController {
     var minZoomFactor: CGFloat = 1.0
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden, videoDeviceInput == nil { return }
+        if !cameraUnavailableLabel.isHidden, !isSessionRunning { return }
 
         switch gesture.state {
         case .began:
@@ -603,7 +611,8 @@ open class CameraViewController: UIViewController {
 
     open lazy var topContainer: TopContainerView = { [unowned self] in
         let view = TopContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad ? self.configuration.topContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+        view.backgroundColor = Helper.runningOnIpad || configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+        view.delegate = self
 //        view.layer.borderColor = UIColor.green.cgColor
 //        view.layer.borderWidth = 1.0
 
@@ -656,21 +665,15 @@ open class CameraViewController: UIViewController {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
 			}
 
-            let photoSettings = AVCapturePhotoSettings()
-            // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
+            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+// Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
 //                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
 //                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
 //                }
-
-
             if self.videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
             }
-
 			photoSettings.isHighResolutionPhotoEnabled = true
-			if !photoSettings.availablePreviewPhotoPixelFormatTypes.isEmpty {
-				photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.availablePreviewPhotoPixelFormatTypes.first!]
-			}
 
 			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
             let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, locationManager: self.locationManager, willCapturePhotoAnimation: {
@@ -821,7 +824,32 @@ open class CameraViewController: UIViewController {
             self.present(alertController, animated: true, completion: nil)
         }
     }
+
+    private func showPreciseLocationUnavailableMessage() {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: nil, message: self.configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
+                                                    style: .cancel,
+                                                    handler: nil))
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
 }
+
+// MARK: - LocationManagerAccuracyDelegate methods
+
+extension CameraViewController: LocationManagerAccuracyDelegate {
+
+    func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
+            self.topContainer.locationAccuracyButton.isHidden = false
+            if self.configuration.alwaysAskForPreciseLocation {
+                self.accuracyButtonDidPress()
+            }
+        }
+    }
+}
+
 
 // MARK: - CameraButtonDelegate methods
 
@@ -842,6 +870,21 @@ extension CameraViewController: BottomContainerViewDelegate {
     func previewButtonDidPress() {
         onPreview?(assets)
     }
+}
+
+extension CameraViewController: TopContainerViewDelegate {
+    func accuracyButtonDidPress() {
+        // TODO: Display dialog tell user why we are asking for precise location
+        locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
+            if accuracy == .fullAccuracy {
+                self.topContainer.locationAccuracyButton.isHidden = true
+            } else {
+                self.topContainer.updateLocationAccuracyButton(true)
+                self.showPreciseLocationUnavailableMessage()
+            }
+        })
+    }
+
 }
 
 extension AVCaptureVideoOrientation {

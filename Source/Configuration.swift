@@ -32,10 +32,14 @@ public struct Configuration {
     public var photoPermissionTitle = "Allow access to your photos"
     public var photoPermissionMessage = "Access was previously denied, please grant access from Settings"
 
+//    public var locationPrecisePermissionTitle = "Precise Location"
+    public var preciseLocationDeniedMessage = "No location or direction metadata will be added to your photo"
+
     // MARK: Custom behaviour
 
 //    public var recordLocation = true
     public var inlineMode = false
     public var photoAlbumName: String?
     public var allowMultiplePhotoCapture = false
+    public var alwaysAskForPreciseLocation = true
 }
