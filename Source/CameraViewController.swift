@@ -61,7 +61,7 @@ open class CameraViewController: UIViewController {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
             previewView.addGestureRecognizer(tapGesture)
         } else {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer, topContainer].forEach {
+            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer].forEach {
                 view.addSubview($0)
                 $0.translatesAutoresizingMaskIntoConstraints = false
             }
@@ -304,7 +304,7 @@ open class CameraViewController: UIViewController {
                 // topContainer
                 NSLayoutConstraint.activate([
                     topContainer.topAnchor.constraint(equalTo: view.topAnchor),
-                    topContainer.rightAnchor.constraint(equalTo: bottomContainer.leftAnchor),
+                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
                     topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
                     topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
                     ])

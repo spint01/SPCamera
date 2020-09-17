@@ -8,7 +8,6 @@ protocol TopContainerViewDelegate: class {
 open class TopContainerView: UIView {
 
     struct AccuracyButton {
-        static let buttonWidth: CGFloat = 210
         static let buttonHeight: CGFloat = 35
     }
     struct CompactDimensions {
@@ -35,6 +34,7 @@ open class TopContainerView: UIView {
         button.backgroundColor = UIColor.systemBlue
         button.setTitle("Precise Location: Off  \(String("\u{276F}"))", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         button.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
         button.isHidden = true
 
@@ -76,6 +76,7 @@ open class TopContainerView: UIView {
     func updateLocationAccuracyButton(_ isGray: Bool) {
         locationAccuracyButton.backgroundColor = .clear
         locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
+        locationAccuracyButton.layoutIfNeeded()
     }
 
     // MARK: - Action methods
@@ -93,14 +94,12 @@ open class TopContainerView: UIView {
                 NSLayoutConstraint.activate([
                     locationAccuracyButton.centerXAnchor.constraint(equalTo: centerXAnchor),
                     locationAccuracyButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-                    locationAccuracyButton.widthAnchor.constraint(equalToConstant: AccuracyButton.buttonWidth),
                     locationAccuracyButton.heightAnchor.constraint(equalToConstant: AccuracyButton.buttonHeight)
                     ])
             } else {
                 NSLayoutConstraint.activate([
                     locationAccuracyButton.centerXAnchor.constraint(equalTo: centerXAnchor),
                     locationAccuracyButton.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-                    locationAccuracyButton.widthAnchor.constraint(equalToConstant: AccuracyButton.buttonWidth),
                     locationAccuracyButton.heightAnchor.constraint(equalToConstant: AccuracyButton.buttonHeight)
                     ])
             }
