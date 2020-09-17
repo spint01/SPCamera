@@ -3,10 +3,16 @@ import CoreLocation
 import AVFoundation
 import UIKit
 
+protocol LocationManagerAccuracyDelegate: class {
+    func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus)
+}
+
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     var manager = CLLocationManager()
     var latestLocation: CLLocation?
     var latestHeading: CLHeading?
+
+    weak var delegate: LocationManagerAccuracyDelegate?
 
     var accuracyAuthorization: CLAccuracyAuthorization {
         if #available(iOS 14.0, *) {
@@ -16,8 +22,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    convenience init(delegate: LocationManagerAccuracyDelegate) {
+        self.init()
+        self.delegate = delegate
+        commonInit()
+   }
+
     override init() {
         super.init()
+        commonInit()
+    }
+
+    private func commonInit() {
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
@@ -63,6 +79,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         } else {
             stopUpdatingLocation()
         }
+        delegate?.authorizatoonStatusDidChange(authorizationStatus: status)
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

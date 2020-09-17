@@ -162,14 +162,7 @@ open class CameraViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.cameraUnavailableLabel.isHidden = self.isSessionRunning
                         // will ask permission the first time
-                        let locationManager = LocationManager()
-                        self.locationManager = locationManager
-                        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-                            self.topContainer.locationAccuracyButton.isHidden = false
-                            if self.configuration.alwaysAskForPreciseLocation {
-                                self.accuracyButtonDidPress()
-                            }
-                        }
+                        self.locationManager = LocationManager(delegate: self)
                     }
 
                 case .notAuthorized:
@@ -842,6 +835,21 @@ open class CameraViewController: UIViewController {
         }
     }
 }
+
+// MARK: - LocationManagerAccuracyDelegate methods
+
+extension CameraViewController: LocationManagerAccuracyDelegate {
+
+    func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
+            self.topContainer.locationAccuracyButton.isHidden = false
+            if self.configuration.alwaysAskForPreciseLocation {
+                self.accuracyButtonDidPress()
+            }
+        }
+    }
+}
+
 
 // MARK: - CameraButtonDelegate methods
 
