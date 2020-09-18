@@ -28,6 +28,13 @@
 	<string>to take photos and video</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>to access your location for Photos</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+        <key>AssignmentLocation</key>
+        <string>Your precise location will be used to find the address of your new assignment.</string>
+        <key>PhotoLocation</key>
+        <string>Your precise location will be used to show the location your photo was taken.</string>
+    </dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>to record Live Photos and movies</string>
 	<key>NSPhotoLibraryUsageDescription</key>
