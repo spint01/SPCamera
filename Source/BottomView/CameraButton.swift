@@ -2,7 +2,7 @@ import UIKit
 
 protocol CameraButtonDelegate: class {
 
-  func buttonDidPress()
+  func buttonDidPress(_ button: UIButton)
 }
 
 class CameraButton: UIButton {
@@ -56,15 +56,15 @@ class CameraButton: UIButton {
         backgroundColor = UIColor.white
         layer.cornerRadius = configuration.inlineMode ? CompactDimensions.buttonSize / 2 : Dimensions.buttonSize / 2
         accessibilityLabel = "Take photo"
-        addTarget(self, action: #selector(pickerButtonDidPress(_:)), for: .touchUpInside)
-        addTarget(self, action: #selector(pickerButtonDidHighlight(_:)), for: .touchDown)
+        addTarget(self, action: #selector(pickerButtonDidPress), for: .touchUpInside)
+        addTarget(self, action: #selector(pickerButtonDidHighlight), for: .touchDown)
     }
 
     // MARK: - Actions
 
     @objc func pickerButtonDidPress(_ button: UIButton) {
         backgroundColor = UIColor.white
-        delegate?.buttonDidPress()
+        delegate?.buttonDidPress(button)
     }
 
     @objc func pickerButtonDidHighlight(_ button: UIButton) {

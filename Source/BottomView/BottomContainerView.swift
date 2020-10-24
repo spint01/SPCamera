@@ -3,7 +3,8 @@ import UIKit
 @objc
 protocol BottomContainerViewDelegate: class {
 
-    func cameraButtonDidPress()
+    func photoButtonDidPress()
+    func recordButtonDidPress()
     func doneButtonDidPress()
     func cancelButtonDidPress()
     func previewButtonDidPress()
@@ -69,6 +70,14 @@ open class BottomContainerView: UIView {
 
         return view
     }()
+    lazy var recordButton: CameraButton = { [unowned self] in
+        let button = CameraButton(configuration: self.configuration)
+        button.setTitleColor(UIColor.red, for: .normal)
+        button.delegate = self
+
+        return button
+        }()
+
     lazy var doneButton: UIButton = { [unowned self] in
         let button = UIButton()
         if  self.configuration.allowMultiplePhotoCapture {
@@ -141,10 +150,10 @@ open class BottomContainerView: UIView {
         if configuration.inlineMode {
             views = [borderCameraButton, cameraButton]
         } else {
-            if Helper.runningOnIpad{
-                views = [borderCameraButton, cameraButton, doneButton, previewButton]
+            if Helper.runningOnIpad {
+                views = [borderCameraButton, cameraButton, recordButton, doneButton, previewButton]
             } else {
-                views = [borderCameraButton, cameraButton, doneButton, photoTitleLabel, previewButton]
+                views = [borderCameraButton, cameraButton, recordButton, doneButton, photoTitleLabel, previewButton]
             }
         }
         views.forEach {
@@ -154,6 +163,8 @@ open class BottomContainerView: UIView {
 
         backgroundColor = configuration.backgroundColor
         setupConstraints()
+
+        recordButton.setTitle("Rec", for:.normal)
 
 //        self.layer.borderColor = UIColor.red.cgColor
 //        self.layer.borderWidth = 1.0
@@ -220,6 +231,13 @@ open class BottomContainerView: UIView {
                     borderCameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize),
                     borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonBorderSize)
                     ])
+                // recordButton
+                NSLayoutConstraint.activate([
+                    recordButton.rightAnchor.constraint(equalTo: cameraButton.leftAnchor, constant: -20),
+                    recordButton.topAnchor.constraint(equalTo: photoTitleLabel.bottomAnchor, constant: 20),
+                    recordButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
+                    recordButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
+                    ])
                 // doneButton
                 NSLayoutConstraint.activate([
                     doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
@@ -261,7 +279,11 @@ open class BottomContainerView: UIView {
 
 extension BottomContainerView: CameraButtonDelegate {
 
-    func buttonDidPress() {
-        delegate?.cameraButtonDidPress()
+    func buttonDidPress(_ button: UIButton) {
+        if button == cameraButton {
+            delegate?.photoButtonDidPress()
+        } else if button == recordButton {
+            delegate?.recordButtonDidPress()
+        }
     }
 }
