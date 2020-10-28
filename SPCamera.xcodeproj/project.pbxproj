@@ -20,6 +20,7 @@
 		CD73CB8C1FE0FC7700652E51 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */; };
 		CD73CB8D1FE0FC7700652E51 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */; };
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
+		CDB892082543F5F700D79FDF /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB892072543F5F700D79FDF /* PhotoManager.swift */; };
 		CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */; };
 		CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D171FE8EA4000ADFF1A /* Helper.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
@@ -69,6 +70,7 @@
 		CD73CB7F1FE0F7CD00652E51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD73CB821FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CD80736E1FE226740038BCA7 /* CameraButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
+		CDB892072543F5F700D79FDF /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContainerView.swift; sourceTree = "<group>"; };
 		CDC11D171FE8EA4000ADFF1A /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				CDC11D171FE8EA4000ADFF1A /* Helper.swift */,
 				CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */,
 				7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */,
+				CDB892072543F5F700D79FDF /* PhotoManager.swift */,
 				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
 			);
 			path = Source;
@@ -301,6 +304,7 @@
 			files = (
 				CDECD6542167C051000F10DC /* TopContainerView.swift in Sources */,
 				CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */,
+				CDB892082543F5F700D79FDF /* PhotoManager.swift in Sources */,
 				CD73CB891FE0FC7700652E51 /* CameraViewController.swift in Sources */,
 				CD73CB8A1FE0FC7700652E51 /* Configuration.swift in Sources */,
 				CD73CB8B1FE0FC7700652E51 /* EXIFHelper.swift in Sources */,
