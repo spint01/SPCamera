@@ -77,7 +77,7 @@ class PhotoManager: NSObject {
 
     func setupAVDevice(previewView: PreviewView) {
         self.previewView = previewView
-
+        setupResult = .success
         #if targetEnvironment(simulator)
         print("Camera is not available on Simulator")
         return
@@ -275,6 +275,10 @@ class PhotoManager: NSObject {
         sessionQueue.async {
             if self.setupResult == .success {
                 self.session.stopRunning()
+                if let videoDeviceInput = self.videoDeviceInput {
+                    self.session.removeInput(videoDeviceInput)
+                }
+                self.session.removeOutput(self.photoOutput)
                 self.isSessionRunning = self.session.isRunning
                 self.removeObservers()
             }
