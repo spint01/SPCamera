@@ -30,7 +30,7 @@ protocol PhoneOverlayViewDelegate: class {
 class PhoneOverlayView: UIView {
 
     private enum Constant {
-        static let TopOffset: CGFloat = 10
+        static let topOffset: CGFloat = 10
         static let zoomButtonSize: CGFloat = 42
     }
 
@@ -47,7 +47,7 @@ class PhoneOverlayView: UIView {
         }
     }
 
-    let cameraButton: UIButton = CameraButton()
+    let cameraButton: CameraButton = CameraButton()
     private let doneButton: UIButton = UIButton()
     private let photoPreviewButton: UIButton = UIButton()
     private let cameraModeButton: UIButton = UIButton()
@@ -60,11 +60,11 @@ class PhoneOverlayView: UIView {
 
             switch cameraMode {
             case .photo:
-                cameraButton.backgroundColor = .white
+                cameraButton.innerButtonColor = .white
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle(nil, for:.normal)
             case .video:
-                cameraButton.backgroundColor = .red
+                cameraButton.innerButtonColor = .red
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle("Rec", for:.normal)
             }
@@ -102,7 +102,7 @@ class PhoneOverlayView: UIView {
         cameraModeButton.addTarget(self, action: #selector(cameraModeButtonDidPress), for: .touchUpInside)
         NSLayoutConstraint.activate([
             cameraModeButton.centerXAnchor.constraint(equalTo: bottomContainer.centerXAnchor),
-            cameraModeButton.topAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: Constant.TopOffset)
+            cameraModeButton.topAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: Constant.topOffset)
         ])
 
         // cameraButton
@@ -112,8 +112,8 @@ class PhoneOverlayView: UIView {
         NSLayoutConstraint.activate([
             cameraButton.centerXAnchor.constraint(equalTo: bottomContainer.centerXAnchor),
             cameraButton.topAnchor.constraint(equalTo: cameraModeButton.bottomAnchor, constant: 20),
-            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
+            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
+            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
             ])
 
         // doneButton
@@ -132,8 +132,8 @@ class PhoneOverlayView: UIView {
         NSLayoutConstraint.activate([
             photoPreviewButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
             photoPreviewButton.leftAnchor.constraint(equalTo: bottomContainer.leftAnchor, constant: 20),
-            photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize),
-            photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Dimensions.buttonSize)
+            photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
+            photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
             ])
 
         // zoomButton

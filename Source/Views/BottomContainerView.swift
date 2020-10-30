@@ -54,9 +54,9 @@ open class BottomContainerView: UIView {
     var configuration = Configuration()
 
     lazy var cameraButton: CameraButton = { [unowned self] in
-        let button = CameraButton(configuration: self.configuration)
+        let button = CameraButton()
         button.setTitleColor(UIColor.white, for: .normal)
-        button.delegate = self
+//        button.delegate = self
 
         return button
         }()
@@ -65,15 +65,15 @@ open class BottomContainerView: UIView {
         let view = UIView()
         view.backgroundColor = UIColor.clear
         view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = configuration.inlineMode ? CameraButton.CompactDimensions.borderWidth : CameraButton.Dimensions.borderWidth
-        view.layer.cornerRadius = (configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize) / 2
+//        view.layer.borderWidth = configuration.inlineMode ? CameraButton.CompactDimensions.borderWidth : CameraButton.Dimensions.borderWidth
+//        view.layer.cornerRadius = (configuration.inlineMode ? CameraButton.CompactDimensions.buttonBorderSize : CameraButton.Dimensions.buttonBorderSize) / 2
 
         return view
     }()
     lazy var recordButton: CameraButton = { [unowned self] in
-        let button = CameraButton(configuration: self.configuration)
+        let button = CameraButton()
         button.setTitleColor(UIColor.red, for: .normal)
-        button.delegate = self
+//        button.delegate = self
 
         return button
         }()
@@ -187,6 +187,7 @@ open class BottomContainerView: UIView {
     // MARK: - private methods
 
     private func setupConstraints() {
+        /*
         if !configuration.inlineMode {
             if Helper.runningOnIpad {
                 // cameraButton
@@ -272,18 +273,19 @@ open class BottomContainerView: UIView {
                 borderCameraButton.heightAnchor.constraint(equalToConstant: CameraButton.CompactDimensions.buttonBorderSize)
                 ])
         }
+ */
     }
 }
 
 // MARK: - ButtonPickerDelegate methods
 
-extension BottomContainerView: CameraButtonDelegate {
-
-    func buttonDidPress(_ button: UIButton) {
-        if button == cameraButton {
-            delegate?.photoButtonDidPress()
-        } else if button == recordButton {
-            delegate?.recordButtonDidPress()
-        }
-    }
-}
+//extension BottomContainerView: CameraButtonDelegate {
+//
+//    func buttonDidPress(_ button: UIButton) {
+//        if button == cameraButton {
+//            delegate?.photoButtonDidPress()
+//        } else if button == recordButton {
+//            delegate?.recordButtonDidPress()
+//        }
+//    }
+//}
