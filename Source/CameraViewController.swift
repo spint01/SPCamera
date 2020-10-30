@@ -10,7 +10,6 @@ import AVFoundation
 import Photos
 import MediaPlayer
 
-
 public class CameraViewController: UIViewController {
 
     private lazy var previewView: PreviewView = {
@@ -19,10 +18,70 @@ public class CameraViewController: UIViewController {
 
         return view
     }()
+    private var previewViewOffset: CGFloat {
+        if Helper.runningOnIpad || configuration.inlineMode {
+            return 0
+        } else {
+            if DeviceType.IS_IPHONE_X_MAX {
+                return 50
+            } else if DeviceType.IS_IPHONE_X {
+                return 34
+            } else if DeviceType.IS_IPHONE_PLUS {
+                return 50
+            } else {
+                return 42
+            }
+        }
+    }
+    lazy private var cameraUnavailableLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = self.configuration.noPermissionsTextColor
 
+        return label
+    }()
+    lazy private var photoLibUnavailableLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = self.configuration.noPermissionsTextColor
+        label.text = self.configuration.photoPermissionLabel
+        label.backgroundColor = UIColor.black.withAlphaComponent(0.50)
+        label.isHidden = true
+
+        return label
+    }()
+//    open lazy var topContainer: TopContainerView = { [unowned self] in
+//        let view = TopContainerView(configuration: self.configuration)
+//        view.backgroundColor = Helper.runningOnIpad || configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
+//        view.delegate = self
+//
+//        return view
+//        }()
+
+//    open lazy var bottomContainer: BottomContainerView = { [unowned self] in
+//        let view = BottomContainerView(configuration: self.configuration)
+//        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
+//        view.delegate = self
+//
+//        return view
+//        }()
+
+    // All of this is needed to support photo capture with volume buttons
+    lazy var volumeView: MPVolumeView = { [unowned self] in
+        let view = MPVolumeView()
+        view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+
+        return view
+        }()
+
+    var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
-    private var statusBarHidden = true
 
+    private lazy var phoneOverlayView: PhoneOverlayView = {
+        return PhoneOverlayView()
+    }()
     private var locationManager: LocationManager?
     open var configuration = Configuration()
     private var capturedPhotoAssets = [PHAsset]()
@@ -61,45 +120,90 @@ public class CameraViewController: UIViewController {
         print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
 
         view.backgroundColor = configuration.bottomContainerColor
-
-        // recreate storyboard
-        if configuration.inlineMode {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, bottomContainer].forEach {
-                view.addSubview($0)
-                $0.translatesAutoresizingMaskIntoConstraints = false
-            }
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(capturePhoto))
-            previewView.addGestureRecognizer(tapGesture)
-        } else {
-            [previewView, cameraUnavailableLabel, photoLibUnavailableLabel, topContainer, bottomContainer].forEach {
-                view.addSubview($0)
-                $0.translatesAutoresizingMaskIntoConstraints = false
-            }
-            if !Helper.runningOnIpad {
-                [zoomButton].forEach {
-                    view.addSubview($0)
-                    $0.translatesAutoresizingMaskIntoConstraints = false
-                }
-            }
-            view.addSubview(volumeView)
-            view.sendSubviewToBack(volumeView)
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
-            previewView.addGestureRecognizer(tapGesture)
-        }
+        setupUI()
+        phoneOverlayView.delegate = self
+        phoneOverlayView.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler(_:)))
         previewView.addGestureRecognizer(pinchGesture)
-
-        setupConstraints()
-
-        updateZoomButtonTitle(minZoomFactor)
+//        updateZoomButtonTitle(minZoomFactor)
 
         // Disable UI. The UI is enabled if and only if the session starts running.
-		bottomContainer.cameraButton.isEnabled = false
+        phoneOverlayView.cameraButton.isEnabled = false
 
         PhotoManager.shared.setupAVDevice(previewView: previewView)
         PhotoManager.shared.delegate = self
 	}
+
+    private func setupUI() {
+        let margins = view.safeAreaLayoutGuide
+//        previewView.layer.borderColor = UIColor.green.cgColor
+//        previewView.layer.borderWidth = 2.0
+
+//        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
+//        previewView.videoPreviewLayer.borderWidth = 2.0
+
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(previewView)
+        NSLayoutConstraint.activate([
+            previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            previewView.topAnchor.constraint(equalTo: view.topAnchor),
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: phoneOverlayView.bottomContainerHeight)
+            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
+//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
+//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
+        ])
+
+        // cameraUnavailableLabel
+        cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cameraUnavailableLabel)
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
+            cameraUnavailableLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
+            cameraUnavailableLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
+            ])
+        // photoLibUnavailableLabel
+        photoLibUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(photoLibUnavailableLabel)
+        NSLayoutConstraint.activate([
+            photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
+            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
+            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
+            ])
+
+        // bottomContainer
+        if Helper.runningOnIpad {
+//            NSLayoutConstraint.activate([
+//                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+//                bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+//                bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+//                bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
+//                ])
+//            // topContainer
+//            NSLayoutConstraint.activate([
+//                topContainer.topAnchor.constraint(equalTo: view.topAnchor),
+//                topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+//                topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+//                topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
+//                ])
+        } else {
+            // phoneOverlayView
+            phoneOverlayView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(phoneOverlayView)
+            NSLayoutConstraint.activate([
+                phoneOverlayView.topAnchor.constraint(equalTo: view.topAnchor),
+                phoneOverlayView.rightAnchor.constraint(equalTo: view.rightAnchor),
+                phoneOverlayView.leftAnchor.constraint(equalTo: view.leftAnchor),
+                phoneOverlayView.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
+            ])
+        }
+
+        view.addSubview(volumeView)
+        view.sendSubviewToBack(volumeView)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
+        previewView.addGestureRecognizer(tapGesture)
+    }
 
     @objc func capturePhoto() {
         PhotoManager.shared.capturePhoto(locationManager: locationManager)
@@ -113,8 +217,6 @@ public class CameraViewController: UIViewController {
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-        statusBarHidden = UIApplication.shared.isStatusBarHidden
-
         #if targetEnvironment(simulator)
         cameraUnavailableLabel.isHidden = false
         cameraUnavailableLabel.text = "Camera is not available on Simulator"
@@ -127,6 +229,10 @@ public class CameraViewController: UIViewController {
                 self.locationManager = LocationManager(delegate: self)
                 self.addObserver()
                 self.updateCameraAvailability(nil)
+
+                let rect = self.previewView.videoPreviewLayer.frame
+                let fromTop: CGFloat = self.phoneOverlayView.bottomContainerHeight - 44
+//                self.previewView.videoPreviewLayer.frame = CGRect(x: rect.minX, y: -fromTop, width: rect.width, height: rect.height)
             case .notAuthorized:
                 self.cameraUnavailableLabel.isHidden = false
                 self.cameraUnavailableLabel.text = self.configuration.cameraPermissionLabel
@@ -166,10 +272,6 @@ public class CameraViewController: UIViewController {
         return true
     }
 
-    open override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return .fade
-    }
-
     // MARK: - Rotation
 
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -179,6 +281,7 @@ public class CameraViewController: UIViewController {
             return .portrait
         }
     }
+
 	open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		super.viewWillTransition(to: size, with: coordinator)
 
@@ -200,152 +303,6 @@ public class CameraViewController: UIViewController {
         previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)
 //        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
     }
-
-    private func setupConstraints() {
-        let margins = view.safeAreaLayoutGuide
-
-//        previewView.layer.borderColor = UIColor.green.cgColor
-//        previewView.layer.borderWidth = 1.0
-
-        NSLayoutConstraint.activate([
-            previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
-//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
-//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
-            ])
-
-        // cameraUnavailableLabel
-        NSLayoutConstraint.activate([
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
-            cameraUnavailableLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
-            cameraUnavailableLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
-            ])
-        // photoLibUnavailableLabel
-        NSLayoutConstraint.activate([
-            photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
-            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
-            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
-            ])
-
-        if configuration.inlineMode {
-            // bottomContainer
-            NSLayoutConstraint.activate([
-                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-                bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
-                bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-                bottomContainer.heightAnchor.constraint(equalToConstant: BottomContainerView.CompactDimensions.height)
-                ])
-        } else {
-            // bottomContainer
-            if Helper.runningOnIpad {
-                NSLayoutConstraint.activate([
-                    bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-                    bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-                    bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                    bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
-                    ])
-                // topContainer
-                NSLayoutConstraint.activate([
-                    topContainer.topAnchor.constraint(equalTo: view.topAnchor),
-                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-                    topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
-                    ])
-            } else {
-                NSLayoutConstraint.activate([
-                    bottomContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-                    bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-                    bottomContainer.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
-                    bottomContainer.heightAnchor.constraint(equalToConstant: bottomContainer.containerHeight)
-                    ])
-
-                // topContainer
-                NSLayoutConstraint.activate([
-                    topContainer.topAnchor.constraint(equalTo: margins.topAnchor),
-                    topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-                    topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-                    topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
-                    ])
-
-                // zoom button
-                NSLayoutConstraint.activate([
-                    zoomButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    zoomButton.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor, constant: -20),
-                    zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
-                    zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
-                    ])
-            }
-        }
-    }
-
-    // MARK: Device Configuration
-
-    private var previewViewOffset: CGFloat {
-        if Helper.runningOnIpad || configuration.inlineMode {
-            return 0
-        } else {
-            if DeviceType.IS_IPHONE_X_MAX {
-                return 50
-            } else if DeviceType.IS_IPHONE_X {
-                return 34
-            } else if DeviceType.IS_IPHONE_PLUS {
-                return 50
-            } else {
-                return 42
-            }
-        }
-    }
-    lazy private var cameraUnavailableLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = self.configuration.noPermissionsTextColor
-
-        return label
-    }()
-    lazy private var photoLibUnavailableLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = self.configuration.noPermissionsTextColor
-        label.text = self.configuration.photoPermissionLabel
-        label.backgroundColor = UIColor.black.withAlphaComponent(0.50)
-        label.isHidden = true
-
-        return label
-    }()
-    enum Constant {
-        static let zoomButtonSize: CGFloat = 42
-    }
-
-    lazy var zoomButton: UIButton = { [unowned self] in
-        let button = UIButton()
-        button.addTarget(self, action: #selector(zoomButtonDidPress(_:)), for: .touchUpInside)
-        button.backgroundColor = self.configuration.bottomContainerColor.withAlphaComponent(0.40)
-        button.layer.cornerRadius = Constant.zoomButtonSize / 2
-
-        return button
-    }()
-
-    private func updateZoomButtonTitle(_ zoom: CGFloat) {
-        var factorStr = String(format: "%.1f", zoom)
-        if factorStr.hasSuffix(".0") {
-            // don't show trailing .0
-            factorStr = String(factorStr.dropLast(2))
-        }
-        let attribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .medium),
-                          NSAttributedString.Key.foregroundColor: UIColor.white ]
-        zoomButton.setAttributedTitle(NSAttributedString(string: "\(factorStr)x", attributes: attribute), for: .normal)
-    }
-
-    @objc private func zoomButtonDidPress(_ button: UIButton) {
-        if !cameraUnavailableLabel.isHidden, !PhotoManager.shared.isSessionRunning { return }
-        zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
-    }
-
 
     // MARK: pinch to zoom
 
@@ -382,7 +339,7 @@ public class CameraViewController: UIViewController {
         let device = videoDeviceInput.device
         var factor = zoom
         factor = max(minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
-        updateZoomButtonTitle(factor)
+        phoneOverlayView.updateZoomButtonTitle(factor)
 
         // TODO: add this to photomanager
 //        sessionQueue.async {
@@ -402,35 +359,7 @@ public class CameraViewController: UIViewController {
     }
 
 
-    open lazy var topContainer: TopContainerView = { [unowned self] in
-        let view = TopContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad || configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
-        view.delegate = self
-//        view.layer.borderColor = UIColor.green.cgColor
-//        view.layer.borderWidth = 1.0
 
-        return view
-        }()
-
-    open lazy var bottomContainer: BottomContainerView = { [unowned self] in
-        let view = BottomContainerView(configuration: self.configuration)
-        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
-        view.delegate = self
-//        view.layer.borderColor = UIColor.green.cgColor
-//        view.layer.borderWidth = 1.0
-
-        return view
-        }()
-
-    // All of this is needed to support photo capture with volume buttons
-    lazy var volumeView: MPVolumeView = { [unowned self] in
-        let view = MPVolumeView()
-        view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
-
-        return view
-        }()
-
-    var volume = AVAudioSession.sharedInstance().outputVolume
 
     func addObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
@@ -453,8 +382,8 @@ public class CameraViewController: UIViewController {
     @objc private func updateCameraAvailability(_ notification: Notification?) {
         let isSessionRunning = PhotoManager.shared.isSessionRunning
         // Only enable the ability to change camera if the device has more than one camera.
-        self.bottomContainer.cameraButton.isEnabled = isSessionRunning && PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
-        self.bottomContainer.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
+        phoneOverlayView.cameraButton.isEnabled = isSessionRunning && PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+//        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
 //                self.captureModeControl?.isEnabled = isSessionRunning
         #if DepthDataSupport
         self.depthDataDeliveryButton.isEnabled = isSessionRunning && isDepthDeliveryDataEnabled
@@ -508,7 +437,7 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-            self.topContainer.locationAccuracyButton.isHidden = false
+//            self.topContainer.locationAccuracyButton.isHidden = false
             if self.configuration.alwaysAskForPreciseLocation {
                 self.accuracyButtonDidPress()
             }
@@ -519,25 +448,23 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 
 // MARK: - CameraButtonDelegate methods
 
-extension CameraViewController: BottomContainerViewDelegate {
+extension CameraViewController: PhoneOverlayViewDelegate {
 
-    func photoButtonDidPress() {
-        bottomContainer.recordButton.isEnabled = false
-        bottomContainer.cameraButton.isEnabled = false
-        PhotoManager.shared.setCaptureMode(.photo, completion: { _ in
-            PhotoManager.shared.capturePhoto(locationManager: self.locationManager)
-            self.bottomContainer.cameraButton.isEnabled = true
-            self.bottomContainer.recordButton.isEnabled = true
-        })
-    }
-
-    func recordButtonDidPress() {
-        bottomContainer.cameraButton.isEnabled = false
-        bottomContainer.recordButton.isEnabled = false
-        PhotoManager.shared.setCaptureMode(.movie, completion: { _ in
-            self.bottomContainer.recordButton.isEnabled = true
-            PhotoManager.shared.toggleMovieRecording(recordingDelegate: self)
-        })
+    func cameraButtonDidPress(_ mode: CameraMode) {
+        switch mode {
+        case .photo:
+            phoneOverlayView.cameraButton.isEnabled = false
+            PhotoManager.shared.setCaptureMode(.photo, completion: { _ in
+                PhotoManager.shared.capturePhoto(locationManager: self.locationManager)
+                self.phoneOverlayView.cameraButton.isEnabled = true
+            })
+        case .video:
+            phoneOverlayView.cameraButton.isEnabled = false
+            PhotoManager.shared.setCaptureMode(.movie, completion: { _ in
+                self.phoneOverlayView.cameraButton.isEnabled = true
+                PhotoManager.shared.toggleMovieRecording(recordingDelegate: self)
+            })
+        }
     }
 
     func doneButtonDidPress() {
@@ -558,9 +485,9 @@ extension CameraViewController: TopContainerViewDelegate {
         // TODO: Display dialog tell user why we are asking for precise location
         locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
             if accuracy == .fullAccuracy {
-                self.topContainer.locationAccuracyButton.isHidden = true
+//                self.topContainer.locationAccuracyButton.isHidden = true
             } else {
-                self.topContainer.updateLocationAccuracyButton(true)
+//                self.topContainer.updateLocationAccuracyButton(true)
                 self.showPreciseLocationUnavailableMessage()
             }
         })
@@ -578,7 +505,7 @@ extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
              assets.append(asset)
-             bottomContainer.previewTitle("\(self.assets.count)")
+            phoneOverlayView.photoPreviewTitle("\(self.assets.count)")
          }
          onCapture?(asset)
     }
@@ -589,8 +516,8 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
     public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
-            self.bottomContainer.recordButton.isEnabled = true
-            self.bottomContainer.recordButton.setTitle("Stop", for: .normal)
+            self.phoneOverlayView.cameraButton.isEnabled = true
+            self.phoneOverlayView.cameraButton.setTitle("Stop", for: .normal)
         }
     }
 
@@ -659,10 +586,9 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            self.bottomContainer.cameraButton.isEnabled = PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
-            self.bottomContainer.recordButton.isEnabled = true
+            self.phoneOverlayView.cameraButton.isEnabled = PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //            self.captureModeControl?.isEnabled = true
-            self.bottomContainer.recordButton.setTitle("Rec", for: .normal)
+//            self.phoneOverlayView.recordButton.setTitle("Rec", for: .normal)
         }
     }
 
