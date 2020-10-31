@@ -288,6 +288,8 @@ class PhotoManager: NSObject {
     // MARK: Session Management
 
     #if VideoResumeSupported
+    @IBOutlet private weak var resumeButton: UIButton!
+
     private func resumeInterruptedSession(_ resumeButton: UIButton) {
         sessionQueue.async {
             /*

@@ -35,21 +35,21 @@ public class CameraViewController: UIViewController {
     }
 
     // All of this is needed to support photo capture with volume buttons
-    lazy var volumeView: MPVolumeView = { [unowned self] in
+    private lazy var volumeView: MPVolumeView = { [unowned self] in
         let view = MPVolumeView()
         view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
 
         return view
         }()
 
-    var volume = AVAudioSession.sharedInstance().outputVolume
+    private var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
 
     private lazy var cameraOverlay: CameraOverlay = {
         return CameraOverlay(parentView: self.view)
     }()
     private var locationManager: LocationManager?
-    open var configuration = Configuration()
+    private var configuration = Configuration()
     private var capturedPhotoAssets = [PHAsset]()
     private let onCancel: (() -> Void)?
     private let onCapture: ((PHAsset) -> Void)?
@@ -58,9 +58,9 @@ public class CameraViewController: UIViewController {
 
     // MARK: pinch to zoom
 
-    var pivotPinchScale: CGFloat = 0.5
-    var maxZoomFactor: CGFloat = 5.0
-    var minZoomFactor: CGFloat = 1.0
+    private var pivotPinchScale: CGFloat = 0.5
+    private var maxZoomFactor: CGFloat = 5.0
+    private var minZoomFactor: CGFloat = 1.0
 
     // MARK: - Initialization
 
@@ -79,7 +79,7 @@ public class CameraViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -106,45 +106,6 @@ public class CameraViewController: UIViewController {
         PhotoManager.shared.setupAVDevice(previewView: previewView)
         PhotoManager.shared.delegate = self
 	}
-
-    private func setupUI() {
-        let margins = view.safeAreaLayoutGuide
-
-//        previewView.layer.borderColor = UIColor.green.cgColor
-//        previewView.layer.borderWidth = 2.0
-
-//        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
-//        previewView.videoPreviewLayer.borderWidth = 2.0
-
-        previewView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(previewView)
-        NSLayoutConstraint.activate([
-            previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraOverlay.bottomContainerViewHeight)
-            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
-//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
-//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
-        ])
-
-        view.addSubview(volumeView)
-        view.sendSubviewToBack(volumeView)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
-        previewView.addGestureRecognizer(tapGesture)
-
-//        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
-//        phoneOverlayView.layer.borderWidth = 2.0
-    }
-
-    @objc func capturePhoto() {
-        PhotoManager.shared.capturePhoto(locationManager: locationManager)
-    }
-
-    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard cameraOverlay.isCameraAvailable else { return }
-        PhotoManager.shared.focusAndExposeTap(gestureRecognizer)
-    }
 
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -223,7 +184,7 @@ public class CameraViewController: UIViewController {
 		}
 	}
 
-    override open func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         let bounds = view.layer.bounds
@@ -235,47 +196,73 @@ public class CameraViewController: UIViewController {
         //                self.previewView.videoPreviewLayer.frame = CGRect(x: rect.minX, y: -fromTop, width: rect.width, height: rect.height)
     }
 
-    // MARK: - gestures
+    // MARK: private methods
 
-    @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
+    private func setupUI() {
+//        previewView.layer.borderColor = UIColor.green.cgColor
+//        previewView.layer.borderWidth = 2.0
 
-        switch gesture.state {
-        case .began:
-            pivotPinchScale = zoomFactor()
-        //        print("pivotPinchScale: \(pivotPinchScale) maxZoom: \(cameraMan.maxZoomFactor())")
-        case .changed:
-            let newValue: CGFloat = pivotPinchScale * gesture.scale
-            let factor = newValue < minZoomFactor ? minZoomFactor : newValue > maxZoomFactor ? maxZoomFactor : newValue
+//        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
+//        previewView.videoPreviewLayer.borderWidth = 2.0
 
-            if factor != zoomFactor() {
-                print("pinchGesture: \(gesture.scale) new: \(factor)")
-                zoomFactor(factor)
-                // NotificationCenter.default.post(name: Notification.Name(rawValue: ZoomView.Notifications.zoomValueChanged), object: self, userInfo: ["newValue": newValue])
-            }
-        case .failed, .ended:
-            break
-        default:
-            break
-        }
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(previewView)
+        NSLayoutConstraint.activate([
+            previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            previewView.topAnchor.constraint(equalTo: view.topAnchor),
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraOverlay.bottomContainerViewHeight)
+            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
+//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
+//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
+        ])
+
+        view.addSubview(volumeView)
+        view.sendSubviewToBack(volumeView)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
+        previewView.addGestureRecognizer(tapGesture)
+
+//        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
+//        phoneOverlayView.layer.borderWidth = 2.0
     }
 
-    func zoomFactor(_ zoom: CGFloat) {
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(photoLibUnavailable), name: .PhotoLibUnavailable, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCameraAvailability), name: .UpdateCameraAvailability, object: nil)
+    }
+
+    private func zoomFactor(_ zoom: CGFloat) {
         let factor = PhotoManager.shared.zoomView(zoom, minZoomFactor: minZoomFactor)
         cameraOverlay.updateZoomButtonTitle(factor)
     }
 
-    func zoomFactor() -> CGFloat {
+    private func zoomFactor() -> CGFloat {
         guard let videoDeviceInput = PhotoManager.shared.videoDeviceInput else { return minZoomFactor }
         let device = videoDeviceInput.device
         return device.videoZoomFactor
     }
 
-    func addObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(photoLibUnavailable), name: .PhotoLibUnavailable, object: nil)
+    private func showPreciseLocationUnavailableMessage() {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: nil, message: self.configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
+                                                    style: .cancel,
+                                                    handler: nil))
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCameraAvailability), name: .UpdateCameraAvailability, object: nil)
+    // MARK: actions
+
+//    @objc func capturePhoto() {
+//        PhotoManager.shared.capturePhoto(locationManager: locationManager)
+//    }
+
+    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard cameraOverlay.isCameraAvailable else { return }
+        PhotoManager.shared.focusAndExposeTap(gestureRecognizer)
     }
 
     @objc private func volumeChanged(_ notification: Notification) {
@@ -307,10 +294,6 @@ public class CameraViewController: UIViewController {
         }
     }
 
-    #if VideoResumeSupported
-    @IBOutlet private weak var resumeButton: UIButton!
-    #endif
-
     @objc private func photoLibUnavailable(_ notification: Notification) {
         DispatchQueue.main.async {
             self.cameraOverlay.isPhotoLibraryAvailable = false
@@ -330,15 +313,31 @@ public class CameraViewController: UIViewController {
         }
     }
 
-    private func showPreciseLocationUnavailableMessage() {
-        DispatchQueue.main.async {
-            let alertController = UIAlertController(title: nil, message: self.configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                    style: .cancel,
-                                                    handler: nil))
-            self.present(alertController, animated: true, completion: nil)
+    // MARK: - gestures
+
+    @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
+        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
+
+        switch gesture.state {
+        case .began:
+            pivotPinchScale = zoomFactor()
+        //        print("pivotPinchScale: \(pivotPinchScale) maxZoom: \(cameraMan.maxZoomFactor())")
+        case .changed:
+            let newValue: CGFloat = pivotPinchScale * gesture.scale
+            let factor = newValue < minZoomFactor ? minZoomFactor : newValue > maxZoomFactor ? maxZoomFactor : newValue
+
+            if factor != zoomFactor() {
+                print("pinchGesture: \(gesture.scale) new: \(factor)")
+                zoomFactor(factor)
+                // NotificationCenter.default.post(name: Notification.Name(rawValue: ZoomView.Notifications.zoomValueChanged), object: self, userInfo: ["newValue": newValue])
+            }
+        case .failed, .ended:
+            break
+        default:
+            break
         }
     }
+
 }
 
 // MARK: - LocationManagerAccuracyDelegate methods
@@ -411,7 +410,7 @@ extension CameraViewController: CameraOverlayDelegate {
 extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
-             assets.append(asset)
+            assets.append(asset)
             cameraOverlay.photoPreviewTitle("\(self.assets.count)")
          }
          onCapture?(asset)

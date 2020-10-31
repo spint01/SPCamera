@@ -322,11 +322,7 @@ class CameraOverlay {
     }
 
     func configure(configuration: Configuration) {
-        if Helper.runningOnIpad {
-            bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
-        } else {
-            bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
-        }
+        bottomContainerView.backgroundColor =  configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
         cameraUnavailableLabel.text = configuration.cameraPermissionLabel
         photoLibUnavailableLabel.textColor = configuration.noPermissionsTextColor
