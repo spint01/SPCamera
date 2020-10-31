@@ -526,6 +526,24 @@ class PhotoManager: NSObject {
         }
     }
 */
+    func zoomView(_ zoom: CGFloat, minZoomFactor: CGFloat) -> CGFloat {
+        guard let videoDeviceInput = videoDeviceInput else { return zoom }
+
+        let device = videoDeviceInput.device
+        var factor = zoom
+        factor = max(minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
+
+        sessionQueue.async {
+            do {
+                try device.lockForConfiguration()
+                device.videoZoomFactor = factor
+            } catch {
+                print("Could not lock device for configuration: \(error)")
+            }
+        }
+        return factor
+    }
+
     @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         guard isSessionRunning, let previewView = previewView else { return }
 
