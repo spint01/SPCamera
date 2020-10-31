@@ -19,14 +19,14 @@ public class CameraViewController: UIViewController {
         return view
     }()
     private var previewViewOffset: CGFloat {
-        if Helper.runningOnIpad || configuration.inlineMode {
+        if Helper.runningOnIpad {
             return 0
         } else {
-            if DeviceType.IS_IPHONE_X_MAX {
+            if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
                 return 50
-            } else if DeviceType.IS_IPHONE_X {
+            } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
                 return 34
-            } else if DeviceType.IS_IPHONE_PLUS {
+            } else if ScreenSize.SCREEN_MAX_LENGTH >= 736.0 { // IPHONE_PLUS
                 return 50
             } else {
                 return 42
@@ -52,21 +52,6 @@ public class CameraViewController: UIViewController {
 
         return label
     }()
-//    open lazy var topContainer: TopContainerView = { [unowned self] in
-//        let view = TopContainerView(configuration: self.configuration)
-//        view.backgroundColor = Helper.runningOnIpad || configuration.inlineMode ? UIColor.clear : self.configuration.topContainerColor
-//        view.delegate = self
-//
-//        return view
-//        }()
-
-//    open lazy var bottomContainer: BottomContainerView = { [unowned self] in
-//        let view = BottomContainerView(configuration: self.configuration)
-//        view.backgroundColor = Helper.runningOnIpad ? self.configuration.bottomContainerColor.withAlphaComponent(0.10) : configuration.inlineMode ? UIColor.clear : self.configuration.bottomContainerColor
-//        view.delegate = self
-//
-//        return view
-//        }()
 
     // All of this is needed to support photo capture with volume buttons
     lazy var volumeView: MPVolumeView = { [unowned self] in
@@ -80,7 +65,7 @@ public class CameraViewController: UIViewController {
     private lazy var assets = [PHAsset]()
 
     private lazy var phoneOverlayView: PhoneOverlayView = {
-        return PhoneOverlayView()
+        return PhoneOverlayView(parentView: self.view)
     }()
     private var locationManager: LocationManager?
     open var configuration = Configuration()
@@ -131,7 +116,7 @@ public class CameraViewController: UIViewController {
         phoneOverlayView.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
-        phoneOverlayView.addGestureRecognizer(pinchGesture)
+        previewView.addGestureRecognizer(pinchGesture)
         phoneOverlayView.updateZoomButtonTitle(minZoomFactor)
 
         // Disable UI. The UI is enabled if and only if the session starts running.
@@ -156,7 +141,7 @@ public class CameraViewController: UIViewController {
             previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
             previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
             previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: phoneOverlayView.bottomContainerViewHeight)
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: PhoneOverlayView.bottomContainerViewHeight)
             // NOTE: doing this causes the bluetooth picker to display in the upper left corner
 //            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
 //            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
@@ -179,37 +164,10 @@ public class CameraViewController: UIViewController {
             photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
             ])
 
-        // bottomContainer
-        if Helper.runningOnIpad {
-//            NSLayoutConstraint.activate([
-//                bottomContainer.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-//                bottomContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-//                bottomContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-//                bottomContainer.widthAnchor.constraint(equalToConstant: bottomContainer.containerHeight),
-//                ])
-//            // topContainer
-//            NSLayoutConstraint.activate([
-//                topContainer.topAnchor.constraint(equalTo: view.topAnchor),
-//                topContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-//                topContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-//                topContainer.heightAnchor.constraint(equalToConstant: topContainer.containerHeight)
-//                ])
-        } else {
-            // phoneOverlayView
-            phoneOverlayView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(phoneOverlayView)
-            NSLayoutConstraint.activate([
-                phoneOverlayView.topAnchor.constraint(equalTo: margins.topAnchor),
-                phoneOverlayView.rightAnchor.constraint(equalTo: view.rightAnchor),
-                phoneOverlayView.leftAnchor.constraint(equalTo: view.leftAnchor),
-                phoneOverlayView.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
-            ])
-        }
-
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
-        phoneOverlayView.addGestureRecognizer(tapGesture)
+        previewView.addGestureRecognizer(tapGesture)
 
 //        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
 //        phoneOverlayView.layer.borderWidth = 2.0

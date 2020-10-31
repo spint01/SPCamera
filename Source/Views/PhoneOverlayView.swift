@@ -29,7 +29,7 @@ protocol PhoneOverlayViewDelegate: class {
     func zoomButtonDidPress()
 }
 
-class PhoneOverlayView: UIView {
+class PhoneOverlayView {
 
     private enum Constant {
         static let topOffset: CGFloat = 10
@@ -38,7 +38,8 @@ class PhoneOverlayView: UIView {
     }
 
     // Each device is slightly different in size
-    var bottomContainerViewHeight: CGFloat {
+    static var bottomContainerViewHeight: CGFloat {
+        guard !Helper.runningOnIpad else { return 100 }
         if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
             return 180
         } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
@@ -56,7 +57,8 @@ class PhoneOverlayView: UIView {
     private let cameraModeButton: UIButton = UIButton()
     private let zoomButton: UIButton = UIButton()
 
-    var topContainerHeight: CGFloat {
+    static var topContainerHeight: CGFloat {
+        guard !Helper.runningOnIpad else { return 50 }
         if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
             return 74
         } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
@@ -89,25 +91,19 @@ class PhoneOverlayView: UIView {
 
     weak var delegate: PhoneOverlayViewDelegate?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
+    private let parentView: UIView
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    init(parentView: UIView) {
+        self.parentView = parentView
         commonInit()
     }
 
     private func commonInit() {
         topContainerView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(topContainerView)
-        NSLayoutConstraint.activate([
-            topContainerView.topAnchor.constraint(equalTo: topAnchor),
-            topContainerView.rightAnchor.constraint(equalTo: rightAnchor),
-            topContainerView.leftAnchor.constraint(equalTo: leftAnchor),
-            topContainerView.heightAnchor.constraint(equalToConstant: topContainerHeight)
-        ])
+        parentView.addSubview(topContainerView)
+        if Helper.runningOnIpad {
+            topContainerView.backgroundColor = .clear
+        }
 
         // locationAccuracyButton
         locationAccuracyButton.translatesAutoresizingMaskIntoConstraints = false
@@ -119,20 +115,9 @@ class PhoneOverlayView: UIView {
         locationAccuracyButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         locationAccuracyButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
         locationAccuracyButton.isHidden = true
-        NSLayoutConstraint.activate([
-            locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
-            locationAccuracyButton.topAnchor.constraint(equalTo: topContainerView.topAnchor, constant: 16),
-            locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
-            ])
 
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(bottomContainerView)
-        NSLayoutConstraint.activate([
-            bottomContainerView.leftAnchor.constraint(equalTo: leftAnchor),
-            bottomContainerView.rightAnchor.constraint(equalTo: rightAnchor),
-            bottomContainerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            bottomContainerView.heightAnchor.constraint(equalToConstant: bottomContainerViewHeight)
-        ])
+        parentView.addSubview(bottomContainerView)
 
         // cameraModeButton
         cameraModeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -141,71 +126,160 @@ class PhoneOverlayView: UIView {
         cameraModeButton.setTitle(cameraMode.title, for: .normal)
         cameraModeButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
         cameraModeButton.addTarget(self, action: #selector(cameraModeButtonDidPress), for: .touchUpInside)
-        NSLayoutConstraint.activate([
-            cameraModeButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
-            cameraModeButton.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: Constant.topOffset)
-        ])
 
         // cameraButton
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         bottomContainerView.addSubview(cameraButton)
         cameraButton.addTarget(self, action: #selector(cameraButtonDidPress), for: .touchUpInside)
-        NSLayoutConstraint.activate([
-            cameraButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
-            cameraButton.topAnchor.constraint(equalTo: cameraModeButton.bottomAnchor, constant: 20),
-            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
-            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
-            ])
 
         // doneButton
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         bottomContainerView.addSubview(doneButton)
-        NSLayoutConstraint.activate([
-            doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-            doneButton.rightAnchor.constraint(equalTo: bottomContainerView.rightAnchor, constant: -20)
-            ])
 
         // previewButton
         photoPreviewButton.translatesAutoresizingMaskIntoConstraints = false
         bottomContainerView.addSubview(photoPreviewButton)
         photoPreviewButton.addTarget(self, action: #selector(previewButtonDidPress), for: .touchUpInside)
         photoPreviewButton.layer.cornerRadius = 10
+
+
+        topContainerView.layer.borderColor = UIColor.red.cgColor
+        topContainerView.layer.borderWidth = 1.0
+        bottomContainerView.layer.borderColor = UIColor.red.cgColor
+        bottomContainerView.layer.borderWidth = 1.0
+
+        if Helper.runningOnIpad {
+            setupTabletConstraints()
+            zoomButton.isHidden = true
+        } else {
+            // zoomButton, not shown on iPad for now
+            zoomButton.translatesAutoresizingMaskIntoConstraints = false
+            parentView.addSubview(zoomButton)
+            zoomButton.addTarget(self, action: #selector(zoomButtonDidPress), for: .touchUpInside)
+            zoomButton.layer.cornerRadius = Constant.zoomButtonSize / 2
+
+            setupPhoneConstraints()
+        }
+    }
+
+    private func setupPhoneConstraints() {
+        let margins = parentView.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            topContainerView.topAnchor.constraint(equalTo: margins.topAnchor),
+            topContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
+            topContainerView.leftAnchor.constraint(equalTo: parentView.leftAnchor),
+            topContainerView.heightAnchor.constraint(equalToConstant: PhoneOverlayView.topContainerHeight)
+        ])
+
+        NSLayoutConstraint.activate([
+            locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            locationAccuracyButton.topAnchor.constraint(equalTo: topContainerView.topAnchor, constant: 16),
+            locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            ])
+
+        // bottom
+        NSLayoutConstraint.activate([
+            bottomContainerView.leftAnchor.constraint(equalTo: parentView.leftAnchor),
+            bottomContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
+            bottomContainerView.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
+            bottomContainerView.heightAnchor.constraint(equalToConstant: Self.bottomContainerViewHeight)
+        ])
+
+        NSLayoutConstraint.activate([
+            cameraModeButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
+            cameraModeButton.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: Constant.topOffset)
+        ])
+
+        NSLayoutConstraint.activate([
+            cameraButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
+            cameraButton.topAnchor.constraint(equalTo: cameraModeButton.bottomAnchor, constant: 20),
+            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
+            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
+            ])
+        NSLayoutConstraint.activate([
+            doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+            doneButton.rightAnchor.constraint(equalTo: bottomContainerView.rightAnchor, constant: -20)
+            ])
         NSLayoutConstraint.activate([
             photoPreviewButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
             photoPreviewButton.leftAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: 20),
             photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
             photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
             ])
-
-        // zoomButton
-        zoomButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(zoomButton)
-        zoomButton.addTarget(self, action: #selector(zoomButtonDidPress), for: .touchUpInside)
-        zoomButton.layer.cornerRadius = Constant.zoomButtonSize / 2
         NSLayoutConstraint.activate([
-            zoomButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            zoomButton.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
             zoomButton.bottomAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: -20),
             zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
             zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
         ])
+    }
 
-//        topContainerView.layer.borderColor = UIColor.red.cgColor
-//        topContainerView.layer.borderWidth = 1.0
-//        bottomContainerView.layer.borderColor = UIColor.red.cgColor
-//        bottomContainerView.layer.borderWidth = 1.0
+    private func setupTabletConstraints() {
+        NSLayoutConstraint.activate([
+            topContainerView.topAnchor.constraint(equalTo: parentView.topAnchor),
+            topContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
+            topContainerView.leftAnchor.constraint(equalTo: parentView.leftAnchor),
+            topContainerView.heightAnchor.constraint(equalToConstant: Self.topContainerHeight)
+        ])
+
+        NSLayoutConstraint.activate([
+            locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            locationAccuracyButton.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+            locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            ])
+
+        // bottom
+        NSLayoutConstraint.activate([
+            bottomContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
+            bottomContainerView.topAnchor.constraint(equalTo: parentView.topAnchor),
+            bottomContainerView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor),
+            bottomContainerView.widthAnchor.constraint(equalToConstant: Self.bottomContainerViewHeight)
+        ])
+
+        NSLayoutConstraint.activate([
+            cameraModeButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
+            cameraModeButton.bottomAnchor.constraint(equalTo: cameraButton.topAnchor, constant: -30)
+        ])
+
+        NSLayoutConstraint.activate([
+            cameraButton.centerXAnchor.constraint(equalTo: bottomContainerView.centerXAnchor),
+            cameraButton.centerYAnchor.constraint(equalTo: bottomContainerView.centerYAnchor),
+            cameraButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
+            cameraButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
+        ])
+        NSLayoutConstraint.activate([
+            doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            doneButton.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: 20)
+        ])
+        NSLayoutConstraint.activate([
+            photoPreviewButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            photoPreviewButton.bottomAnchor.constraint(equalTo: bottomContainerView.bottomAnchor, constant: -20),
+            photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
+            photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
+        ])
+//        NSLayoutConstraint.activate([
+//            zoomButton.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
+//            zoomButton.bottomAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: -20),
+//            zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
+//            zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
+//        ])
     }
 
     func configure(configuration: Configuration) {
-        backgroundColor = .clear // configuration.backgroundColor
-        bottomContainerView.backgroundColor = configuration.bottomContainerViewColor
+        if Helper.runningOnIpad {
+            bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
+        } else {
+            bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
+        }
         zoomButton.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.40)
         cameraModeButton.setTitleColor(configuration.photoTypesLabelColor, for: .normal)
 
         if configuration.allowMultiplePhotoCapture {
-            photoPreviewButton.isHidden = true
+            photoPreviewButton.isHidden = false
             doneButton.setTitle(configuration.doneButtonTitle, for: .normal)
             doneButton.addTarget(self, action: #selector(doneButtonDidPress), for: .touchUpInside)
         } else {
+            photoPreviewButton.isHidden = true
             doneButton.setTitle(configuration.cancelButtonTitle, for: .normal)
             doneButton.addTarget(self, action: #selector(cancelButtonDidPress), for: .touchUpInside)
         }
