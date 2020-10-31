@@ -64,8 +64,8 @@ public class CameraViewController: UIViewController {
     var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
 
-    private lazy var phoneOverlayView: PhoneOverlayView = {
-        return PhoneOverlayView(parentView: self.view)
+    private lazy var cameraOverlay: CameraOverlay = {
+        return CameraOverlay(parentView: self.view)
     }()
     private var locationManager: LocationManager?
     open var configuration = Configuration()
@@ -112,15 +112,15 @@ public class CameraViewController: UIViewController {
 
         view.backgroundColor = configuration.bottomContainerViewColor
         setupUI()
-        phoneOverlayView.delegate = self
-        phoneOverlayView.configure(configuration: configuration)
+        cameraOverlay.delegate = self
+        cameraOverlay.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
         previewView.addGestureRecognizer(pinchGesture)
-        phoneOverlayView.updateZoomButtonTitle(minZoomFactor)
+        cameraOverlay.updateZoomButtonTitle(minZoomFactor)
 
         // Disable UI. The UI is enabled if and only if the session starts running.
-        phoneOverlayView.cameraButton.isEnabled = false
+        cameraOverlay.cameraButton.isEnabled = false
 
         PhotoManager.shared.setupAVDevice(previewView: previewView)
         PhotoManager.shared.delegate = self
@@ -141,7 +141,7 @@ public class CameraViewController: UIViewController {
             previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
             previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
             previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: PhoneOverlayView.bottomContainerViewHeight)
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraOverlay.bottomContainerViewHeight)
             // NOTE: doing this causes the bluetooth picker to display in the upper left corner
 //            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
 //            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
@@ -300,7 +300,7 @@ public class CameraViewController: UIViewController {
 
     func zoomFactor(_ zoom: CGFloat) {
         let factor = PhotoManager.shared.zoomView(zoom, minZoomFactor: minZoomFactor)
-        phoneOverlayView.updateZoomButtonTitle(factor)
+        cameraOverlay.updateZoomButtonTitle(factor)
     }
 
     func zoomFactor() -> CGFloat {
@@ -330,7 +330,7 @@ public class CameraViewController: UIViewController {
     @objc private func updateCameraAvailability(_ notification: Notification?) {
         let isSessionRunning = PhotoManager.shared.isSessionRunning
         // Only enable the ability to change camera if the device has more than one camera.
-        phoneOverlayView.cameraButton.isEnabled = isSessionRunning && PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+        cameraOverlay.cameraButton.isEnabled = isSessionRunning && PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
 //                self.captureModeControl?.isEnabled = isSessionRunning
         #if DepthDataSupport
@@ -387,7 +387,7 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-            self.phoneOverlayView.locationAccuracyButton.isHidden = false
+            self.cameraOverlay.locationAccuracyButton.isHidden = false
             if self.configuration.alwaysAskForPreciseLocation {
                 self.accuracyButtonDidPress()
             }
@@ -398,20 +398,20 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 
 // MARK: - CameraButtonDelegate methods
 
-extension CameraViewController: PhoneOverlayViewDelegate {
+extension CameraViewController: CameraOverlayDelegate {
 
     func cameraButtonDidPress(_ mode: CameraMode) {
         switch mode {
         case .photo:
-            phoneOverlayView.cameraButton.isEnabled = false
+            cameraOverlay.cameraButton.isEnabled = false
             PhotoManager.shared.setCaptureMode(.photo, completion: { _ in
                 PhotoManager.shared.capturePhoto(locationManager: self.locationManager)
-                self.phoneOverlayView.cameraButton.isEnabled = true
+                self.cameraOverlay.cameraButton.isEnabled = true
             })
         case .video:
-            phoneOverlayView.cameraButton.isEnabled = false
+            cameraOverlay.cameraButton.isEnabled = false
             PhotoManager.shared.setCaptureMode(.movie, completion: { _ in
-                self.phoneOverlayView.cameraButton.isEnabled = true
+                self.cameraOverlay.cameraButton.isEnabled = true
                 PhotoManager.shared.toggleMovieRecording(recordingDelegate: self)
             })
         }
@@ -433,9 +433,9 @@ extension CameraViewController: PhoneOverlayViewDelegate {
         // TODO: Display dialog tell user why we are asking for precise location
         locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
             if accuracy == .fullAccuracy {
-                self.phoneOverlayView.locationAccuracyButton.isHidden = true
+                self.cameraOverlay.locationAccuracyButton.isHidden = true
             } else {
-                self.phoneOverlayView.updateLocationAccuracyButton(true)
+                self.cameraOverlay.updateLocationAccuracyButton(true)
                 self.showPreciseLocationUnavailableMessage()
             }
         })
@@ -452,7 +452,7 @@ extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
              assets.append(asset)
-            phoneOverlayView.photoPreviewTitle("\(self.assets.count)")
+            cameraOverlay.photoPreviewTitle("\(self.assets.count)")
          }
          onCapture?(asset)
     }
@@ -463,8 +463,8 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
     public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
-            self.phoneOverlayView.cameraButton.isEnabled = true
-            self.phoneOverlayView.cameraButton.setTitle("Stop", for: .normal)
+            self.cameraOverlay.cameraButton.isEnabled = true
+            self.cameraOverlay.cameraButton.setTitle("Stop", for: .normal)
         }
     }
 
@@ -533,7 +533,7 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            self.phoneOverlayView.cameraButton.isEnabled = PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+            self.cameraOverlay.cameraButton.isEnabled = PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //            self.captureModeControl?.isEnabled = true
 //            self.phoneOverlayView.recordButton.setTitle("Rec", for: .normal)
         }

@@ -20,7 +20,7 @@ enum CameraMode {
     }
 }
 
-protocol PhoneOverlayViewDelegate: class {
+protocol CameraOverlayDelegate: class {
     func cameraButtonDidPress(_ mode: CameraMode)
     func doneButtonDidPress()
     func cancelButtonDidPress()
@@ -29,7 +29,7 @@ protocol PhoneOverlayViewDelegate: class {
     func zoomButtonDidPress()
 }
 
-class PhoneOverlayView {
+class CameraOverlay {
 
     private enum Constant {
         static let topOffset: CGFloat = 10
@@ -89,7 +89,7 @@ class PhoneOverlayView {
         }
     }
 
-    weak var delegate: PhoneOverlayViewDelegate?
+    weak var delegate: CameraOverlayDelegate?
 
     private let parentView: UIView
 
@@ -168,7 +168,7 @@ class PhoneOverlayView {
             topContainerView.topAnchor.constraint(equalTo: margins.topAnchor),
             topContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
             topContainerView.leftAnchor.constraint(equalTo: parentView.leftAnchor),
-            topContainerView.heightAnchor.constraint(equalToConstant: PhoneOverlayView.topContainerHeight)
+            topContainerView.heightAnchor.constraint(equalToConstant: CameraOverlay.topContainerHeight)
         ])
 
         NSLayoutConstraint.activate([
