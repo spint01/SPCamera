@@ -33,25 +33,6 @@ public class CameraViewController: UIViewController {
             }
         }
     }
-    lazy private var cameraUnavailableLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = self.configuration.noPermissionsTextColor
-
-        return label
-    }()
-    lazy private var photoLibUnavailableLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = self.configuration.noPermissionsTextColor
-        label.text = self.configuration.photoPermissionLabel
-        label.backgroundColor = UIColor.black.withAlphaComponent(0.50)
-        label.isHidden = true
-
-        return label
-    }()
 
     // All of this is needed to support photo capture with volume buttons
     lazy var volumeView: MPVolumeView = { [unowned self] in
@@ -129,7 +110,7 @@ public class CameraViewController: UIViewController {
     private func setupUI() {
         let margins = view.safeAreaLayoutGuide
 
-        //        previewView.layer.borderColor = UIColor.green.cgColor
+//        previewView.layer.borderColor = UIColor.green.cgColor
 //        previewView.layer.borderWidth = 2.0
 
 //        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
@@ -147,23 +128,6 @@ public class CameraViewController: UIViewController {
 //            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
         ])
 
-        // cameraUnavailableLabel
-        cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cameraUnavailableLabel)
-        NSLayoutConstraint.activate([
-            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
-            cameraUnavailableLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
-            cameraUnavailableLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
-            ])
-        // photoLibUnavailableLabel
-        photoLibUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(photoLibUnavailableLabel)
-        NSLayoutConstraint.activate([
-            photoLibUnavailableLabel.centerXAnchor.constraint(equalTo: previewView.centerXAnchor),
-            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: previewView.centerYAnchor, constant: -64),
-            photoLibUnavailableLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16),
-            ])
-
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
@@ -178,8 +142,7 @@ public class CameraViewController: UIViewController {
     }
 
     @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard cameraUnavailableLabel.isHidden else { return }
-        // TODO: only accept gestures below topcontainer and above bottomcontainer
+        guard cameraOverlay.isCameraAvailable else { return }
         PhotoManager.shared.focusAndExposeTap(gestureRecognizer)
     }
 
@@ -187,20 +150,19 @@ public class CameraViewController: UIViewController {
 		super.viewWillAppear(animated)
 
         #if targetEnvironment(simulator)
-        cameraUnavailableLabel.isHidden = false
-        cameraUnavailableLabel.text = "Camera is not available on Simulator"
+        cameraOverlay.isCameraAvailable = false
+        cameraOverlay.photoUnavailableText = "Camera is not available on Simulator"
         #else
         PhotoManager.shared.viewWillAppearSetup(completion: { (result) in
             switch result {
             case .success:
-                self.cameraUnavailableLabel.isHidden = PhotoManager.shared.isSessionRunning
+                self.cameraOverlay.isCameraAvailable = PhotoManager.shared.isSessionRunning
                 // will ask permission the first time
                 self.locationManager = LocationManager(delegate: self)
                 self.addObserver()
                 self.updateCameraAvailability(nil)
             case .notAuthorized:
-                self.cameraUnavailableLabel.isHidden = false
-                self.cameraUnavailableLabel.text = self.configuration.cameraPermissionLabel
+                self.cameraOverlay.isCameraAvailable = false
                 let alertController = UIAlertController(title: self.configuration.cameraPermissionTitle, message: self.configuration.cameraPermissionMessage, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                         style: .cancel,
@@ -215,8 +177,8 @@ public class CameraViewController: UIViewController {
 
                 self.present(alertController, animated: true, completion: nil)
             case .configurationFailed:
-                self.cameraUnavailableLabel.isHidden = false
-                self.cameraUnavailableLabel.text = self.configuration.mediaCaptureFailer
+                self.cameraOverlay.isCameraAvailable = false
+                self.cameraOverlay.photoUnavailableText = self.configuration.mediaCaptureFailer
 
                 let alertController = UIAlertController(title: Bundle.main.displayName, message: self.configuration.mediaCaptureFailer, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
@@ -276,7 +238,7 @@ public class CameraViewController: UIViewController {
     // MARK: - gestures
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        if !cameraUnavailableLabel.isHidden, !PhotoManager.shared.isSessionRunning { return }
+        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
 
         switch gesture.state {
         case .began:
@@ -317,7 +279,7 @@ public class CameraViewController: UIViewController {
     }
 
     @objc private func volumeChanged(_ notification: Notification) {
-        guard !configuration.allowMultiplePhotoCapture || !cameraUnavailableLabel.isHidden else { return }
+        guard !configuration.allowMultiplePhotoCapture, cameraOverlay.isCameraAvailable else { return }
 
         guard let slider = volumeView.subviews.filter({ $0 is UISlider }).first as? UISlider,
             let userInfo = (notification as NSNotification).userInfo,
@@ -338,12 +300,11 @@ public class CameraViewController: UIViewController {
         self.depthDataDeliveryButton.isHidden = !(isSessionRunning && isDepthDeliveryDataSupported)
         #endif
         if isSessionRunning {
-            self.cameraUnavailableLabel.isHidden = true
+            cameraOverlay.isCameraAvailable = true
         } else {
-            self.cameraUnavailableLabel.isHidden = false
-            self.cameraUnavailableLabel.text = "Camera is not available in split window view"
+            cameraOverlay.isCameraAvailable = false
+            cameraOverlay.photoUnavailableText = "Camera is not available in split window view"
         }
-        self.cameraUnavailableLabel.setNeedsLayout()
     }
 
     #if VideoResumeSupported
@@ -352,8 +313,7 @@ public class CameraViewController: UIViewController {
 
     @objc private func photoLibUnavailable(_ notification: Notification) {
         DispatchQueue.main.async {
-            self.photoLibUnavailableLabel.isHidden = false
-            self.photoLibUnavailableLabel.text = self.configuration.photoPermissionLabel
+            self.cameraOverlay.isPhotoLibraryAvailable = false
             let alertController = UIAlertController(title: self.configuration.photoPermissionTitle, message: self.configuration.photoPermissionMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                     style: .cancel,
@@ -442,7 +402,7 @@ extension CameraViewController: CameraOverlayDelegate {
     }
 
     func zoomButtonDidPress() {
-        guard cameraUnavailableLabel.isHidden, PhotoManager.shared.isSessionRunning else { return }
+        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
         zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
     }
 

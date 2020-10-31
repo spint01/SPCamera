@@ -89,9 +89,33 @@ class CameraOverlay {
         }
     }
 
+    private let cameraUnavailableLabel: UILabel = UILabel()
+    private let photoLibUnavailableLabel: UILabel = UILabel()
+
     weak var delegate: CameraOverlayDelegate?
 
     private let parentView: UIView
+
+    // MARK: public variables
+
+    var isCameraAvailable: Bool = true {
+        didSet {
+            cameraUnavailableLabel.isHidden = isCameraAvailable
+            zoomButton.isHidden = !isCameraAvailable
+            cameraModeButton.isEnabled = isCameraAvailable
+        }
+    }
+    var photoUnavailableText: String = "" {
+        didSet {
+            cameraUnavailableLabel.text = photoUnavailableText
+            cameraUnavailableLabel.setNeedsLayout()
+        }
+    }
+    var isPhotoLibraryAvailable: Bool = true {
+        didSet {
+            photoLibUnavailableLabel.isHidden = isPhotoLibraryAvailable
+        }
+    }
 
     init(parentView: UIView) {
         self.parentView = parentView
@@ -99,6 +123,21 @@ class CameraOverlay {
     }
 
     private func commonInit() {
+        // debug lines
+//        topContainerView.layer.borderColor = UIColor.red.cgColor
+//        topContainerView.layer.borderWidth = 1.0
+//        bottomContainerView.layer.borderColor = UIColor.red.cgColor
+//        bottomContainerView.layer.borderWidth = 1.0
+
+        cameraUnavailableLabel.numberOfLines = 0
+        cameraUnavailableLabel.textAlignment = .center
+        cameraUnavailableLabel.isHidden = true
+
+        photoLibUnavailableLabel.numberOfLines = 0
+        photoLibUnavailableLabel.textAlignment = .center
+        photoLibUnavailableLabel.backgroundColor = UIColor.black.withAlphaComponent(0.50)
+        photoLibUnavailableLabel.isHidden = true
+
         topContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(topContainerView)
         if Helper.runningOnIpad {
@@ -142,22 +181,31 @@ class CameraOverlay {
         photoPreviewButton.addTarget(self, action: #selector(previewButtonDidPress), for: .touchUpInside)
         photoPreviewButton.layer.cornerRadius = 10
 
+        // cameraUnavailableLabel
+        cameraUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        parentView.addSubview(cameraUnavailableLabel)
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+            cameraUnavailableLabel.leadingAnchor.constraint(equalTo: parentView.leadingAnchor, constant: 32),
+        ])
 
-        topContainerView.layer.borderColor = UIColor.red.cgColor
-        topContainerView.layer.borderWidth = 1.0
-        bottomContainerView.layer.borderColor = UIColor.red.cgColor
-        bottomContainerView.layer.borderWidth = 1.0
+        // photoLibUnavailableLabel
+        photoLibUnavailableLabel.translatesAutoresizingMaskIntoConstraints = false
+        parentView.addSubview(photoLibUnavailableLabel)
+        NSLayoutConstraint.activate([
+            photoLibUnavailableLabel.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+            photoLibUnavailableLabel.leadingAnchor.constraint(equalTo: parentView.leadingAnchor, constant: 32),
+        ])
+
+        // zoomButton
+        zoomButton.translatesAutoresizingMaskIntoConstraints = false
+        parentView.addSubview(zoomButton)
+        zoomButton.addTarget(self, action: #selector(zoomButtonDidPress), for: .touchUpInside)
+        zoomButton.layer.cornerRadius = Constant.zoomButtonSize / 2
 
         if Helper.runningOnIpad {
             setupTabletConstraints()
-            zoomButton.isHidden = true
         } else {
-            // zoomButton, not shown on iPad for now
-            zoomButton.translatesAutoresizingMaskIntoConstraints = false
-            parentView.addSubview(zoomButton)
-            zoomButton.addTarget(self, action: #selector(zoomButtonDidPress), for: .touchUpInside)
-            zoomButton.layer.cornerRadius = Constant.zoomButtonSize / 2
-
             setupPhoneConstraints()
         }
     }
@@ -212,6 +260,10 @@ class CameraOverlay {
             zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
             zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
         ])
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -32),
+            photoLibUnavailableLabel.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -32),
+        ])
     }
 
     private func setupTabletConstraints() {
@@ -257,12 +309,16 @@ class CameraOverlay {
             photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
             photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
         ])
-//        NSLayoutConstraint.activate([
-//            zoomButton.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
-//            zoomButton.bottomAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: -20),
-//            zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
-//            zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
-//        ])
+        NSLayoutConstraint.activate([
+            zoomButton.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+            zoomButton.rightAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: -20),
+            zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
+            zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
+        ])
+        NSLayoutConstraint.activate([
+            cameraUnavailableLabel.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -64),
+            photoLibUnavailableLabel.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -64),
+        ])
     }
 
     func configure(configuration: Configuration) {
@@ -271,6 +327,10 @@ class CameraOverlay {
         } else {
             bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         }
+        cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
+        cameraUnavailableLabel.text = configuration.cameraPermissionLabel
+        photoLibUnavailableLabel.textColor = configuration.noPermissionsTextColor
+        photoLibUnavailableLabel.text = configuration.photoPermissionLabel
         zoomButton.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.40)
         cameraModeButton.setTitleColor(configuration.photoTypesLabelColor, for: .normal)
 
