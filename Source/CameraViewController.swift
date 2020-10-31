@@ -131,7 +131,7 @@ public class CameraViewController: UIViewController {
         phoneOverlayView.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
-        previewView.addGestureRecognizer(pinchGesture)
+        phoneOverlayView.addGestureRecognizer(pinchGesture)
         phoneOverlayView.updateZoomButtonTitle(minZoomFactor)
 
         // Disable UI. The UI is enabled if and only if the session starts running.
@@ -209,7 +209,7 @@ public class CameraViewController: UIViewController {
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
-        previewView.addGestureRecognizer(tapGesture)
+        phoneOverlayView.addGestureRecognizer(tapGesture)
 
 //        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
 //        phoneOverlayView.layer.borderWidth = 2.0
@@ -220,7 +220,8 @@ public class CameraViewController: UIViewController {
     }
 
     @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard !cameraUnavailableLabel.isHidden else { return }
+        guard cameraUnavailableLabel.isHidden else { return }
+        // TODO: only accept gestures below topcontainer and above bottomcontainer
         PhotoManager.shared.focusAndExposeTap(gestureRecognizer)
     }
 
@@ -239,10 +240,6 @@ public class CameraViewController: UIViewController {
                 self.locationManager = LocationManager(delegate: self)
                 self.addObserver()
                 self.updateCameraAvailability(nil)
-
-//                let rect = self.previewView.videoPreviewLayer.frame
-//                let fromTop: CGFloat = self.phoneOverlayView.bottomContainerHeight - 44
-//                self.previewView.videoPreviewLayer.frame = CGRect(x: rect.minX, y: -fromTop, width: rect.width, height: rect.height)
             case .notAuthorized:
                 self.cameraUnavailableLabel.isHidden = false
                 self.cameraUnavailableLabel.text = self.configuration.cameraPermissionLabel
@@ -253,7 +250,9 @@ public class CameraViewController: UIViewController {
                 alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
                                                         style: .`default`,
                                                         handler: { _ in
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
+                                                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                            }
                 }))
 
                 self.present(alertController, animated: true, completion: nil)
@@ -281,8 +280,6 @@ public class CameraViewController: UIViewController {
     open override var prefersStatusBarHidden: Bool {
         return true
     }
-
-    // MARK: - Rotation
 
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if Helper.runningOnIpad {
@@ -312,7 +309,13 @@ public class CameraViewController: UIViewController {
         let bounds = view.layer.bounds
         previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)
 //        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
+
+        //                let rect = self.previewView.videoPreviewLayer.frame
+        //                let fromTop: CGFloat = self.phoneOverlayView.bottomContainerHeight - 44
+        //                self.previewView.videoPreviewLayer.frame = CGRect(x: rect.minX, y: -fromTop, width: rect.width, height: rect.height)
     }
+
+    // MARK: - gestures
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
         if !cameraUnavailableLabel.isHidden, !PhotoManager.shared.isSessionRunning { return }
@@ -400,7 +403,9 @@ public class CameraViewController: UIViewController {
             alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
                                                     style: .`default`,
                                                     handler: { _ in
-                                                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
+                                                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                                                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                        }
             }))
 
             self.present(alertController, animated: true, completion: nil)
@@ -483,11 +488,6 @@ extension CameraViewController: PhoneOverlayViewDelegate {
         zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
     }
 
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }
 
 extension CameraViewController: PhotoManagerDelegate {
