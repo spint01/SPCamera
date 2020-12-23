@@ -23,6 +23,11 @@ enum CaptureMode: Int {
     case movie = 1
 }
 
+enum Constants {
+    static let maxZoomFactor: CGFloat = 5.0
+    static let minZoomFactor: CGFloat = 1.0
+}
+
 extension Notification.Name {
     static let CameraPermissionGranted = Notification.Name("CameraPermissionGranted")
     static let CameraPermissionDenied = Notification.Name("CameraPermissionDenied")
@@ -33,15 +38,17 @@ extension Notification.Name {
 
     static let UpdateCameraAvailability = Notification.Name("UpdateCameraAvailability")
     static let PhotoLibUnavailable = NSNotification.Name("PhotoLibUnavailable")
+
+    static let ZoomValueChanged = NSNotification.Name("ZoomValueChanged")
 }
 
 protocol PhotoManagerDelegate: class {
     func capturedAsset(_ asset: PHAsset)
 }
 
-class PhotoManager: NSObject {
+public class PhotoManager: NSObject {
 
-    static let shared: PhotoManager = PhotoManager()
+    // MARK: public variables
 
     private enum SessionSetupResult {
         case success
@@ -49,31 +56,25 @@ class PhotoManager: NSObject {
         case configurationFailed
     }
 
-    private let session = AVCaptureSession()
-
     var isSessionRunning = false
-    private var capturingPhoto = false
-    private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
-    private var setupResult: SessionSetupResult = .success
-    var videoDeviceInput: AVCaptureDeviceInput?
-
-    private var currentCaptureMode: CaptureMode = .none
     let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera], mediaType: .video, position: .unspecified)
-
-    private let photoOutput = AVCapturePhotoOutput()
-    private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
-
-    private var movieFileOutput: AVCaptureMovieFileOutput?
     var backgroundRecordingID: UIBackgroundTaskIdentifier?
-
-    private var keyValueObservations = [NSKeyValueObservation]()
-
-    private var previewView: PreviewView?
 
     weak var delegate: PhotoManagerDelegate?
 
-    private override init() {
-    }
+    // MARK: private variables
+
+    private let session = AVCaptureSession()
+    private var capturingPhoto = false
+    private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
+    private var setupResult: SessionSetupResult = .success
+    private var currentCaptureMode: CaptureMode = .none
+    private var videoDeviceInput: AVCaptureDeviceInput?
+    private let photoOutput = AVCapturePhotoOutput()
+    private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
+    private var movieFileOutput: AVCaptureMovieFileOutput?
+    private var keyValueObservations = [NSKeyValueObservation]()
+    private var previewView: PreviewView?
 
     func setupAVDevice(previewView: PreviewView) {
         self.previewView = previewView
@@ -245,7 +246,7 @@ class PhotoManager: NSObject {
         session.commitConfiguration()
     }
 
-    func viewWillAppearSetup(completion: @escaping (_ result: PhotoManagerSetup) -> Void) {
+    func start(completion: @escaping (_ result: PhotoManagerSetup) -> Void) {
         sessionQueue.async {
             switch self.setupResult {
             case .success:
@@ -271,7 +272,7 @@ class PhotoManager: NSObject {
         }
     }
 
-    func viewWillDisappear() {
+    func stop() {
         sessionQueue.async {
             if self.setupResult == .success {
                 self.session.stopRunning()
@@ -283,6 +284,35 @@ class PhotoManager: NSObject {
                 self.removeObservers()
             }
         }
+    }
+
+    // MARK: Zoom
+
+    var currentZoomFactor: CGFloat {
+        get {
+            guard let device = videoDeviceInput?.device else { return Constants.minZoomFactor }
+            return device.videoZoomFactor
+        }
+        set {
+            guard let device = videoDeviceInput?.device else { return }
+            let factor: CGFloat = max(Constants.minZoomFactor, min(newValue, device.activeFormat.videoMaxZoomFactor))
+
+            sessionQueue.async {
+                do {
+                    try device.lockForConfiguration()
+                    device.videoZoomFactor = factor
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .ZoomValueChanged, object: nil, userInfo: ["newValue": factor])
+                    }
+                } catch {
+                    print("Could not lock device for configuration: \(error)")
+                }
+            }
+        }
+    }
+
+    func toggleZoom() {
+        currentZoomFactor = currentZoomFactor == 1.0 ? 2.0 : 1.0
     }
 
     // MARK: Session Management
@@ -528,30 +558,6 @@ class PhotoManager: NSObject {
         }
     }
 */
-    func zoomView(_ zoom: CGFloat, minZoomFactor: CGFloat) -> CGFloat {
-        guard let videoDeviceInput = videoDeviceInput else { return zoom }
-
-        let device = videoDeviceInput.device
-        var factor = zoom
-        factor = max(minZoomFactor, min(factor, device.activeFormat.videoMaxZoomFactor))
-
-        sessionQueue.async {
-            do {
-                try device.lockForConfiguration()
-                device.videoZoomFactor = factor
-            } catch {
-                print("Could not lock device for configuration: \(error)")
-            }
-        }
-        return factor
-    }
-
-    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard isSessionRunning, let previewView = previewView else { return }
-
-        let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
-        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
-    }
 
     private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
         guard let videoDeviceInput = videoDeviceInput else { return }
@@ -661,8 +667,8 @@ class PhotoManager: NSObject {
         case off
     }
     private var depthDataDeliveryMode: DepthDataDeliveryMode = .off
-    @IBOutlet private weak var depthDataDeliveryButton: UIButton!
-    @IBAction func toggleDepthDataDeliveryMode(_ depthDataDeliveryButton: UIButton) {
+    private weak var depthDataDeliveryButton: UIButton!
+    @objc func toggleDepthDataDeliveryMode(_ depthDataDeliveryButton: UIButton) {
         sessionQueue.async {
             self.depthDataDeliveryMode = (self.depthDataDeliveryMode == .on) ? .off : .on
             let depthDataDeliveryMode = self.depthDataDeliveryMode
@@ -731,6 +737,15 @@ class PhotoManager: NSObject {
         }
     }
 
+    // MARK: - gestures
+
+    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard isSessionRunning, let previewView = previewView else { return }
+
+        let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
+        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
+    }
+
     // MARK: KVO and Notifications
 
     private func addObservers() {
@@ -762,7 +777,6 @@ class PhotoManager: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
 
         _ = try? AVAudioSession.sharedInstance().setActive(true)
-
     }
 
     private func removeObservers() {

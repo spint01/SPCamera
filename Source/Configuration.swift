@@ -42,4 +42,5 @@ public struct Configuration {
     public var photoAlbumName: String?
     public var allowMultiplePhotoCapture = false
     public var alwaysAskForPreciseLocation = true
+    public var isVideoAllowed = false
 }

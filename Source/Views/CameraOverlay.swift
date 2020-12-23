@@ -95,6 +95,7 @@ class CameraOverlay {
     weak var delegate: CameraOverlayDelegate?
 
     private let parentView: UIView
+    private var configuration: Configuration = Configuration()
 
     // MARK: public variables
 
@@ -102,7 +103,7 @@ class CameraOverlay {
         didSet {
             cameraUnavailableLabel.isHidden = isCameraAvailable
             zoomButton.isHidden = !isCameraAvailable
-            cameraModeButton.isEnabled = isCameraAvailable
+            cameraModeButton.isEnabled = configuration.isVideoAllowed && isCameraAvailable
         }
     }
     var photoUnavailableText: String = "" {
@@ -322,6 +323,7 @@ class CameraOverlay {
     }
 
     func configure(configuration: Configuration) {
+        self.configuration = configuration
         bottomContainerView.backgroundColor =  configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
         cameraUnavailableLabel.text = configuration.cameraPermissionLabel
@@ -338,6 +340,9 @@ class CameraOverlay {
             photoPreviewButton.isHidden = true
             doneButton.setTitle(configuration.cancelButtonTitle, for: .normal)
             doneButton.addTarget(self, action: #selector(cancelButtonDidPress), for: .touchUpInside)
+        }
+        if !configuration.isVideoAllowed {
+            cameraModeButton.isEnabled = false
         }
     }
 

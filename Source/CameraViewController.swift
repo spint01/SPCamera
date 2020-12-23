@@ -48,6 +48,7 @@ public class CameraViewController: UIViewController {
     private lazy var cameraOverlay: CameraOverlay = {
         return CameraOverlay(parentView: self.view)
     }()
+    private var photoManager = PhotoManager()
     private var locationManager: LocationManager?
     private var configuration = Configuration()
     private var capturedPhotoAssets = [PHAsset]()
@@ -56,11 +57,7 @@ public class CameraViewController: UIViewController {
     private let onFinish: (([PHAsset]) -> Void)?
     private let onPreview: (([PHAsset]) -> Void)?
 
-    // MARK: pinch to zoom
-
     private var pivotPinchScale: CGFloat = 0.5
-    private var maxZoomFactor: CGFloat = 5.0
-    private var minZoomFactor: CGFloat = 1.0
 
     // MARK: - Initialization
 
@@ -88,23 +85,10 @@ public class CameraViewController: UIViewController {
     open override func viewDidLoad() {
 		super.viewDidLoad()
 
-        print("Device \(UIDevice.current.localizedModel) size - w: \(ScreenSize.SCREEN_WIDTH) h: \(ScreenSize.SCREEN_HEIGHT)")
-        print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
-
-        view.backgroundColor = configuration.bottomContainerViewColor
         setupUI()
-        cameraOverlay.delegate = self
-        cameraOverlay.configure(configuration: configuration)
 
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
-        previewView.addGestureRecognizer(pinchGesture)
-        cameraOverlay.updateZoomButtonTitle(minZoomFactor)
-
-        // Disable UI. The UI is enabled if and only if the session starts running.
-        cameraOverlay.cameraButton.isEnabled = false
-
-        PhotoManager.shared.setupAVDevice(previewView: previewView)
-        PhotoManager.shared.delegate = self
+        photoManager.setupAVDevice(previewView: previewView)
+        photoManager.delegate = self
 	}
 
 	open override func viewWillAppear(_ animated: Bool) {
@@ -114,10 +98,10 @@ public class CameraViewController: UIViewController {
         cameraOverlay.isCameraAvailable = false
         cameraOverlay.photoUnavailableText = "Camera is not available on Simulator"
         #else
-        PhotoManager.shared.viewWillAppearSetup(completion: { (result) in
+        photoManager.start(completion: { (result) in
             switch result {
             case .success:
-                self.cameraOverlay.isCameraAvailable = PhotoManager.shared.isSessionRunning
+                self.cameraOverlay.isCameraAvailable = self.photoManager.isSessionRunning
                 // will ask permission the first time
                 self.locationManager = LocationManager(delegate: self)
                 self.addObserver()
@@ -152,8 +136,8 @@ public class CameraViewController: UIViewController {
     }
 
 	open override func viewWillDisappear(_ animated: Bool) {
-        PhotoManager.shared.viewWillDisappear()
 		super.viewWillDisappear(animated)
+        photoManager.stop()
 
         self.locationManager?.stopUpdatingLocation()
 	}
@@ -205,6 +189,11 @@ public class CameraViewController: UIViewController {
 //        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
 //        previewView.videoPreviewLayer.borderWidth = 2.0
 
+        print("Device \(UIDevice.current.localizedModel) size - w: \(ScreenSize.SCREEN_WIDTH) h: \(ScreenSize.SCREEN_HEIGHT)")
+        print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
+
+        view.backgroundColor = configuration.bottomContainerViewColor
+
         previewView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(previewView)
         NSLayoutConstraint.activate([
@@ -219,11 +208,22 @@ public class CameraViewController: UIViewController {
 
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap))
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(photoManager.focusAndExposeTap))
         previewView.addGestureRecognizer(tapGesture)
 
 //        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
 //        phoneOverlayView.layer.borderWidth = 2.0
+
+        cameraOverlay.delegate = self
+        cameraOverlay.configure(configuration: configuration)
+
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
+        previewView.addGestureRecognizer(pinchGesture)
+        cameraOverlay.updateZoomButtonTitle(Constants.minZoomFactor)
+
+        // Disable UI. The UI is enabled if and only if the session starts running.
+        cameraOverlay.cameraButton.isEnabled = false
     }
 
     private func addObserver() {
@@ -231,17 +231,7 @@ public class CameraViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(photoLibUnavailable), name: .PhotoLibUnavailable, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(updateCameraAvailability), name: .UpdateCameraAvailability, object: nil)
-    }
-
-    private func zoomFactor(_ zoom: CGFloat) {
-        let factor = PhotoManager.shared.zoomView(zoom, minZoomFactor: minZoomFactor)
-        cameraOverlay.updateZoomButtonTitle(factor)
-    }
-
-    private func zoomFactor() -> CGFloat {
-        guard let videoDeviceInput = PhotoManager.shared.videoDeviceInput else { return minZoomFactor }
-        let device = videoDeviceInput.device
-        return device.videoZoomFactor
+        NotificationCenter.default.addObserver(self, selector: #selector(zoomValueChanged), name: .ZoomValueChanged, object: nil)
     }
 
     private func showPreciseLocationUnavailableMessage() {
@@ -254,16 +244,7 @@ public class CameraViewController: UIViewController {
         }
     }
 
-    // MARK: actions
-
-//    @objc func capturePhoto() {
-//        PhotoManager.shared.capturePhoto(locationManager: locationManager)
-//    }
-
-    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard cameraOverlay.isCameraAvailable else { return }
-        PhotoManager.shared.focusAndExposeTap(gestureRecognizer)
-    }
+    // MARK: notifications
 
     @objc private func volumeChanged(_ notification: Notification) {
         guard !configuration.allowMultiplePhotoCapture, cameraOverlay.isCameraAvailable else { return }
@@ -273,13 +254,13 @@ public class CameraViewController: UIViewController {
             let changeReason = userInfo["AVSystemController_AudioVolumeChangeReasonNotificationParameter"] as? String, changeReason == "ExplicitVolumeChange" else { return }
 
         slider.setValue(volume, animated: false)
-        PhotoManager.shared.capturePhoto(locationManager: locationManager)
+        photoManager.capturePhoto(locationManager: locationManager)
     }
 
     @objc private func updateCameraAvailability(_ notification: Notification?) {
-        let isSessionRunning = PhotoManager.shared.isSessionRunning
+        let isSessionRunning = photoManager.isSessionRunning
         // Only enable the ability to change camera if the device has more than one camera.
-        cameraOverlay.cameraButton.isEnabled = isSessionRunning && PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+        cameraOverlay.cameraButton.isEnabled = isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
 //                self.captureModeControl?.isEnabled = isSessionRunning
         #if DepthDataSupport
@@ -313,23 +294,26 @@ public class CameraViewController: UIViewController {
         }
     }
 
+    @objc private func zoomValueChanged(_ notification: Notification) {
+        guard let value = notification.userInfo?["newValue"] as? CGFloat else { return }
+        cameraOverlay.updateZoomButtonTitle(value)
+    }
+
     // MARK: - gestures
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
+        guard cameraOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
 
         switch gesture.state {
         case .began:
-            pivotPinchScale = zoomFactor()
-        //        print("pivotPinchScale: \(pivotPinchScale) maxZoom: \(cameraMan.maxZoomFactor())")
+            pivotPinchScale = photoManager.currentZoomFactor
         case .changed:
             let newValue: CGFloat = pivotPinchScale * gesture.scale
-            let factor = newValue < minZoomFactor ? minZoomFactor : newValue > maxZoomFactor ? maxZoomFactor : newValue
+            let factor = newValue < Constants.minZoomFactor ? Constants.minZoomFactor : newValue > Constants.maxZoomFactor ? Constants.maxZoomFactor : newValue
 
-            if factor != zoomFactor() {
+            if factor != photoManager.currentZoomFactor {
                 print("pinchGesture: \(gesture.scale) new: \(factor)")
-                zoomFactor(factor)
-                // NotificationCenter.default.post(name: Notification.Name(rawValue: ZoomView.Notifications.zoomValueChanged), object: self, userInfo: ["newValue": newValue])
+                photoManager.currentZoomFactor = factor
             }
         case .failed, .ended:
             break
@@ -363,15 +347,15 @@ extension CameraViewController: CameraOverlayDelegate {
         switch mode {
         case .photo:
             cameraOverlay.cameraButton.isEnabled = false
-            PhotoManager.shared.setCaptureMode(.photo, completion: { _ in
-                PhotoManager.shared.capturePhoto(locationManager: self.locationManager)
+            photoManager.setCaptureMode(.photo, completion: { _ in
+                self.photoManager.capturePhoto(locationManager: self.locationManager)
                 self.cameraOverlay.cameraButton.isEnabled = true
             })
         case .video:
             cameraOverlay.cameraButton.isEnabled = false
-            PhotoManager.shared.setCaptureMode(.movie, completion: { _ in
+            photoManager.setCaptureMode(.movie, completion: { _ in
                 self.cameraOverlay.cameraButton.isEnabled = true
-                PhotoManager.shared.toggleMovieRecording(recordingDelegate: self)
+                self.photoManager.toggleMovieRecording(recordingDelegate: self)
             })
         }
     }
@@ -401,13 +385,14 @@ extension CameraViewController: CameraOverlayDelegate {
     }
 
     func zoomButtonDidPress() {
-        guard cameraOverlay.isCameraAvailable, PhotoManager.shared.isSessionRunning else { return }
-        zoomFactor(zoomFactor() == 1.0 ? 2.0 : 1.0)
+        guard cameraOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
+        photoManager.toggleZoom()
     }
 
 }
 
 extension CameraViewController: PhotoManagerDelegate {
+
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
             assets.append(asset)
@@ -448,8 +433,8 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
                 }
             }
 
-            if let currentBackgroundRecordingID = PhotoManager.shared.backgroundRecordingID {
-                PhotoManager.shared.backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
+            if let currentBackgroundRecordingID = photoManager.backgroundRecordingID {
+                photoManager.backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
 
                 if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
                     UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
@@ -492,7 +477,7 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            self.cameraOverlay.cameraButton.isEnabled = PhotoManager.shared.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+            self.cameraOverlay.cameraButton.isEnabled = self.photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //            self.captureModeControl?.isEnabled = true
 //            self.phoneOverlayView.recordButton.setTitle("Rec", for: .normal)
         }
