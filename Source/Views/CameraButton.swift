@@ -1,7 +1,14 @@
+//
+//  CameraButton.swift
+//  SPCamera
+//
+//  Created by Steven G Pint on 10/27/20.
+//  Copyright © 2020 Apple. All rights reserved.
+//
+
 import UIKit
 
 class CameraButton: UIButton {
-
     enum Constants {
         fileprivate static let borderWidth: CGFloat = 4
         static let buttonSize: CGFloat = 54
@@ -10,6 +17,7 @@ class CameraButton: UIButton {
 
     private let outerView: UIView = UIView()
 
+    // MARK: public variables
     var innerButtonColor: UIColor = .white {
         didSet {
             backgroundColor = innerButtonColor
@@ -30,6 +38,7 @@ class CameraButton: UIButton {
 
     override var isEnabled: Bool {
         didSet {
+            outerView.layer.borderColor = isEnabled ? UIColor.white.cgColor : UIColor.lightGray.cgColor
             backgroundColor = isEnabled ? innerButtonColor : .lightGray
         }
     }
@@ -54,5 +63,6 @@ class CameraButton: UIButton {
             ])
 
         accessibilityLabel = "Take photo"
+        backgroundColor = isEnabled ? innerButtonColor : .lightGray
     }
 }

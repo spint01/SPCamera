@@ -46,7 +46,7 @@ protocol PhotoManagerDelegate: class {
     func capturedAsset(_ asset: PHAsset)
 }
 
-public class PhotoManager: NSObject {
+public class PhotoManager {
 
     // MARK: public variables
 
@@ -56,8 +56,8 @@ public class PhotoManager: NSObject {
         case configurationFailed
     }
 
-    var isSessionRunning = false
     let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera], mediaType: .video, position: .unspecified)
+    private (set)var isSessionRunning = false
     var backgroundRecordingID: UIBackgroundTaskIdentifier?
 
     weak var delegate: PhotoManagerDelegate?
@@ -74,10 +74,16 @@ public class PhotoManager: NSObject {
     private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var keyValueObservations = [NSKeyValueObservation]()
-    private var previewView: PreviewView?
 
-    func setupAVDevice(previewView: PreviewView) {
+
+    private let previewView: PreviewView
+    private let configuration: Configuration
+
+//    private override init() {}
+
+    init(previewView: PreviewView, configuration: Configuration) {
         self.previewView = previewView
+        self.configuration = configuration
         setupResult = .success
         #if targetEnvironment(simulator)
         print("Camera is not available on Simulator")
@@ -86,37 +92,35 @@ public class PhotoManager: NSObject {
 
         // Set up the video preview view.
         previewView.session = session
+    }
 
+    func setup() {
         /*
             Check video authorization status. Video access is required and audio
             access is optional. If audio access is denied, audio is not recorded
             during movie recording.
         */
         switch AVCaptureDevice.authorizationStatus(for: .video) {
-            case .authorized:
-                // The user has previously granted access to the camera.
-                break
+        case .authorized: // The user has previously granted access to the camera.
+            break
+        case .notDetermined:
+            /*
+                The user has not yet been presented with the option to grant
+                video access. We suspend the session queue to delay session
+                setup until the access request has completed.
 
-            case .notDetermined:
-                /*
-                    The user has not yet been presented with the option to grant
-                    video access. We suspend the session queue to delay session
-                    setup until the access request has completed.
-
-                    Note that audio access will be implicitly requested when we
-                    create an AVCaptureDeviceInput for audio during session setup.
-                */
-                sessionQueue.suspend()
-                AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                    if !granted {
-                        self.setupResult = .notAuthorized
-                    }
-                    self.sessionQueue.resume()
-                })
-
-            default:
-                // The user has previously denied access.
-                setupResult = .notAuthorized
+                Note that audio access will be implicitly requested when we
+                create an AVCaptureDeviceInput for audio during session setup.
+            */
+            sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
+                if !granted {
+                    self.setupResult = .notAuthorized
+                }
+                self.sessionQueue.resume()
+            })
+        default: // The user has previously denied access.
+            setupResult = .notAuthorized
         }
 
         /*
@@ -136,7 +140,7 @@ public class PhotoManager: NSObject {
 
     // Call this on the session queue.
     private func configureSession() {
-        guard setupResult == .success, let previewView = previewView else { return }
+        guard setupResult == .success else { return }
         session.beginConfiguration()
 
         /*
@@ -198,7 +202,7 @@ public class PhotoManager: NSObject {
                         }
                     }
 
-                    previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
+                    self.previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
                 }
             } else {
                 print("Could not add video device input to the session")
@@ -214,17 +218,19 @@ public class PhotoManager: NSObject {
         }
 
         // Add audio input.
-        do {
-            let audioDevice = AVCaptureDevice.default(for: .audio)
-            let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice!)
+        if configuration.isVideoAllowed {
+            do {
+                let audioDevice = AVCaptureDevice.default(for: .audio)
+                let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice!)
 
-            if session.canAddInput(audioDeviceInput) {
-                session.addInput(audioDeviceInput)
-            } else {
-                print("Could not add audio device input to the session")
+                if session.canAddInput(audioDeviceInput) {
+                    session.addInput(audioDeviceInput)
+                } else {
+                    print("Could not add audio device input to the session")
+                }
+            } catch {
+                print("Could not create audio device input: \(error)")
             }
-        } catch {
-            print("Could not create audio device input: \(error)")
         }
 
         // Add photo output.
@@ -591,7 +597,7 @@ public class PhotoManager: NSObject {
     // MARK: Capturing Photos
 
     func capturePhoto(locationManager: LocationManager?) {
-        guard !capturingPhoto, let previewView = previewView else { return }
+        guard !capturingPhoto else { return }
         guard let videoDeviceInput = videoDeviceInput else { return }
 
         capturingPhoto = true
@@ -632,9 +638,9 @@ public class PhotoManager: NSObject {
             // Use a separate object for the photo capture delegate to isolate each capture life cycle.
             let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, locationManager: locationManager, willCapturePhotoAnimation: {
                     DispatchQueue.main.async {
-                        previewView.videoPreviewLayer.opacity = 0
+                        self.previewView.videoPreviewLayer.opacity = 0
                         UIView.animate(withDuration: 0.25) {
-                            previewView.videoPreviewLayer.opacity = 1
+                            self.previewView.videoPreviewLayer.opacity = 1
                         }
                     }
                 }, completionHandler: { (photoCaptureProcessor, asset) in
@@ -687,7 +693,7 @@ public class PhotoManager: NSObject {
     // MARK: Recording Movies
 
     func toggleMovieRecording(recordingDelegate: AVCaptureFileOutputRecordingDelegate) {
-        guard let previewView = previewView, let movieFileOutput = self.movieFileOutput else { return }
+        guard let movieFileOutput = self.movieFileOutput else { return }
         /*
             Disable the Camera button until recording finishes, and disable
             the Record button until recording starts or finishes.
@@ -740,7 +746,7 @@ public class PhotoManager: NSObject {
     // MARK: - gestures
 
     @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard isSessionRunning, let previewView = previewView else { return }
+        guard isSessionRunning else { return }
 
         let devicePoint = previewView.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
         focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)

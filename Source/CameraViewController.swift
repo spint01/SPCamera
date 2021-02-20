@@ -19,18 +19,16 @@ public class CameraViewController: UIViewController {
         return view
     }()
     private var previewViewOffset: CGFloat {
-        if Helper.runningOnIpad {
-            return 0
-        } else {
-            if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
-                return 50
-            } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
-                return 34
-            } else if ScreenSize.SCREEN_MAX_LENGTH >= 736.0 { // IPHONE_PLUS
-                return 50
-            } else {
-                return 42
-            }
+        guard !Helper.runningOnIpad else { return 0 }
+        switch ScreenSize.SCREEN_MAX_LENGTH {
+        case 896...10000: // IPHONE_X_MAX
+            return 50
+        case 812..<896: // IPHONE_X
+            return 34
+        case 736..<812: // IPHONE_PLUS
+            return 50
+        default:
+            return 42
         }
     }
 
@@ -45,10 +43,13 @@ public class CameraViewController: UIViewController {
     private var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
 
-    private lazy var cameraOverlay: CameraOverlay = {
-        return CameraOverlay(parentView: self.view)
+    private lazy var cameraControlsOverlay: CameraControlsOverlay = {
+        return CameraControlsOverlay(parentView: self.view)
     }()
-    private var photoManager = PhotoManager()
+    private lazy var photoManager: PhotoManager = {
+        let photoManager = PhotoManager(previewView: previewView, configuration: configuration)
+        return photoManager
+    }()
     private var locationManager: LocationManager?
     private var configuration = Configuration()
     private var capturedPhotoAssets = [PHAsset]()
@@ -87,7 +88,7 @@ public class CameraViewController: UIViewController {
 
         setupUI()
 
-        photoManager.setupAVDevice(previewView: previewView)
+        photoManager.setup()
         photoManager.delegate = self
 	}
 
@@ -95,19 +96,19 @@ public class CameraViewController: UIViewController {
 		super.viewWillAppear(animated)
 
         #if targetEnvironment(simulator)
-        cameraOverlay.isCameraAvailable = false
-        cameraOverlay.photoUnavailableText = "Camera is not available on Simulator"
+        cameraControlsOverlay.isCameraAvailable = false
+        cameraControlsOverlay.photoUnavailableText = "Camera is not available on Simulator"
         #else
         photoManager.start(completion: { (result) in
             switch result {
             case .success:
-                self.cameraOverlay.isCameraAvailable = self.photoManager.isSessionRunning
+                self.cameraControlsOverlay.isCameraAvailable = self.photoManager.isSessionRunning
                 // will ask permission the first time
                 self.locationManager = LocationManager(delegate: self)
                 self.addObserver()
                 self.updateCameraAvailability(nil)
             case .notAuthorized:
-                self.cameraOverlay.isCameraAvailable = false
+                self.cameraControlsOverlay.isCameraAvailable = false
                 let alertController = UIAlertController(title: self.configuration.cameraPermissionTitle, message: self.configuration.cameraPermissionMessage, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                         style: .cancel,
@@ -122,8 +123,8 @@ public class CameraViewController: UIViewController {
 
                 self.present(alertController, animated: true, completion: nil)
             case .configurationFailed:
-                self.cameraOverlay.isCameraAvailable = false
-                self.cameraOverlay.photoUnavailableText = self.configuration.mediaCaptureFailer
+                self.cameraControlsOverlay.isCameraAvailable = false
+                self.cameraControlsOverlay.photoUnavailableText = self.configuration.mediaCaptureFailer
 
                 let alertController = UIAlertController(title: Bundle.main.displayName, message: self.configuration.mediaCaptureFailer, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
@@ -200,7 +201,7 @@ public class CameraViewController: UIViewController {
             previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
             previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
             previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraOverlay.bottomContainerViewHeight)
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraControlsOverlay.bottomContainerViewHeight)
             // NOTE: doing this causes the bluetooth picker to display in the upper left corner
 //            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
 //            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
@@ -215,15 +216,12 @@ public class CameraViewController: UIViewController {
 //        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
 //        phoneOverlayView.layer.borderWidth = 2.0
 
-        cameraOverlay.delegate = self
-        cameraOverlay.configure(configuration: configuration)
+        cameraControlsOverlay.delegate = self
+        cameraControlsOverlay.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
         previewView.addGestureRecognizer(pinchGesture)
-        cameraOverlay.updateZoomButtonTitle(Constants.minZoomFactor)
-
-        // Disable UI. The UI is enabled if and only if the session starts running.
-        cameraOverlay.cameraButton.isEnabled = false
+        cameraControlsOverlay.updateZoomButtonTitle(Constants.minZoomFactor)
     }
 
     private func addObserver() {
@@ -235,19 +233,17 @@ public class CameraViewController: UIViewController {
     }
 
     private func showPreciseLocationUnavailableMessage() {
-        DispatchQueue.main.async {
-            let alertController = UIAlertController(title: nil, message: self.configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                    style: .cancel,
-                                                    handler: nil))
-            self.present(alertController, animated: true, completion: nil)
-        }
+        let alertController = UIAlertController(title: nil, message: configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
+                                                style: .cancel,
+                                                handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 
     // MARK: notifications
 
     @objc private func volumeChanged(_ notification: Notification) {
-        guard !configuration.allowMultiplePhotoCapture, cameraOverlay.isCameraAvailable else { return }
+        guard !configuration.allowMultiplePhotoCapture, cameraControlsOverlay.isCameraAvailable else { return }
 
         guard let slider = volumeView.subviews.filter({ $0 is UISlider }).first as? UISlider,
             let userInfo = (notification as NSNotification).userInfo,
@@ -259,25 +255,24 @@ public class CameraViewController: UIViewController {
 
     @objc private func updateCameraAvailability(_ notification: Notification?) {
         let isSessionRunning = photoManager.isSessionRunning
-        // Only enable the ability to change camera if the device has more than one camera.
-        cameraOverlay.cameraButton.isEnabled = isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
-//        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
-//                self.captureModeControl?.isEnabled = isSessionRunning
         #if DepthDataSupport
         self.depthDataDeliveryButton.isEnabled = isSessionRunning && isDepthDeliveryDataEnabled
         self.depthDataDeliveryButton.isHidden = !(isSessionRunning && isDepthDeliveryDataSupported)
         #endif
         if isSessionRunning {
-            cameraOverlay.isCameraAvailable = true
+            // Only enable the ability to change camera if the device has more than one camera.
+            cameraControlsOverlay.isCameraAvailable = isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+    //        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
+    //                self.captureModeControl?.isEnabled = isSessionRunning
         } else {
-            cameraOverlay.isCameraAvailable = false
-            cameraOverlay.photoUnavailableText = "Camera is not available in split window view"
+            cameraControlsOverlay.isCameraAvailable = false
+            cameraControlsOverlay.photoUnavailableText = "Camera is not available in split window view"
         }
     }
 
     @objc private func photoLibUnavailable(_ notification: Notification) {
         DispatchQueue.main.async {
-            self.cameraOverlay.isPhotoLibraryAvailable = false
+            self.cameraControlsOverlay.isPhotoLibraryAvailable = false
             let alertController = UIAlertController(title: self.configuration.photoPermissionTitle, message: self.configuration.photoPermissionMessage, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
                                                     style: .cancel,
@@ -296,13 +291,13 @@ public class CameraViewController: UIViewController {
 
     @objc private func zoomValueChanged(_ notification: Notification) {
         guard let value = notification.userInfo?["newValue"] as? CGFloat else { return }
-        cameraOverlay.updateZoomButtonTitle(value)
+        cameraControlsOverlay.updateZoomButtonTitle(value)
     }
 
     // MARK: - gestures
 
     @objc func pinchGestureRecognizerHandler(_ gesture: UIPinchGestureRecognizer) {
-        guard cameraOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
+        guard cameraControlsOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
 
         switch gesture.state {
         case .began:
@@ -330,7 +325,7 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-            self.cameraOverlay.locationAccuracyButton.isHidden = false
+            self.cameraControlsOverlay.isShowingLocationAccuracyButton = true
             if self.configuration.alwaysAskForPreciseLocation {
                 self.accuracyButtonDidPress()
             }
@@ -342,19 +337,18 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
 // MARK: - CameraButtonDelegate methods
 
 extension CameraViewController: CameraOverlayDelegate {
-
     func cameraButtonDidPress(_ mode: CameraMode) {
         switch mode {
         case .photo:
-            cameraOverlay.cameraButton.isEnabled = false
+            cameraControlsOverlay.isCapturingPhotoOrVideo = true
             photoManager.setCaptureMode(.photo, completion: { _ in
                 self.photoManager.capturePhoto(locationManager: self.locationManager)
-                self.cameraOverlay.cameraButton.isEnabled = true
+                self.cameraControlsOverlay.isCapturingPhotoOrVideo = false
             })
         case .video:
-            cameraOverlay.cameraButton.isEnabled = false
+            cameraControlsOverlay.isCapturingPhotoOrVideo = true
             photoManager.setCaptureMode(.movie, completion: { _ in
-                self.cameraOverlay.cameraButton.isEnabled = true
+                self.cameraControlsOverlay.isCapturingPhotoOrVideo = false
                 self.photoManager.toggleMovieRecording(recordingDelegate: self)
             })
         }
@@ -376,16 +370,16 @@ extension CameraViewController: CameraOverlayDelegate {
         // TODO: Display dialog tell user why we are asking for precise location
         locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
             if accuracy == .fullAccuracy {
-                self.cameraOverlay.locationAccuracyButton.isHidden = true
+                self.cameraControlsOverlay.isShowingLocationAccuracyButton = false
             } else {
-                self.cameraOverlay.updateLocationAccuracyButton(true)
+                self.cameraControlsOverlay.updateLocationAccuracyButton(true)
                 self.showPreciseLocationUnavailableMessage()
             }
         })
     }
 
     func zoomButtonDidPress() {
-        guard cameraOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
+        guard cameraControlsOverlay.isCameraAvailable, photoManager.isSessionRunning else { return }
         photoManager.toggleZoom()
     }
 
@@ -396,7 +390,7 @@ extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
             assets.append(asset)
-            cameraOverlay.photoPreviewTitle("\(self.assets.count)")
+            cameraControlsOverlay.photoPreviewTitle("\(self.assets.count)")
          }
          onCapture?(asset)
     }
@@ -407,8 +401,9 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
     public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         // Enable the Record button to let the user stop the recording.
         DispatchQueue.main.async {
-            self.cameraOverlay.cameraButton.isEnabled = true
-            self.cameraOverlay.cameraButton.setTitle("Stop", for: .normal)
+            // TODO: fix this when enabling video recording
+//            self.cameraControlsOverlay.cameraButton.isEnabled = true
+//            self.cameraControlsOverlay.cameraButton.setTitle("Stop", for: .normal)
         }
     }
 
@@ -477,7 +472,7 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
         DispatchQueue.main.async {
             // Only enable the ability to change camera if the device has more than one camera.
-            self.cameraOverlay.cameraButton.isEnabled = self.photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+            self.cameraControlsOverlay.isCameraAvailable = self.photoManager.isSessionRunning && self.photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
 //            self.captureModeControl?.isEnabled = true
 //            self.phoneOverlayView.recordButton.setTitle("Rec", for: .normal)
         }

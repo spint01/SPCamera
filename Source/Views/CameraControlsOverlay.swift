@@ -1,5 +1,5 @@
 //
-//  PhoneOverlay.swift
+//  CameraControlsOverlay.swift
 //  SPCamera
 //
 //  Created by Steven G Pint on 10/27/20.
@@ -29,8 +29,7 @@ protocol CameraOverlayDelegate: class {
     func zoomButtonDidPress()
 }
 
-class CameraOverlay {
-
+class CameraControlsOverlay {
     private enum Constant {
         static let topOffset: CGFloat = 10
         static let zoomButtonSize: CGFloat = 42
@@ -40,37 +39,39 @@ class CameraOverlay {
     // Each device is slightly different in size
     static var bottomContainerViewHeight: CGFloat {
         guard !Helper.runningOnIpad else { return 100 }
-        if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
+        switch ScreenSize.SCREEN_MAX_LENGTH {
+        case 896...10000: // IPHONE_X_MAX
             return 180
-        } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
+        case 812..<896: // IPHONE_X
             return 140
-        } else if ScreenSize.SCREEN_MAX_LENGTH >= 736.0 { // IPHONE_PLUS
+        case 736..<812: // IPHONE_PLUS
             return 130
-        } else {
+        default:
             return 120
         }
     }
     private let bottomContainerView: UIView = UIView()
-    let cameraButton: CameraButton = CameraButton()
     private let doneButton: UIButton = UIButton()
     private let photoPreviewButton: UIButton = UIButton()
     private let cameraModeButton: UIButton = UIButton()
     private let zoomButton: UIButton = UIButton()
 
-    static var topContainerHeight: CGFloat {
+    private static var topContainerHeight: CGFloat {
         guard !Helper.runningOnIpad else { return 50 }
-        if ScreenSize.SCREEN_MAX_LENGTH >= 896.0 { // IPHONE_X_MAX
+        switch ScreenSize.SCREEN_MAX_LENGTH {
+        case 896...10000: // IPHONE_X_MAX
             return 74
-        } else if ScreenSize.SCREEN_MAX_LENGTH >= 812.0 { // IPHONE_X
+        case 812..<896: // IPHONE_X
             return 34
-        } else if ScreenSize.SCREEN_MAX_LENGTH >= 736.0 { // IPHONE_PLUS
+        case 736..<812: // IPHONE_PLUS
             return 45
-        } else {
+        default:
             return 42
         }
     }
     private let topContainerView: UIView = UIView()
-    let locationAccuracyButton: UIButton = UIButton()
+    private let cameraButton: CameraButton = CameraButton()
+    private let locationAccuracyButton: UIButton = UIButton()
 
     private var cameraMode: CameraMode = .photo {
         didSet {
@@ -91,19 +92,22 @@ class CameraOverlay {
 
     private let cameraUnavailableLabel: UILabel = UILabel()
     private let photoLibUnavailableLabel: UILabel = UILabel()
-
-    weak var delegate: CameraOverlayDelegate?
-
     private let parentView: UIView
     private var configuration: Configuration = Configuration()
 
     // MARK: public variables
 
+    var isCapturingPhotoOrVideo: Bool = false {
+        didSet {
+            cameraButton.isEnabled = !isCapturingPhotoOrVideo
+        }
+    }
     var isCameraAvailable: Bool = true {
         didSet {
             cameraUnavailableLabel.isHidden = isCameraAvailable
             zoomButton.isHidden = !isCameraAvailable
             cameraModeButton.isEnabled = configuration.isVideoAllowed && isCameraAvailable
+            cameraButton.isEnabled = isCameraAvailable
         }
     }
     var photoUnavailableText: String = "" {
@@ -117,6 +121,13 @@ class CameraOverlay {
             photoLibUnavailableLabel.isHidden = isPhotoLibraryAvailable
         }
     }
+    var isShowingLocationAccuracyButton: Bool = false {
+        didSet {
+            locationAccuracyButton.isHidden = !isShowingLocationAccuracyButton
+        }
+    }
+
+    weak var delegate: CameraOverlayDelegate?
 
     init(parentView: UIView) {
         self.parentView = parentView
@@ -217,7 +228,7 @@ class CameraOverlay {
             topContainerView.topAnchor.constraint(equalTo: margins.topAnchor),
             topContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
             topContainerView.leftAnchor.constraint(equalTo: parentView.leftAnchor),
-            topContainerView.heightAnchor.constraint(equalToConstant: CameraOverlay.topContainerHeight)
+            topContainerView.heightAnchor.constraint(equalToConstant: CameraControlsOverlay.topContainerHeight)
         ])
 
         NSLayoutConstraint.activate([
@@ -321,6 +332,8 @@ class CameraOverlay {
             photoLibUnavailableLabel.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -64),
         ])
     }
+
+    // MARK: public methods
 
     func configure(configuration: Configuration) {
         self.configuration = configuration
