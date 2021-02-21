@@ -240,7 +240,7 @@ public class CameraViewController: UIViewController {
             let changeReason = userInfo["AVSystemController_AudioVolumeChangeReasonNotificationParameter"] as? String, changeReason == "ExplicitVolumeChange" else { return }
 
         slider.setValue(volume, animated: false)
-        photoManager.capturePhoto(locationManager: locationManager)
+        photoManager.capturePhoto(locationManager: locationManager, completion: nil)
     }
 
     @objc private func updateCameraAvailability(_ notification: Notification?) {
@@ -322,7 +322,6 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
     }
 }
 
-
 // MARK: - CameraButtonDelegate methods
 
 extension CameraViewController: CameraOverlayDelegate {
@@ -330,8 +329,7 @@ extension CameraViewController: CameraOverlayDelegate {
         switch mode {
         case .photo:
             cameraControlsOverlay.isCapturingPhotoOrVideo = true
-            photoManager.setCaptureMode(.photo, completion: { _ in
-                self.photoManager.capturePhoto(locationManager: self.locationManager)
+            photoManager.capturePhoto(locationManager: self.locationManager, completion: {
                 self.cameraControlsOverlay.isCapturingPhotoOrVideo = false
             })
         case .video:

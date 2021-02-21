@@ -75,7 +75,6 @@ public class PhotoManager {
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var keyValueObservations = [NSKeyValueObservation]()
 
-
     private let previewView: PreviewView
     private let configuration: Configuration
 
@@ -202,7 +201,6 @@ public class PhotoManager {
                             initialVideoOrientation = videoOrientation
                         }
                     }
-
                     self.previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
                 }
             } else {
@@ -597,10 +595,35 @@ public class PhotoManager {
 
     // MARK: Capturing Photos
 
-    func capturePhoto(locationManager: LocationManager?) {
-        guard !capturingPhoto else { return }
-        guard let videoDeviceInput = videoDeviceInput else { return }
+    private func photoCaptureMode() {
+        guard currentCaptureMode != .photo else { return }
+        /*
+            Remove the AVCaptureMovieFileOutput from the session because movie recording is
+            not supported with AVCaptureSession.Preset.Photo.
+        */
+        session.beginConfiguration()
+        if let movieFileOutput = movieFileOutput {
+            session.removeOutput(movieFileOutput)
+        }
+        session.sessionPreset = .photo
+        movieFileOutput = nil
 
+        #if DepthDataSupport
+        if photoOutput.isDepthDataDeliverySupported {
+            photoOutput.isDepthDataDeliveryEnabled = true
+
+            DispatchQueue.main.async {
+                depthDataDeliveryButton.isHidden = false
+                depthDataDeliveryButton.isEnabled = true
+            }
+        }
+        #endif
+        session.commitConfiguration()
+        currentCaptureMode = .photo
+    }
+
+    func capturePhoto(locationManager: LocationManager?, completion: (() -> Void)? = nil) {
+        guard !capturingPhoto, let videoDeviceInput = videoDeviceInput else { return }
         capturingPhoto = true
         /*
             Retrieve the video preview layer's video orientation on the main queue before
@@ -610,6 +633,8 @@ public class PhotoManager {
         let videoPreviewLayerOrientation = Helper.videoOrientation() // previewView.videoPreviewLayer.connection?.videoOrientation
 
         sessionQueue.async {
+            // make sure we are in the correct mode
+            self.photoCaptureMode()
             // Update the photo output's connection to match the video orientation of the video preview layer.
             if let photoOutputConnection = self.photoOutput.connection(with: .video) {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
@@ -649,15 +674,14 @@ public class PhotoManager {
                     self.sessionQueue.async {
                         self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
                     }
+
                     DispatchQueue.main.async {
                         if let asset = asset, let delegate = self.delegate {
                             delegate.capturedAsset(asset)
                         }
                     }
-                    self.capturingPhoto = false
                 }
             )
-
             /*
                 The Photo Output keeps a weak reference to the photo capture delegate so
                 we store it in an array to maintain a strong reference to this object
@@ -665,6 +689,10 @@ public class PhotoManager {
             */
             self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
             self.photoOutput.capturePhoto(with: photoSettings, delegate: photoCaptureProcessor)
+            DispatchQueue.main.async {
+                self.capturingPhoto = false
+                completion?()
+            }
         }
     }
 
