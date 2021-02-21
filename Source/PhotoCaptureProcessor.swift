@@ -164,7 +164,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                 if status != .notDetermined {
                     // unable to save photo
                     print("unable to save photo to library")
-                    NotificationCenter.default.post(name: NotificationPhotoLibUnavailable, object: nil)
+                    NotificationCenter.default.post(name: .PhotoLibUnavailable, object: nil)
                 }
                 self.didFinish(nil)
             }
