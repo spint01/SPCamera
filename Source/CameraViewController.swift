@@ -328,16 +328,12 @@ extension CameraViewController: CameraOverlayDelegate {
     func cameraButtonDidPress(_ mode: CameraMode) {
         switch mode {
         case .photo:
-            cameraControlsOverlay.isCapturingPhotoOrVideo = true
+            cameraControlsOverlay.isCapturingPhoto = true
             photoManager.capturePhoto(locationManager: self.locationManager, completion: {
-                self.cameraControlsOverlay.isCapturingPhotoOrVideo = false
+                self.cameraControlsOverlay.isCapturingPhoto = false
             })
         case .video:
-            cameraControlsOverlay.isCapturingPhotoOrVideo = true
-            photoManager.setCaptureMode(.movie, completion: { _ in
-                self.cameraControlsOverlay.isCapturingPhotoOrVideo = false
-                self.photoManager.toggleMovieRecording(recordingDelegate: self)
-            })
+            photoManager.toggleMovieRecording()
         }
     }
 
@@ -380,88 +376,15 @@ extension CameraViewController: PhotoManagerDelegate {
          }
          onCapture?(asset)
     }
-}
 
-extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
-
-    public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+    func didStartRecordingVideo() {
         // Enable the Record button to let the user stop the recording.
-        DispatchQueue.main.async {
-            // TODO: fix this when enabling video recording
-//            self.cameraControlsOverlay.cameraButton.isEnabled = true
-//            self.cameraControlsOverlay.cameraButton.setTitle("Stop", for: .normal)
-        }
+        cameraControlsOverlay.isCapturingVideo = true
     }
 
-    public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        /*
-            Note that currentBackgroundRecordingID is used to end the background task
-            associated with this recording. This allows a new recording to be started,
-            associated with a new UIBackgroundTaskIdentifier, once the movie file output's
-            `isRecording` property is back to false — which happens sometime after this method
-            returns.
-
-            Note: Since we use a unique file path for each recording, a new recording will
-            not overwrite a recording currently being saved.
-        */
-        func cleanUp() {
-            let path = outputFileURL.path
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                } catch {
-                    print("Could not remove file at url: \(outputFileURL)")
-                }
-            }
-
-            if let currentBackgroundRecordingID = photoManager.backgroundRecordingID {
-                photoManager.backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
-
-                if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
-                    UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
-                }
-            }
-        }
-
-        var success = true
-
-        if error != nil {
-            print("Movie file finishing error: \(String(describing: error))")
-            success = (((error! as NSError).userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue)!
-        }
-
-        if success {
-            // Check authorization status.
-            PHPhotoLibrary.requestAuthorization { status in
-                if status == .authorized {
-                    // Save the movie file to the photo library and cleanup.
-                    PHPhotoLibrary.shared().performChanges({
-                            let options = PHAssetResourceCreationOptions()
-                            options.shouldMoveFile = true
-                            let creationRequest = PHAssetCreationRequest.forAsset()
-                            creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                        }, completionHandler: { success, error in
-                            if !success {
-                                print("Could not save movie to photo library: \(String(describing: error))")
-                            }
-                            cleanUp()
-                        }
-                    )
-                } else {
-                    cleanUp()
-                }
-            }
-        } else {
-            cleanUp()
-        }
-
-        // Enable the Camera and Record buttons to let the user switch camera and start another recording.
-        DispatchQueue.main.async {
-            // Only enable the ability to change camera if the device has more than one camera.
-            self.cameraControlsOverlay.isCameraAvailable = self.photoManager.isSessionRunning && self.photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
-//            self.captureModeControl?.isEnabled = true
-//            self.phoneOverlayView.recordButton.setTitle("Rec", for: .normal)
-        }
+    func didFinishRecordingVideo() {
+        // Only enable the ability to change camera if the device has more than one camera.
+        cameraControlsOverlay.isCameraAvailable = photoManager.isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
+        cameraControlsOverlay.isCapturingVideo = false
     }
-
 }

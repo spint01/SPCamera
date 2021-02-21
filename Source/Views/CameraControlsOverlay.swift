@@ -98,9 +98,14 @@ class CameraControlsOverlay {
 
     // MARK: public variables
 
-    var isCapturingPhotoOrVideo: Bool = false {
+    var isCapturingPhoto: Bool = false {
         didSet {
-            cameraButton.isEnabled = !isCapturingPhotoOrVideo
+            cameraButton.isEnabled = !isCapturingPhoto
+        }
+    }
+    var isCapturingVideo: Bool = false {
+        didSet {
+            cameraButton.setTitle(isCapturingVideo ? "Stop" : "Rec", for: .normal)
         }
     }
     var isCameraAvailable: Bool = true {

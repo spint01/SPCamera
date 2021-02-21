@@ -9,6 +9,7 @@
 import UIKit
 import CoreLocation
 import ImageIO
+import MediaPlayer
 
 extension CLLocation {
 
@@ -74,5 +75,41 @@ extension Date {
         f.timeZone = TimeZone(abbreviation: "UTC")
         f.dateFormat = "HH:mm:ss.SSSSSS"
         return f.string(from: self)
+    }
+}
+
+extension AVCaptureVideoOrientation {
+    init?(deviceOrientation: UIDeviceOrientation) {
+        switch deviceOrientation {
+            case .portrait: self = .portrait
+            case .portraitUpsideDown: self = .portraitUpsideDown
+            case .landscapeLeft: self = .landscapeRight
+            case .landscapeRight: self = .landscapeLeft
+            default: return nil
+        }
+    }
+
+    init?(interfaceOrientation: UIInterfaceOrientation) {
+        switch interfaceOrientation {
+            case .portrait: self = .portrait
+            case .portraitUpsideDown: self = .portraitUpsideDown
+            case .landscapeLeft: self = .landscapeLeft
+            case .landscapeRight: self = .landscapeRight
+            default: return nil
+        }
+    }
+}
+
+extension AVCaptureDevice.DiscoverySession {
+    var uniqueDevicePositionsCount: Int {
+        var uniqueDevicePositions: [AVCaptureDevice.Position] = []
+
+        for device in devices {
+            if !uniqueDevicePositions.contains(device.position) {
+                uniqueDevicePositions.append(device.position)
+            }
+        }
+
+        return uniqueDevicePositions.count
     }
 }
