@@ -94,7 +94,7 @@ class CameraControlsOverlay {
     private let cameraUnavailableLabel: UILabel = UILabel()
     private let photoLibUnavailableLabel: UILabel = UILabel()
     private let parentView: UIView
-    private var configuration: Configuration = Configuration()
+    private let configuration: Configuration
 
     // MARK: public variables
 
@@ -135,9 +135,11 @@ class CameraControlsOverlay {
 
     weak var delegate: CameraOverlayDelegate?
 
-    init(parentView: UIView) {
+    init(parentView: UIView, configuration: Configuration) {
         self.parentView = parentView
+        self.configuration = configuration
         commonInit()
+        setupUI()
     }
 
     private func commonInit() {
@@ -341,8 +343,7 @@ class CameraControlsOverlay {
 
     // MARK: public methods
 
-    func configure(configuration: Configuration) {
-        self.configuration = configuration
+    private func setupUI() {
         bottomContainerView.backgroundColor =  configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
         cameraUnavailableLabel.text = configuration.cameraPermissionLabel

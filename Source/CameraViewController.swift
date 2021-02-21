@@ -41,8 +41,8 @@ public class CameraViewController: UIViewController {
     private var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
 
-    private lazy var cameraControlsOverlay: CameraControlsOverlay = {
-        return CameraControlsOverlay(parentView: self.view)
+    private lazy var cameraControlsOverlay: CameraControlsOverlay = { [weak self] in
+        return CameraControlsOverlay(parentView: view, configuration: configuration)
     }()
     private lazy var photoManager: PhotoManager = { [weak self] in
         let photoManager = PhotoManager(previewView: previewView, configuration: configuration)
@@ -208,7 +208,6 @@ public class CameraViewController: UIViewController {
 //        phoneOverlayView.layer.borderWidth = 2.0
 
         cameraControlsOverlay.delegate = self
-        cameraControlsOverlay.configure(configuration: configuration)
 
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
         previewView.addGestureRecognizer(pinchGesture)
