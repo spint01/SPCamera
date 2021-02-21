@@ -15,7 +15,6 @@ public class CameraViewController: UIViewController {
     private lazy var previewView: PreviewView = {
         let view = PreviewView()
         view.backgroundColor = configuration.bottomContainerViewColor
-
         return view
     }()
     private var previewViewOffset: CGFloat {
@@ -36,7 +35,6 @@ public class CameraViewController: UIViewController {
     private lazy var volumeView: MPVolumeView = { [unowned self] in
         let view = MPVolumeView()
         view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
-
         return view
         }()
 
@@ -46,8 +44,9 @@ public class CameraViewController: UIViewController {
     private lazy var cameraControlsOverlay: CameraControlsOverlay = {
         return CameraControlsOverlay(parentView: self.view)
     }()
-    private lazy var photoManager: PhotoManager = {
+    private lazy var photoManager: PhotoManager = { [weak self] in
         let photoManager = PhotoManager(previewView: previewView, configuration: configuration)
+        photoManager.delegate = self
         return photoManager
     }()
     private var locationManager: LocationManager?
@@ -85,55 +84,12 @@ public class CameraViewController: UIViewController {
 
     open override func viewDidLoad() {
 		super.viewDidLoad()
-
         setupUI()
-
-        photoManager.setup()
-        photoManager.delegate = self
 	}
 
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-
-        #if targetEnvironment(simulator)
-        cameraControlsOverlay.isCameraAvailable = false
-        cameraControlsOverlay.photoUnavailableText = "Camera is not available on Simulator"
-        #else
-        photoManager.start(completion: { (result) in
-            switch result {
-            case .success:
-                self.cameraControlsOverlay.isCameraAvailable = self.photoManager.isSessionRunning
-                // will ask permission the first time
-                self.locationManager = LocationManager(delegate: self)
-                self.addObserver()
-                self.updateCameraAvailability(nil)
-            case .notAuthorized:
-                self.cameraControlsOverlay.isCameraAvailable = false
-                let alertController = UIAlertController(title: self.configuration.cameraPermissionTitle, message: self.configuration.cameraPermissionMessage, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                        style: .cancel,
-                                                        handler: nil))
-                alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
-                                                        style: .`default`,
-                                                        handler: { _ in
-                                                            if let url = URL(string: UIApplication.openSettingsURLString) {
-                                                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                                                            }
-                }))
-
-                self.present(alertController, animated: true, completion: nil)
-            case .configurationFailed:
-                self.cameraControlsOverlay.isCameraAvailable = false
-                self.cameraControlsOverlay.photoUnavailableText = self.configuration.mediaCaptureFailer
-
-                let alertController = UIAlertController(title: Bundle.main.displayName, message: self.configuration.mediaCaptureFailer, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                        style: .cancel,
-                                                        handler: nil))
-                self.present(alertController, animated: true, completion: nil)
-            }
-        })
-        #endif
+        preparePhotoManager()
     }
 
 	open override func viewWillDisappear(_ animated: Bool) {
@@ -183,6 +139,41 @@ public class CameraViewController: UIViewController {
 
     // MARK: private methods
 
+    private func preparePhotoManager() {
+        #if targetEnvironment(simulator)
+        cameraControlsOverlay.isCameraAvailable = false
+        cameraControlsOverlay.photoUnavailableText = "Camera is not available on Simulator"
+        return
+        #endif
+
+        photoManager.start(completion: { (result) in
+            switch result {
+            case .success:
+                self.cameraControlsOverlay.isCameraAvailable = self.photoManager.isSessionRunning
+                // will ask permission the first time
+                self.locationManager = LocationManager(delegate: self)
+                self.addObserver()
+                self.updateCameraAvailability(nil)
+            case .notAuthorized:
+                self.cameraControlsOverlay.isCameraAvailable = false
+                let alertController = UIAlertController(title: self.configuration.cameraPermissionTitle, message: self.configuration.cameraPermissionMessage, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle, style: .cancel, handler: nil))
+                alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle, style: .`default`, handler: { _ in
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    }
+                }))
+                self.present(alertController, animated: true, completion: nil)
+            case .configurationFailed:
+                self.cameraControlsOverlay.isCameraAvailable = false
+                self.cameraControlsOverlay.photoUnavailableText = self.configuration.mediaCaptureFailer
+                let alertController = UIAlertController(title: Bundle.main.displayName, message: self.configuration.mediaCaptureFailer, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle, style: .cancel, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
+            }
+        })
+    }
+
     private func setupUI() {
 //        previewView.layer.borderColor = UIColor.green.cgColor
 //        previewView.layer.borderWidth = 2.0
@@ -210,7 +201,7 @@ public class CameraViewController: UIViewController {
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(photoManager.focusAndExposeTap))
+        let tapGesture = UITapGestureRecognizer(target: photoManager, action: #selector(photoManager.focusAndExposeTap))
         previewView.addGestureRecognizer(tapGesture)
 
 //        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
@@ -227,7 +218,6 @@ public class CameraViewController: UIViewController {
     private func addObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged), name: NSNotification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(photoLibUnavailable), name: .PhotoLibUnavailable, object: nil)
-
         NotificationCenter.default.addObserver(self, selector: #selector(updateCameraAvailability), name: .UpdateCameraAvailability, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(zoomValueChanged), name: .ZoomValueChanged, object: nil)
     }
@@ -322,7 +312,6 @@ public class CameraViewController: UIViewController {
 // MARK: - LocationManagerAccuracyDelegate methods
 
 extension CameraViewController: LocationManagerAccuracyDelegate {
-
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
             self.cameraControlsOverlay.isShowingLocationAccuracyButton = true
@@ -386,7 +375,6 @@ extension CameraViewController: CameraOverlayDelegate {
 }
 
 extension CameraViewController: PhotoManagerDelegate {
-
     func capturedAsset(_ asset: PHAsset) {
         if self.configuration.allowMultiplePhotoCapture {
             assets.append(asset)

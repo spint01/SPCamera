@@ -92,9 +92,10 @@ public class PhotoManager {
 
         // Set up the video preview view.
         previewView.session = session
+        setup()
     }
 
-    func setup() {
+    private func setup() {
         /*
             Check video authorization status. Video access is required and audio
             access is optional. If audio access is denied, audio is not recorded
@@ -763,9 +764,7 @@ public class PhotoManager {
             let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
 
             DispatchQueue.main.async {
-
                 NotificationCenter.default.post(name: .UpdateCameraAvailability, object: nil)
-
             }
         }
         keyValueObservations.append(keyValueObservation)
@@ -781,7 +780,6 @@ public class PhotoManager {
             of AVCaptureSessionWasInterruptedNotification for other interruption reasons.
         */
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
-
         _ = try? AVAudioSession.sharedInstance().setActive(true)
     }
 

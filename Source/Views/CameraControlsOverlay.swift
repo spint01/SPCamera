@@ -31,9 +31,10 @@ protocol CameraOverlayDelegate: class {
 
 class CameraControlsOverlay {
     private enum Constant {
-        static let topOffset: CGFloat = 10
+        static let topOffset: CGFloat = 5
         static let zoomButtonSize: CGFloat = 42
         static let accuracyButtonHeight: CGFloat = 35
+        static let widthPadding: CGFloat = 20
     }
 
     // Each device is slightly different in size
@@ -175,7 +176,7 @@ class CameraControlsOverlay {
         bottomContainerView.addSubview(cameraModeButton)
         cameraModeButton.backgroundColor = UIColor.clear
         cameraModeButton.setTitle(cameraMode.title, for: .normal)
-        cameraModeButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
+        cameraModeButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         cameraModeButton.addTarget(self, action: #selector(cameraModeButtonDidPress), for: .touchUpInside)
 
         // cameraButton
@@ -258,17 +259,17 @@ class CameraControlsOverlay {
             ])
         NSLayoutConstraint.activate([
             doneButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-            doneButton.rightAnchor.constraint(equalTo: bottomContainerView.rightAnchor, constant: -20)
+            doneButton.rightAnchor.constraint(equalTo: bottomContainerView.rightAnchor, constant: -Constant.widthPadding)
             ])
         NSLayoutConstraint.activate([
             photoPreviewButton.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
-            photoPreviewButton.leftAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: 20),
+            photoPreviewButton.leftAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: Constant.widthPadding),
             photoPreviewButton.widthAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize),
             photoPreviewButton.heightAnchor.constraint(equalToConstant: CameraButton.Constants.buttonSize)
             ])
         NSLayoutConstraint.activate([
             zoomButton.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
-            zoomButton.bottomAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: -20),
+            zoomButton.bottomAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: -Constant.widthPadding),
             zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
             zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
         ])
@@ -323,7 +324,7 @@ class CameraControlsOverlay {
         ])
         NSLayoutConstraint.activate([
             zoomButton.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
-            zoomButton.rightAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: -20),
+            zoomButton.rightAnchor.constraint(equalTo: bottomContainerView.leftAnchor, constant: -Constant.widthPadding),
             zoomButton.widthAnchor.constraint(equalToConstant: Constant.zoomButtonSize),
             zoomButton.heightAnchor.constraint(equalToConstant: Constant.zoomButtonSize)
         ])
@@ -384,7 +385,7 @@ class CameraControlsOverlay {
             // don't show trailing .0
             factorStr = String(factorStr.dropLast(2))
         }
-        let attribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .medium),
+        let attribute = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .bold),
                           NSAttributedString.Key.foregroundColor: UIColor.white]
         zoomButton.setAttributedTitle(NSAttributedString(string: "\(factorStr)x", attributes: attribute), for: .normal)
     }
