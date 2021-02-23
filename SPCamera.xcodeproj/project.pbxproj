@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		CD2F184C20A40D2300EAE2C5 /* compass@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F184920A40D2200EAE2C5 /* compass@1x.png */; };
 		CD2F184D20A40D2300EAE2C5 /* compass@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F184A20A40D2300EAE2C5 /* compass@3x.png */; };
-		CD2F184E20A40D2300EAE2C5 /* compass@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F184B20A40D2300EAE2C5 /* compass@2x.png */; };
 		CD2F185220A40D4100EAE2C5 /* compass_arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F184F20A40D4100EAE2C5 /* compass_arrow@2x.png */; };
 		CD2F185320A40D4100EAE2C5 /* compass_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F185020A40D4100EAE2C5 /* compass_arrow.png */; };
 		CD2F185420A40D4100EAE2C5 /* compass_arrow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2F185120A40D4100EAE2C5 /* compass_arrow@3x.png */; };
@@ -66,7 +65,6 @@
 		7AA677281CFF7B5C00B353FB /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 		CD2F184920A40D2200EAE2C5 /* compass@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass@1x.png"; sourceTree = "<group>"; };
 		CD2F184A20A40D2300EAE2C5 /* compass@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass@3x.png"; sourceTree = "<group>"; };
-		CD2F184B20A40D2300EAE2C5 /* compass@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "compass@2x.png"; path = "../../../../rq/RQLeap/RQLeap/Assets.xcassets/OfficialIcons/compass.imageset/compass@2x.png"; sourceTree = "<group>"; };
 		CD2F184F20A40D4100EAE2C5 /* compass_arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass_arrow@2x.png"; sourceTree = "<group>"; };
 		CD2F185020A40D4100EAE2C5 /* compass_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = compass_arrow.png; sourceTree = "<group>"; };
 		CD2F185120A40D4100EAE2C5 /* compass_arrow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass_arrow@3x.png"; sourceTree = "<group>"; };
@@ -160,7 +158,6 @@
 				CD2F184F20A40D4100EAE2C5 /* compass_arrow@2x.png */,
 				CD2F185120A40D4100EAE2C5 /* compass_arrow@3x.png */,
 				CD2F184920A40D2200EAE2C5 /* compass@1x.png */,
-				CD2F184B20A40D2300EAE2C5 /* compass@2x.png */,
 				CD2F184A20A40D2300EAE2C5 /* compass@3x.png */,
 				CD8DE2FE20214FD2000B792D /* focusIcon@3x.png */,
 			);
@@ -276,6 +273,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -300,7 +298,6 @@
 				CD2F185420A40D4100EAE2C5 /* compass_arrow@3x.png in Resources */,
 				CD6CA311200DC348007DB210 /* SPCamera.podspec in Resources */,
 				CD2F184D20A40D2300EAE2C5 /* compass@3x.png in Resources */,
-				CD2F184E20A40D2300EAE2C5 /* compass@2x.png in Resources */,
 				CD2F185320A40D4100EAE2C5 /* compass_arrow.png in Resources */,
 				CD2F185220A40D4100EAE2C5 /* compass_arrow@2x.png in Resources */,
 			);
