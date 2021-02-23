@@ -5,10 +5,11 @@ import UIKit
 
 protocol LocationManagerAccuracyDelegate: class {
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus)
+    func headingChanged(direction: Double)
 }
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
-    var manager = CLLocationManager()
+    private var manager = CLLocationManager()
     var latestLocation: CLLocation?
     var latestHeading: CLHeading?
 
@@ -25,11 +26,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     convenience init(delegate: LocationManagerAccuracyDelegate) {
         self.init()
         self.delegate = delegate
-        commonInit()
-   }
-
-    override init() {
-        super.init()
         commonInit()
     }
 
@@ -83,23 +79,19 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        latestLocation = manager.location
         latestHeading = newHeading
 
         #if DEBUG_HEADING
-        print("Magnetic heading: \(newHeading.magneticHeading)")
-        print("True heading: \(newHeading.trueHeading)")
-        print("Orientation heading: \(manager.headingOrientation.rawValue)")
-        print("Accuracy heading: \(newHeading.headingAccuracy)")
-        latestLocation = manager.location
-        print("Manager course: \(String(describing: manager.location?.course))")
-//        latestLocation?.course = newHeading.trueHeading
-
-        if let adjustment = latestLocation?.headingAdjusted(latestHeading?.trueHeading ?? 0) {
-//        let adjustment = Double(orientationAdjustment())
-            let adjustedHeading = (newHeading.trueHeading + adjustment).truncatingRemainder(dividingBy: 360)
-            print("Adjustment: \(adjustment)  Adjusted heading: \(adjustedHeading)")
-        }
+            print("Magnetic heading: \(newHeading.magneticHeading)")
+            print("True heading: \(newHeading.trueHeading)")
+            print("Orientation heading: \(manager.headingOrientation.rawValue)")
+            print("Accuracy heading: \(newHeading.headingAccuracy)")
+            print("Manager course: \(String(describing: manager.location?.course))")
         #endif
-    }
 
+        if let adjustedHeading = latestLocation?.headingAdjusted(newHeading.trueHeading) {
+            delegate?.headingChanged(direction: adjustedHeading)
+        }
+    }
 }

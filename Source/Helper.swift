@@ -48,3 +48,26 @@ struct DeviceType {
     static let RUNNING_ON_IPAD      = UIDevice.current.userInterfaceIdiom == .pad
 }
 
+class AssetManager {
+    public static func image(named name: String) -> UIImage {
+        let traitCollection = UITraitCollection(displayScale: 3)
+        var bundle = Bundle(for: AssetManager.self)
+
+        if let resource = bundle.resourcePath, let resourceBundle = Bundle(path: resource + "/SPCamera.bundle") {
+            bundle = resourceBundle
+        }
+
+        return UIImage(named: name, in: bundle, compatibleWith: traitCollection) ?? UIImage()
+    }
+}
+
+extension CGFloat {
+    var degreesToRadians: CGFloat {
+        return self * .pi / 180
+    }
+
+    var radiansToDegrees: CGFloat {
+        return self * 180 / .pi
+    }
+}
+

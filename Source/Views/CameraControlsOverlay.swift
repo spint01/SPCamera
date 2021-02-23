@@ -73,6 +73,10 @@ class CameraControlsOverlay {
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
     private let locationAccuracyButton: UIButton = UIButton()
+    lazy var compassImageView: UIImageView = {
+        let view = UIImageView(image: AssetManager.image(named: "compass"))
+        return view
+    }()
 
     private var cameraMode: CameraMode = .photo {
         didSet {
@@ -175,6 +179,10 @@ class CameraControlsOverlay {
         locationAccuracyButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
         locationAccuracyButton.isHidden = true
 
+        // compassImageView
+        compassImageView.translatesAutoresizingMaskIntoConstraints = false
+        topContainerView.addSubview(compassImageView)
+
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(bottomContainerView)
 
@@ -243,6 +251,13 @@ class CameraControlsOverlay {
             locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
             locationAccuracyButton.topAnchor.constraint(equalTo: topContainerView.topAnchor, constant: 16),
             locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            ])
+
+        NSLayoutConstraint.activate([
+            compassImageView.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+            compassImageView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -20),
+            compassImageView.widthAnchor.constraint(equalToConstant: 60),
+            compassImageView.heightAnchor.constraint(equalToConstant: 60)
             ])
 
         // bottom
@@ -341,8 +356,6 @@ class CameraControlsOverlay {
         ])
     }
 
-    // MARK: public methods
-
     private func setupUI() {
         bottomContainerView.backgroundColor =  configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
@@ -366,10 +379,19 @@ class CameraControlsOverlay {
         }
     }
 
+    // MARK: public methods
+
     func updateLocationAccuracyButton(_ isGray: Bool) {
         locationAccuracyButton.backgroundColor = .clear
         locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
         locationAccuracyButton.layoutIfNeeded()
+    }
+
+    // MARK: - public methods
+    func rotateCompass(direction: Double) {
+        let angle = CGFloat(direction).degreesToRadians
+        print("photo degrees: \(String(format: "%.0f", direction))  angle: \(String(format: "%.3f", angle))")
+        compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
     }
 
     func photoPreviewTitle(_ title: String) {
