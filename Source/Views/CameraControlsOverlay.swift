@@ -388,6 +388,7 @@ class CameraControlsOverlay {
     }
 
     // MARK: - public methods
+
     func rotateCompass(direction: Double) {
         let angle = CGFloat(direction).degreesToRadians
         print("photo degrees: \(String(format: "%.0f", direction))  angle: \(String(format: "%.3f", angle))")

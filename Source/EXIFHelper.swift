@@ -14,7 +14,6 @@ import MediaPlayer
 extension CLLocation {
 
     func exifMetadata(heading: CLHeading? = nil) -> NSMutableDictionary {
-
         let GPSMetadata = NSMutableDictionary()
         let altitudeRef = Int(self.altitude < 0.0 ? 1 : 0)
         let latitudeRef = self.coordinate.latitude < 0.0 ? "S" : "N"
@@ -32,23 +31,24 @@ extension CLLocation {
         GPSMetadata[(kCGImagePropertyGPSVersion as String)] = "2.2.0.0"
 
         if let heading = heading {
-            let trueHeading = headingAdjusted(heading.trueHeading)
+            let trueHeading = heading.trueHeading.headingAdjusted
             GPSMetadata[(kCGImagePropertyGPSImgDirection as String)] = trueHeading
             GPSMetadata[(kCGImagePropertyGPSImgDirectionRef as String)] = "T"
 
-            if self.course <= 0 {
+            if course <= 0 {
                 GPSMetadata[(kCGImagePropertyGPSDestBearing as String)] = trueHeading
                 GPSMetadata[(kCGImagePropertyGPSDestBearingRef as String)] = "T"
             } else {
-                GPSMetadata[(kCGImagePropertyGPSDestBearing as String)] = headingAdjusted(self.course)
+                GPSMetadata[(kCGImagePropertyGPSDestBearing as String)] = course.headingAdjusted
                 GPSMetadata[(kCGImagePropertyGPSDestBearingRef as String)] = "T"
             }
         }
-
         return GPSMetadata
     }
+}
 
-    func headingAdjusted(_ heading: CLLocationDirection) -> CLLocationDirection {
+extension CLLocationDirection {
+    var headingAdjusted: CLLocationDirection {
         let adjAngle: CLLocationDirection = {
             switch UIDevice.current.orientation {
                 case .landscapeLeft:  return 90
@@ -57,8 +57,10 @@ extension CLLocation {
                 default: return 0 // .portrait, .faceDown, .faceUp
             }
         }()
-        return (heading + adjAngle).truncatingRemainder(dividingBy: 360)
+        print("heading: \(self) adjusted: \((self + adjAngle).truncatingRemainder(dividingBy: 360))")
+        return (self + adjAngle).truncatingRemainder(dividingBy: 360)
     }
+
 }
 
 extension Date {

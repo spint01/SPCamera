@@ -10,10 +10,8 @@ protocol LocationManagerAccuracyDelegate: class {
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     private var manager = CLLocationManager()
-    var latestLocation: CLLocation?
-    var latestHeading: CLHeading?
-
-    weak var delegate: LocationManagerAccuracyDelegate?
+    private (set)var latestLocation: CLLocation?
+    private (set)var latestHeading: CLHeading?
 
     var accuracyAuthorization: CLAccuracyAuthorization {
         if #available(iOS 14.0, *) {
@@ -22,6 +20,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return CLAccuracyAuthorization.fullAccuracy
         }
     }
+    weak var delegate: LocationManagerAccuracyDelegate?
 
     convenience init(delegate: LocationManagerAccuracyDelegate) {
         self.init()
@@ -90,8 +89,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             print("Manager course: \(String(describing: manager.location?.course))")
         #endif
 
-        if let adjustedHeading = latestLocation?.headingAdjusted(newHeading.trueHeading) {
-            delegate?.headingChanged(direction: adjustedHeading)
+        if let heading = latestHeading?.trueHeading {
+            delegate?.headingChanged(direction: heading)
         }
     }
 }
