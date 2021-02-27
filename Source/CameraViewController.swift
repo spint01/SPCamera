@@ -305,18 +305,37 @@ public class CameraViewController: UIViewController {
             break
         }
     }
+}
 
+extension CameraViewController {
+    func showSettingsAlert(_ title: String?, message: String?) -> Void {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Settings", style: .`default`, handler: { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }))
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - LocationManagerAccuracyDelegate methods
 
 extension CameraViewController: LocationManagerAccuracyDelegate {
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus) {
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse && locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy {
-            self.cameraControlsOverlay.isShowingLocationAccuracyButton = true
-            if self.configuration.alwaysAskForPreciseLocation {
-                self.accuracyButtonDidPress()
+        switch authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            cameraControlsOverlay.isLocationAuthorized = true
+            guard locationManager?.accuracyAuthorization == CLAccuracyAuthorization.reducedAccuracy else { return }
+            cameraControlsOverlay.isPreciseLocationAuthorized = false
+            if configuration.alwaysAskForPreciseLocation {
+                locationButtonDidPress(true)
             }
+        case .notDetermined:
+            break
+        default:
+            cameraControlsOverlay.isLocationAuthorized = false
         }
     }
 }
@@ -348,11 +367,16 @@ extension CameraViewController: CameraOverlayDelegate {
         onPreview?(assets)
     }
 
-    func accuracyButtonDidPress() {
+    func locationButtonDidPress(_ isLocationAuthorized: Bool) {
+        guard isLocationAuthorized else {
+            // Settings dialog
+            showSettingsAlert("Allow access to your location so photos can be geo-coded", message: "Access was previously denied, please grant access from Settings")
+            return
+        }
         // TODO: Display dialog tell user why we are asking for precise location
         locationManager?.authorizeAccuracy(purposeKey: "PhotoLocation", authorizationStatus: { (accuracy) in
             if accuracy == .fullAccuracy {
-                self.cameraControlsOverlay.isShowingLocationAccuracyButton = false
+                self.cameraControlsOverlay.isPreciseLocationAuthorized = true
             } else {
                 self.cameraControlsOverlay.updateLocationAccuracyButton(true)
                 self.showPreciseLocationUnavailableMessage()
