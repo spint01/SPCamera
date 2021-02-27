@@ -25,7 +25,7 @@ protocol CameraOverlayDelegate: class {
     func doneButtonDidPress()
     func cancelButtonDidPress()
     func previewButtonDidPress()
-    func accuracyButtonDidPress()
+    func locationButtonDidPress(_ isLocationAuthorized: Bool)
     func zoomButtonDidPress()
 }
 
@@ -72,7 +72,7 @@ class CameraControlsOverlay {
     }
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
-    private let locationAccuracyButton: UIButton = UIButton()
+    private let locationAuthorizationButton: UIButton = UIButton()
     private let compassLabel: UILabel = UILabel()
     private lazy var compassImageView: UIImageView = {
         let view = UIImageView(image: AssetManager.image(named: "compass"))
@@ -132,12 +132,30 @@ class CameraControlsOverlay {
             photoLibUnavailableLabel.isHidden = isPhotoLibraryAvailable
         }
     }
-    var isShowingLocationAccuracyButton: Bool = false {
+    var isPreciseLocationAuthorized: Bool = true {
         didSet {
-            locationAccuracyButton.isHidden = !isShowingLocationAccuracyButton
-            compassImageView.isHidden = !isShowingLocationAccuracyButton
-            compassLabel.isHidden = !isShowingLocationAccuracyButton
+            updateLocationAuthorizationButtonText()
         }
+    }
+    var isLocationAuthorized: Bool = true {
+        didSet {
+            updateLocationAuthorizationButtonText()
+        }
+    }
+    private func updateLocationAuthorizationButtonText() {
+        locationAuthorizationButton.isHidden = isLocationAuthorized && isPreciseLocationAuthorized
+        compassImageView.isHidden = !locationAuthorizationButton.isHidden
+        compassLabel.isHidden = !locationAuthorizationButton.isHidden
+        let text: String = {
+            if !isLocationAuthorized {
+                return "Location Off  \(String("\u{276F}"))"
+            }
+            if !isPreciseLocationAuthorized {
+                return "Precise Location: Off  \(String("\u{276F}"))"
+            }
+            return ""
+        }()
+        locationAuthorizationButton.setTitle(text, for: .normal)
     }
 
     weak var delegate: CameraOverlayDelegate?
@@ -172,15 +190,15 @@ class CameraControlsOverlay {
         }
 
         // locationAccuracyButton
-        locationAccuracyButton.translatesAutoresizingMaskIntoConstraints = false
-        topContainerView.addSubview(locationAccuracyButton)
-        locationAccuracyButton.layer.cornerRadius = 10
-        locationAccuracyButton.backgroundColor = UIColor.systemBlue
-        locationAccuracyButton.setTitle("Precise Location: Off  \(String("\u{276F}"))", for: .normal)
-        locationAccuracyButton.setTitleColor(UIColor.white, for: .normal)
-        locationAccuracyButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        locationAccuracyButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
-        locationAccuracyButton.isHidden = true
+        locationAuthorizationButton.translatesAutoresizingMaskIntoConstraints = false
+        topContainerView.addSubview(locationAuthorizationButton)
+        locationAuthorizationButton.layer.cornerRadius = 10
+        locationAuthorizationButton.backgroundColor = UIColor.systemBlue
+        locationAuthorizationButton.setTitle("Precise Location: Off  \(String("\u{276F}"))", for: .normal)
+        locationAuthorizationButton.setTitleColor(UIColor.white, for: .normal)
+        locationAuthorizationButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        locationAuthorizationButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
+        locationAuthorizationButton.isHidden = true
 
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(bottomContainerView)
@@ -254,9 +272,9 @@ class CameraControlsOverlay {
         ])
 
         NSLayoutConstraint.activate([
-            locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
-            locationAccuracyButton.topAnchor.constraint(equalTo: topContainerView.topAnchor, constant: 16),
-            locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            locationAuthorizationButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            locationAuthorizationButton.topAnchor.constraint(equalTo: topContainerView.topAnchor, constant: 16),
+            locationAuthorizationButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
             ])
 
         NSLayoutConstraint.activate([
@@ -326,9 +344,9 @@ class CameraControlsOverlay {
         ])
 
         NSLayoutConstraint.activate([
-            locationAccuracyButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
-            locationAccuracyButton.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
-            locationAccuracyButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            locationAuthorizationButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            locationAuthorizationButton.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+            locationAuthorizationButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
             ])
 
         // bottom
@@ -408,9 +426,9 @@ class CameraControlsOverlay {
     // MARK: public methods
 
     func updateLocationAccuracyButton(_ isGray: Bool) {
-        locationAccuracyButton.backgroundColor = .clear
-        locationAccuracyButton.setTitleColor(.systemGray, for: .normal)
-        locationAccuracyButton.layoutIfNeeded()
+        locationAuthorizationButton.backgroundColor = .clear
+        locationAuthorizationButton.setTitleColor(.systemGray, for: .normal)
+        locationAuthorizationButton.layoutIfNeeded()
     }
 
     // MARK: - public methods
@@ -474,6 +492,6 @@ class CameraControlsOverlay {
     }
 
     @objc private func locationAccuracyButtonDidPress() {
-        delegate?.accuracyButtonDidPress()
+        delegate?.locationButtonDidPress(isLocationAuthorized)
     }
 }
