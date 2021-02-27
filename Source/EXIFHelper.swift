@@ -15,19 +15,19 @@ extension CLLocation {
 
     func exifMetadata(heading: CLHeading? = nil) -> NSMutableDictionary {
         let GPSMetadata = NSMutableDictionary()
-        let altitudeRef = Int(self.altitude < 0.0 ? 1 : 0)
-        let latitudeRef = self.coordinate.latitude < 0.0 ? "S" : "N"
-        let longitudeRef = self.coordinate.longitude < 0.0 ? "W" : "E"
+        let altitudeRef = Int(altitude < 0.0 ? 1 : 0)
+        let latitudeRef = coordinate.latitude < 0.0 ? "S" : "N"
+        let longitudeRef = coordinate.longitude < 0.0 ? "W" : "E"
 
         // GPS metadata
-        GPSMetadata[(kCGImagePropertyGPSLatitude as String)] = abs(self.coordinate.latitude)
-        GPSMetadata[(kCGImagePropertyGPSLongitude as String)] = abs(self.coordinate.longitude)
+        GPSMetadata[(kCGImagePropertyGPSLatitude as String)] = abs(coordinate.latitude)
+        GPSMetadata[(kCGImagePropertyGPSLongitude as String)] = abs(coordinate.longitude)
         GPSMetadata[(kCGImagePropertyGPSLatitudeRef as String)] = latitudeRef
         GPSMetadata[(kCGImagePropertyGPSLongitudeRef as String)] = longitudeRef
-        GPSMetadata[(kCGImagePropertyGPSAltitude as String)] = Int(abs(self.altitude))
+        GPSMetadata[(kCGImagePropertyGPSAltitude as String)] = Int(abs(altitude))
         GPSMetadata[(kCGImagePropertyGPSAltitudeRef as String)] = altitudeRef
-        GPSMetadata[(kCGImagePropertyGPSTimeStamp as String)] = self.timestamp.isoTime()
-        GPSMetadata[(kCGImagePropertyGPSDateStamp as String)] = self.timestamp.isoDate()
+        GPSMetadata[(kCGImagePropertyGPSTimeStamp as String)] = timestamp.isoTime()
+        GPSMetadata[(kCGImagePropertyGPSDateStamp as String)] = timestamp.isoDate()
         GPSMetadata[(kCGImagePropertyGPSVersion as String)] = "2.2.0.0"
 
         if let heading = heading {
@@ -114,4 +114,23 @@ extension AVCaptureDevice.DiscoverySession {
 
         return uniqueDevicePositions.count
     }
+}
+
+enum Direction: String, CaseIterable {
+    case n, nne, ne, ene, e, ese, se, sse, s, ssw, sw, wsw, w, wnw, nw, nnw
+}
+
+extension Direction: CustomStringConvertible  {
+    init<D: BinaryFloatingPoint>(_ direction: D) {
+        self =  Self.allCases[Int((direction.angle+11.25).truncatingRemainder(dividingBy: 360)/22.5)]
+    }
+    var description: String { rawValue.uppercased() }
+}
+
+extension BinaryFloatingPoint {
+    var angle: Self {
+        (truncatingRemainder(dividingBy: 360) + 360)
+            .truncatingRemainder(dividingBy: 360)
+    }
+    var direction: Direction { .init(self) }
 }

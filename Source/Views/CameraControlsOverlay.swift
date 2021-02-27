@@ -73,7 +73,8 @@ class CameraControlsOverlay {
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
     private let locationAccuracyButton: UIButton = UIButton()
-    lazy var compassImageView: UIImageView = {
+    private let compassLabel: UILabel = UILabel()
+    private lazy var compassImageView: UIImageView = {
         let view = UIImageView(image: AssetManager.image(named: "compass"))
         return view
     }()
@@ -134,6 +135,8 @@ class CameraControlsOverlay {
     var isShowingLocationAccuracyButton: Bool = false {
         didSet {
             locationAccuracyButton.isHidden = !isShowingLocationAccuracyButton
+            compassImageView.isHidden = !isShowingLocationAccuracyButton
+            compassLabel.isHidden = !isShowingLocationAccuracyButton
         }
     }
 
@@ -178,10 +181,6 @@ class CameraControlsOverlay {
         locationAccuracyButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         locationAccuracyButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
         locationAccuracyButton.isHidden = true
-
-        // compassImageView
-        compassImageView.translatesAutoresizingMaskIntoConstraints = false
-        topContainerView.addSubview(compassImageView)
 
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(bottomContainerView)
@@ -236,9 +235,16 @@ class CameraControlsOverlay {
         } else {
             setupPhoneConstraints()
         }
+        compassLabel.textColor = .white
     }
 
     private func setupPhoneConstraints() {
+        // compassImageView
+        compassImageView.translatesAutoresizingMaskIntoConstraints = false
+        topContainerView.addSubview(compassImageView)
+        compassLabel.translatesAutoresizingMaskIntoConstraints = false
+        topContainerView.addSubview(compassLabel)
+
         let margins = parentView.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
             topContainerView.topAnchor.constraint(equalTo: margins.topAnchor),
@@ -258,6 +264,10 @@ class CameraControlsOverlay {
             compassImageView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -20),
             compassImageView.widthAnchor.constraint(equalToConstant: 60),
             compassImageView.heightAnchor.constraint(equalToConstant: 60)
+            ])
+        NSLayoutConstraint.activate([
+            compassLabel.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+            compassLabel.rightAnchor.constraint(equalTo: compassImageView.leftAnchor, constant: -20),
             ])
 
         // bottom
@@ -302,6 +312,12 @@ class CameraControlsOverlay {
     }
 
     private func setupTabletConstraints() {
+        // compassImageView
+        compassImageView.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainerView.addSubview(compassImageView)
+        compassLabel.translatesAutoresizingMaskIntoConstraints = false
+        bottomContainerView.addSubview(compassLabel)
+
         NSLayoutConstraint.activate([
             topContainerView.topAnchor.constraint(equalTo: parentView.topAnchor),
             topContainerView.rightAnchor.constraint(equalTo: parentView.rightAnchor),
@@ -338,6 +354,16 @@ class CameraControlsOverlay {
             doneButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
             doneButton.topAnchor.constraint(equalTo: bottomContainerView.topAnchor, constant: 20)
         ])
+        NSLayoutConstraint.activate([
+            compassImageView.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: 30),
+            compassImageView.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            compassImageView.widthAnchor.constraint(equalToConstant: 60),
+            compassImageView.heightAnchor.constraint(equalToConstant: 60),
+            ])
+        NSLayoutConstraint.activate([
+            compassLabel.topAnchor.constraint(equalTo: compassImageView.bottomAnchor, constant: 30),
+            compassLabel.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            ])
         NSLayoutConstraint.activate([
             photoPreviewButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
             photoPreviewButton.bottomAnchor.constraint(equalTo: bottomContainerView.bottomAnchor, constant: -20),
@@ -389,10 +415,12 @@ class CameraControlsOverlay {
 
     // MARK: - public methods
 
-    func rotateCompass(direction: Double) {
-        let angle = CGFloat(direction).degreesToRadians
-        print("photo degrees: \(String(format: "%.0f", direction))  angle: \(String(format: "%.3f", angle))")
+    func rotateCompass(heading: Double) {
+        let angle = CGFloat(heading).degreesToRadians
+        print("photo degrees: \(String(format: "%.0f", heading)) angle: \(String(format: "%.3f", angle))")
         compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
+        let directionStr = heading.headingAdjusted.direction.description
+        compassLabel.text = "\(String(format: "%.0f%@ %@", heading.headingAdjusted, Helper.DEGREES, directionStr))"
     }
 
     func photoPreviewTitle(_ title: String) {

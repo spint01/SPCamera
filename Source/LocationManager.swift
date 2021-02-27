@@ -5,7 +5,7 @@ import UIKit
 
 protocol LocationManagerAccuracyDelegate: class {
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus)
-    func headingChanged(direction: Double)
+    func headingChanged(heading: Double)
 }
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
@@ -90,7 +90,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         #endif
 
         if let heading = latestHeading?.trueHeading {
-            delegate?.headingChanged(direction: heading)
+            delegate?.headingChanged(heading: heading)
         }
     }
 }

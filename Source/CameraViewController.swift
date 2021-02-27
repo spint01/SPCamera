@@ -322,8 +322,8 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
         }
     }
 
-    func headingChanged(direction: Double) {
-        cameraControlsOverlay.rotateCompass(direction: direction)
+    func headingChanged(heading: Double) {
+        cameraControlsOverlay.rotateCompass(heading: heading)
     }
 }
 

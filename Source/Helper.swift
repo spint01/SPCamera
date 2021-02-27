@@ -4,6 +4,7 @@ import AVFoundation
 public struct Helper {
 
     static let runningOnIpad = UIDevice.current.userInterfaceIdiom == .pad
+    static let DEGREES = "\u{00B0}"
 
     public static func rotationTransform() -> CGAffineTransform {
         switch UIDevice.current.orientation {
