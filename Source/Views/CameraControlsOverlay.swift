@@ -78,10 +78,12 @@ class CameraControlsOverlay {
         label.numberOfLines = 2
         label.textColor = .white
         label.textAlignment = .center
+        label.isHidden = !configuration.showCompass
         return label
     }()
     private lazy var compassImageView: UIImageView = {
         let view = UIImageView(image: AssetManager.image(named: "compass"))
+        view.isHidden = !configuration.showCompass
         return view
     }()
 
@@ -150,8 +152,8 @@ class CameraControlsOverlay {
     }
     private func updateLocationAuthorizationButtonText() {
         locationAuthorizationButton.isHidden = isLocationAuthorized && isPreciseLocationAuthorized
-        compassImageView.isHidden = !locationAuthorizationButton.isHidden
-        compassLabel.isHidden = !locationAuthorizationButton.isHidden
+        compassImageView.isHidden = !locationAuthorizationButton.isHidden || !configuration.showCompass
+        compassLabel.isHidden = !locationAuthorizationButton.isHidden || !configuration.showCompass
         let text: String = {
             if !isLocationAuthorized {
                 return "Location Off  \(String("\u{276F}"))"
@@ -439,11 +441,12 @@ class CameraControlsOverlay {
     // MARK: - public methods
 
     func rotateCompass(heading: Double) {
+        guard configuration.showCompass else { return }
         let angle = CGFloat(heading).degreesToRadians
         print("photo degrees: \(String(format: "%.0f", heading)) angle: \(String(format: "%.3f", angle))")
         compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
-        let directionStr = heading.headingAdjusted.direction.description
-        compassLabel.text = "\(String(format: "%.0f%@ %@", heading.headingAdjusted, Helper.DEGREES, directionStr))"
+        let adjusted = heading.headingAdjusted
+        compassLabel.text = "\(String(format: "%.0f%@\n%@", adjusted, Helper.DEGREES, adjusted.direction.description))"
     }
 
     func photoPreviewTitle(_ title: String) {
