@@ -64,7 +64,6 @@ extension CLLocationDirection {
 }
 
 extension Date {
-
     func isoDate() -> String {
         let f = DateFormatter()
         f.timeZone = TimeZone(abbreviation: "UTC")

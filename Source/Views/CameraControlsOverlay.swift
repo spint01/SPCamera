@@ -73,7 +73,13 @@ class CameraControlsOverlay {
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
     private let locationAuthorizationButton: UIButton = UIButton()
-    private let compassLabel: UILabel = UILabel()
+    private lazy var compassLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 2
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
     private lazy var compassImageView: UIImageView = {
         let view = UIImageView(image: AssetManager.image(named: "compass"))
         return view
@@ -253,7 +259,6 @@ class CameraControlsOverlay {
         } else {
             setupPhoneConstraints()
         }
-        compassLabel.textColor = .white
     }
 
     private func setupPhoneConstraints() {
