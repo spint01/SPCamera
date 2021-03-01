@@ -65,11 +65,14 @@ public class PhotoManager: NSObject {
     private var capturingPhoto = false
     private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
     private var setupResult: SessionSetupResult = .success
-    private var currentCaptureMode: CaptureMode = .none
+    var currentCaptureMode: CaptureMode = .none
     private var videoDeviceInput: AVCaptureDeviceInput?
     private let photoOutput = AVCapturePhotoOutput()
     private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
     private var movieFileOutput: AVCaptureMovieFileOutput?
+    var videoDuration: CMTime {
+        return movieFileOutput?.recordedDuration ?? CMTime.zero
+    }
     private var keyValueObservations = [NSKeyValueObservation]()
 
     private let previewView: PreviewView
@@ -538,6 +541,14 @@ public class PhotoManager: NSObject {
 
     // MARK: Capturing Photos
 
+    func updateCameraMode(_ captureMode: CameraMode) {
+        if captureMode == .photo {
+            photoCaptureMode()
+        } else {
+            videoMode()
+        }
+    }
+
     private func photoCaptureMode() {
         guard currentCaptureMode != .photo else { return }
         // Remove the AVCaptureMovieFileOutput from the session because movie recording is
@@ -637,7 +648,7 @@ public class PhotoManager: NSObject {
 
     // MARK: Recording Movies
 
-    private func recordMode() {
+    private func videoMode() {
         guard currentCaptureMode != .movie else { return }
         #if DepthDataSupport
         depthDataDeliveryButton.isHidden = true
@@ -672,10 +683,10 @@ public class PhotoManager: NSObject {
             before entering the session queue. We do this to ensure UI elements are
             accessed on the main thread and session configuration is done on the session queue.
         */
-        let videoPreviewLayerOrientation = previewView.videoPreviewLayer.connection?.videoOrientation
+        let videoPreviewLayerOrientation = Helper.videoOrientation() // previewView.videoPreviewLayer.connection?.videoOrientation
 
         sessionQueue.async {
-            self.recordMode()
+            self.videoMode()
             guard let movieFileOutput = self.movieFileOutput else { return }
             guard !movieFileOutput.isRecording else {
                 movieFileOutput.stopRecording()
@@ -694,19 +705,17 @@ public class PhotoManager: NSObject {
             }
 
             // Update the orientation on the movie file output video connection before starting recording.
-            let movieFileOutputConnection = movieFileOutput.connection(with: .video)
-            movieFileOutputConnection?.videoOrientation = videoPreviewLayerOrientation!
-
-            let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
-
-            if availableVideoCodecTypes.contains(.hevc) {
-                movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection!)
+            if let movieFileOutputConnection = movieFileOutput.connection(with: .video) {
+                movieFileOutputConnection.videoOrientation = videoPreviewLayerOrientation
+                let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
+                if availableVideoCodecTypes.contains(.hevc) {
+                    movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection)
+                }
             }
-
             // Start recording to a temporary file.
-            let outputFileName = NSUUID().uuidString
-            let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
-            movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
+            let outputFilePath = "\(NSTemporaryDirectory())/\(NSUUID().uuidString).mp4"
+            let outputFileURL = URL(fileURLWithPath: outputFilePath)
+            movieFileOutput.startRecording(to: outputFileURL, recordingDelegate: self)
         }
     }
 

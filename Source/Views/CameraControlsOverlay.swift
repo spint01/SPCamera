@@ -22,6 +22,7 @@ enum CameraMode {
 
 protocol CameraOverlayDelegate: class {
     func cameraButtonDidPress(_ mode: CameraMode)
+    func cameraModeButtonDidPress(_ mode: CameraMode)
     func doneButtonDidPress()
     func cancelButtonDidPress()
     func previewButtonDidPress()
@@ -422,6 +423,7 @@ class CameraControlsOverlay {
 
     @objc func cameraModeButtonDidPress(_ button: UIButton) {
         cameraMode = cameraMode == .photo ? .video : .photo
+        delegate?.cameraModeButtonDidPress(cameraMode)
     }
 
     @objc func doneButtonDidPress(_ button: UIButton) {
