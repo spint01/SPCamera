@@ -113,3 +113,15 @@ extension AVCaptureDevice.DiscoverySession {
         return uniqueDevicePositions.count
     }
 }
+
+extension CMTime {
+    var roundedSeconds: TimeInterval {
+        return seconds.rounded()
+    }
+    var hours:  Int { return Int(roundedSeconds / 3600) }
+    var minute: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 3600) / 60) }
+    var second: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 60)) }
+    var positionalTime: String {
+        String(format: "%02d:%02d:%02d", hours, minute, second)
+    }
+}

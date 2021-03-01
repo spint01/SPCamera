@@ -137,7 +137,7 @@ public class CameraViewController: UIViewController {
 
         let bounds = view.layer.bounds
         previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)
-        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds) previewViewOffset: \(previewViewOffset)")
+//        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds) previewViewOffset: \(previewViewOffset)")
     }
 
     // MARK: private methods
@@ -382,7 +382,7 @@ extension CameraViewController: CameraOverlayDelegate {
 
 extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
-        if self.configuration.allowMultiplePhotoCapture {
+        if configuration.allowMultiplePhotoCapture {
             assets.append(asset)
             cameraControlsOverlay.photoPreviewTitle("\(self.assets.count)")
          }
@@ -398,6 +398,9 @@ extension CameraViewController: PhotoManagerDelegate {
         stopTimer()
         cameraControlsOverlay.isCameraAvailable = photoManager.isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
         cameraControlsOverlay.isCapturingVideo = false
+        if !configuration.allowMultiplePhotoCapture {
+            onFinish?(assets)
+        }
     }
 }
 
@@ -414,9 +417,8 @@ extension CameraViewController {
         updateTimer?.invalidate()
     }
 
-    // method only gets called when in the foreground from the timer
-    // NOTE: Does not get called on pull to refresh since we don't want to wait until full images have uploaded to return to the user
     @objc private func refresh() {
         print("video time: \(Int(photoManager.videoDuration.seconds))")
+        cameraControlsOverlay.videoDuration(photoManager.videoDuration.positionalTime)
     }
 }
