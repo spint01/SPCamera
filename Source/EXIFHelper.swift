@@ -51,14 +51,18 @@ extension CLLocationDirection {
     var headingAdjusted: CLLocationDirection {
         let adjAngle: CLLocationDirection = {
             switch UIDevice.current.orientation {
-                case .landscapeLeft:  return 90
-                case .landscapeRight: return -90
-                case .portraitUpsideDown: return -180
+                case .landscapeLeft:
+                    return 90
+                case .landscapeRight:
+                    return self < 90 ? 270 : -90
+                case .portraitUpsideDown:
+                    return self < 180 ? 180 : -180
                 default: return 0 // .portrait, .faceDown, .faceUp
             }
         }()
-        print("heading: \(self) adjusted: \((self + adjAngle).truncatingRemainder(dividingBy: 360))")
-        return (self + adjAngle).truncatingRemainder(dividingBy: 360)
+        let adjusted: CLLocationDirection = (self + adjAngle).truncatingRemainder(dividingBy: 360)
+        print("heading: \(self) adjusted: \(adjusted)")
+        return adjusted
     }
 
 }
@@ -121,15 +125,14 @@ enum Direction: String, CaseIterable {
 
 extension Direction: CustomStringConvertible  {
     init<D: BinaryFloatingPoint>(_ direction: D) {
-        self =  Self.allCases[Int((direction.angle+11.25).truncatingRemainder(dividingBy: 360)/22.5)]
+        self = Self.allCases[Int((direction.angle+11.25).truncatingRemainder(dividingBy: 360)/22.5)]
     }
     var description: String { rawValue.uppercased() }
 }
 
 extension BinaryFloatingPoint {
     var angle: Self {
-        (truncatingRemainder(dividingBy: 360) + 360)
-            .truncatingRemainder(dividingBy: 360)
+        (truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
     }
     var direction: Direction { .init(self) }
 }

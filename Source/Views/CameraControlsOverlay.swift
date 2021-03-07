@@ -442,11 +442,32 @@ class CameraControlsOverlay {
 
     func rotateCompass(heading: Double) {
         guard configuration.showCompass else { return }
-        let angle = CGFloat(heading).degreesToRadians
-        print("photo degrees: \(String(format: "%.0f", heading)) angle: \(String(format: "%.3f", angle))")
-        compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
         let adjusted = heading.headingAdjusted
+        let angle: CGFloat = {
+            guard Helper.runningOnIpad else {
+                return CGFloat(heading).degreesToRadians
+            }
+            return CGFloat(adjusted).degreesToRadians
+        }()
+        print("photo degrees: \(String(format: "%.0f", adjusted)) angle: \(String(format: "%.3f", angle))")
+        compassImageView.transform = CGAffineTransform(rotationAngle: -angle)
         compassLabel.text = "\(String(format: "%.0f%@\n%@", adjusted, Helper.DEGREES, adjusted.direction.description))"
+        guard !Helper.runningOnIpad else { return }
+        let textAngle: CGFloat = CGFloat(textLabelRotation).degreesToRadians
+        print("textAngle: \(textAngle)")
+        compassLabel.transform = CGAffineTransform(rotationAngle: -textAngle)
+    }
+
+    private var textLabelRotation: Double {
+        switch UIDevice.current.orientation {
+            case .landscapeLeft:
+                return -90
+            case .landscapeRight:
+                return 90
+            case .portraitUpsideDown:
+                return 180
+            default: return 0 // .portrait, .faceDown, .faceUp
+        }
     }
 
     func photoPreviewTitle(_ title: String) {
