@@ -398,9 +398,6 @@ extension CameraViewController: PhotoManagerDelegate {
         stopTimer()
         cameraControlsOverlay.isCameraAvailable = photoManager.isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
         cameraControlsOverlay.isCapturingVideo = false
-        if !configuration.allowMultiplePhotoCapture {
-            onFinish?(assets)
-        }
     }
 }
 

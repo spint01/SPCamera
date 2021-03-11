@@ -77,6 +77,7 @@ public class PhotoManager: NSObject {
 
     private let previewView: PreviewView
     private let configuration: Configuration
+    private var albumName: String? = Bundle.main.displayName
 
     let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera], mediaType: .video, position: .unspecified)
     private (set)var isSessionRunning = false
@@ -902,19 +903,39 @@ extension PhotoManager: AVCaptureFileOutputRecordingDelegate {
                 cleanUp()
                 return
             }
+            var localIdentifier: String?
             // Save the movie file to the photo library and cleanup.
             PHPhotoLibrary.shared().performChanges({
-                    let options = PHAssetResourceCreationOptions()
-                    options.shouldMoveFile = true
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                }, completionHandler: { success, error in
-                    if !success {
-                        print("Could not save movie to photo library: \(String(describing: error))")
+                let options = PHAssetResourceCreationOptions()
+                options.shouldMoveFile = true
+                let creationRequest = PHAssetCreationRequest.forAsset()
+                creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
+                creationRequest.creationDate = Date()
+            // TODO: move this PhotoCaptureProcessor and use it's locationManager
+//                    creationRequest.location = self.latestLocation
+                // save photo in given named album if set
+                if let albumName = self.albumName, !albumName.isEmpty {
+                    var albumChangeRequest: PHAssetCollectionChangeRequest?
+
+                    if let assetCollection = self.fetchAssetCollectionForAlbum(albumName) {
+                        albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
+                    } else {
+                        albumChangeRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
                     }
-                    cleanUp()
+                    if let albumChangeRequest = albumChangeRequest, let assetPlaceholder = creationRequest.placeholderForCreatedAsset {
+                        localIdentifier = assetPlaceholder.localIdentifier
+                        let enumeration: NSArray = [assetPlaceholder]
+                        albumChangeRequest.addAssets(enumeration)
+                    }
                 }
-            )
+            }, completionHandler: { success, error in
+                if !success {
+                    print("Could not save movie to photo library: \(String(describing: error))")
+                } else {
+                    self.didFinish(localIdentifier)
+                }
+                cleanUp()
+            })
         }
 
         // Enable the Camera and Record buttons to let the user switch camera and start another recording.
@@ -923,5 +944,24 @@ extension PhotoManager: AVCaptureFileOutputRecordingDelegate {
         }
     }
 
+    // MARK: Helper
+
+    private func didFinish(_ assetIdentifer: String?) {
+        if let identifier = assetIdentifer, let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject {
+            DispatchQueue.main.async {
+                self.delegate?.capturedAsset(asset)
+            }
+        } else {
+
+        }
+    }
+
+    private func fetchAssetCollectionForAlbum(_ albumName: String) -> PHAssetCollection? {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let collection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+
+        return collection.firstObject
+    }
 }
 
