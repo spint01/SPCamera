@@ -61,7 +61,7 @@ extension CLLocationDirection {
             }
         }()
         let adjusted: CLLocationDirection = (self + adjAngle).truncatingRemainder(dividingBy: 360)
-        print("heading: \(self) adjusted: \(adjusted)")
+//        print("heading: \(self) adjusted: \(adjusted)")
         return adjusted
     }
 
