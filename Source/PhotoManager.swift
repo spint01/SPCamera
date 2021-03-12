@@ -90,15 +90,15 @@ public class PhotoManager: NSObject {
         self.previewView = previewView
         self.configuration = configuration
         setupResult = .success
-        #if targetEnvironment(simulator)
-        print("Camera is not available on Simulator")
-        return
-        #endif
 
         // Set up the video preview view.
         previewView.session = session
         super.init()
+        #if targetEnvironment(simulator)
+        print("Camera is not available on Simulator")
+        #else
         setup()
+        #endif
     }
 
     private func setup() {
@@ -625,7 +625,6 @@ public class PhotoManager: NSObject {
                     self.sessionQueue.async {
                         self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
                     }
-
                     DispatchQueue.main.async {
                         if let asset = asset, let delegate = self.delegate {
                             delegate.capturedAsset(asset)
@@ -716,7 +715,33 @@ public class PhotoManager: NSObject {
             // Start recording to a temporary file.
             let outputFilePath = "\(NSTemporaryDirectory())/\(NSUUID().uuidString).mp4"
             let outputFileURL = URL(fileURLWithPath: outputFilePath)
-            movieFileOutput.startRecording(to: outputFileURL, recordingDelegate: self)
+
+            // TODO: using this in order to create the photoCaptureProcessor and get a unique id
+            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+
+            // Use a separate object for the video record delegate to isolate each recording life cycle.
+            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, backgroundRecordingID: self.backgroundRecordingID, locationManager: nil) {
+                self.delegate?.didStartRecordingVideo()
+            } didFinishRecordingVideo: {
+                self.delegate?.didFinishRecordingVideo()
+            } completionHandler: { (photoCaptureProcessor, asset) in
+                // When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
+                self.sessionQueue.async {
+                    self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
+                }
+                DispatchQueue.main.async {
+                    if let asset = asset, let delegate = self.delegate {
+                        delegate.capturedAsset(asset)
+                    }
+                }
+            }
+            /*
+                The Photo Output keeps a weak reference to the photo capture delegate so
+                we store it in an array to maintain a strong reference to this object
+                until the capture is completed.
+            */
+            self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
+            movieFileOutput.startRecording(to: outputFileURL, recordingDelegate: photoCaptureProcessor)
         }
     }
 
@@ -852,116 +877,5 @@ public class PhotoManager: NSObject {
     }
 }
 
-extension PhotoManager: AVCaptureFileOutputRecordingDelegate {
 
-    public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
-        DispatchQueue.main.async {
-            self.delegate?.didStartRecordingVideo()
-        }
-    }
-
-    public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        /*
-            Note that currentBackgroundRecordingID is used to end the background task
-            associated with this recording. This allows a new recording to be started,
-            associated with a new UIBackgroundTaskIdentifier, once the movie file output's
-            `isRecording` property is back to false — which happens sometime after this method
-            returns.
-
-            Note: Since we use a unique file path for each recording, a new recording will
-            not overwrite a recording currently being saved.
-        */
-        func cleanUp() {
-            let path = outputFileURL.path
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                } catch {
-                    print("Could not remove file at url: \(outputFileURL)")
-                }
-            }
-            if let currentBackgroundRecordingID = backgroundRecordingID {
-                backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
-                if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
-                    UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
-                }
-            }
-        }
-        let success: Bool = (((error as NSError?)?.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue) ?? true
-        if error != nil || !success {
-            print("Movie file finishing error: \(String(describing: error))")
-            DispatchQueue.main.async {
-                self.delegate?.didFinishRecordingVideo()
-            }
-            cleanUp()
-            return
-        }
-
-        // Check authorization status.
-        PHPhotoLibrary.requestAuthorization { status in
-            guard status == .authorized else {
-                cleanUp()
-                return
-            }
-            var localIdentifier: String?
-            // Save the movie file to the photo library and cleanup.
-            PHPhotoLibrary.shared().performChanges({
-                let options = PHAssetResourceCreationOptions()
-                options.shouldMoveFile = true
-                let creationRequest = PHAssetCreationRequest.forAsset()
-                creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                creationRequest.creationDate = Date()
-            // TODO: move this PhotoCaptureProcessor and use it's locationManager
-//                    creationRequest.location = self.latestLocation
-                // save photo in given named album if set
-                if let albumName = self.albumName, !albumName.isEmpty {
-                    var albumChangeRequest: PHAssetCollectionChangeRequest?
-
-                    if let assetCollection = self.fetchAssetCollectionForAlbum(albumName) {
-                        albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
-                    } else {
-                        albumChangeRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
-                    }
-                    if let albumChangeRequest = albumChangeRequest, let assetPlaceholder = creationRequest.placeholderForCreatedAsset {
-                        localIdentifier = assetPlaceholder.localIdentifier
-                        let enumeration: NSArray = [assetPlaceholder]
-                        albumChangeRequest.addAssets(enumeration)
-                    }
-                }
-            }, completionHandler: { success, error in
-                if !success {
-                    print("Could not save movie to photo library: \(String(describing: error))")
-                } else {
-                    self.didFinish(localIdentifier)
-                }
-                cleanUp()
-            })
-        }
-
-        // Enable the Camera and Record buttons to let the user switch camera and start another recording.
-        DispatchQueue.main.async {
-            self.delegate?.didFinishRecordingVideo()
-        }
-    }
-
-    // MARK: Helper
-
-    private func didFinish(_ assetIdentifer: String?) {
-        if let identifier = assetIdentifer, let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject {
-            DispatchQueue.main.async {
-                self.delegate?.capturedAsset(asset)
-            }
-        } else {
-
-        }
-    }
-
-    private func fetchAssetCollectionForAlbum(_ albumName: String) -> PHAssetCollection? {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
-        let collection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
-
-        return collection.firstObject
-    }
-}
 
