@@ -13,9 +13,8 @@ import MediaPlayer
 
 extension CLLocation {
 
-    func exifMetadata(heading: CLHeading? = nil) -> NSMutableDictionary {
-
-        let GPSMetadata = NSMutableDictionary()
+    func exifMetadata(heading: CLHeading? = nil) -> [String : Any]? {
+        var GPSMetadata = [String : Any]()
         let altitudeRef = Int(self.altitude < 0.0 ? 1 : 0)
         let latitudeRef = self.coordinate.latitude < 0.0 ? "S" : "N"
         let longitudeRef = self.coordinate.longitude < 0.0 ? "W" : "E"

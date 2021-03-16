@@ -95,6 +95,22 @@ class PhotoCaptureProcessor: NSObject {
 
 // MARK: still photo capture
 
+extension PhotoCaptureProcessor: AVCapturePhotoFileDataRepresentationCustomizer {
+    func replacementMetadata(for photo: AVCapturePhoto) -> [String : Any]? {
+        // get image metadata
+        var properties = photo.metadata
+
+        if let location = locationManager?.latestLocation,
+           locationManager?.accuracyAuthorization == .fullAccuracy,
+           let locationMetaData = location.exifMetadata(heading: locationManager?.latestHeading) {
+            // Get the existing metadata dictionary (if there is one)
+            properties[kCGImagePropertyGPSDictionary as String] = locationMetaData
+            latestLocation = location
+        }
+        return properties
+    }
+}
+
 extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     /*
      This extension includes all the delegate callbacks for AVCapturePhotoCaptureDelegate protocol
@@ -107,60 +123,15 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
         willCapturePhotoAnimation?()
     }
 
-    /*
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard error == nil else {
             print("Error occurered while capturing photo: \(String(describing: error))")
             didFinish(nil)
             return
         }
-
-
-        photoData = photo.fileDataRepresentation(with: AVCapturePhotoFileDataRepresentationCustomizer)
-
+        photoData = photo.fileDataRepresentation(with: self)
     }
-
-    func getFileRepresentationWithLocationData(photo : AVCapturePhoto) -> Data? {
-        // get image metadata
-        var properties = photo.metadata
-
-        // add gps data to metadata
-        if let gpsDictionary = createLocationMetadata() {
-            properties[kCGImagePropertyGPSDictionary as String] = gpsDictionary
-        }
-
-        // create new file representation with edited metadata
-        return photo.fileDataRepresentation(withReplacementMetadata:properties,
-            replacementEmbeddedThumbnailPhotoFormat:photo.embeddedThumbnailPhotoFormat,
-            replacementEmbeddedThumbnailPixelBuffer:photo.previewPixelBuffer,
-            replacementDepthData:photo.depthData)
-    }
-*/
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-        if let error = error {
-            print("Error occurered while capturing photo: \(error)")
-            didFinish(nil)
-            return
-        }
-
-        guard let photoSampleBuffer = photoSampleBuffer else { return }
-
-        // Add location metadata
-        if let location = locationManager?.latestLocation,
-           locationManager?.accuracyAuthorization == .fullAccuracy,
-           var metaDict = CMCopyDictionaryOfAttachments(allocator: nil, target: photoSampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any] {
-            // Get the existing metadata dictionary (if there is one)
-
-            // Append the GPS metadata to the existing metadata
-            metaDict[kCGImagePropertyGPSDictionary as String] = location.exifMetadata(heading: locationManager?.latestHeading)
-
-            // Save the new metadata back to the buffer without duplicating any data
-            CMSetAttachments(photoSampleBuffer, attachments: metaDict as CFDictionary, attachmentMode: kCMAttachmentMode_ShouldPropagate)
-            latestLocation = location
-        }
-        photoData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer, previewPhotoSampleBuffer: nil)
-    }
-
+    
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
         if let error = error {
             print("Error capturing photo: \(error)")
@@ -264,9 +235,8 @@ extension PhotoCaptureProcessor: AVCaptureFileOutputRecordingDelegate {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
                 // TODO: not sure if creation date should be start or end of video
-//                creationRequest.creationDate = Date()
-            // TODO: move this PhotoCaptureProcessor and use it's locationManager
-//                    creationRequest.location = self.latestLocation
+                // creationRequest.creationDate = Date()
+                // creationRequest.location = self.latestLocation
                 localIdentifier = self.localIdentifier(for: creationRequest)
             }, completionHandler: { success, error in
                 if !success {
