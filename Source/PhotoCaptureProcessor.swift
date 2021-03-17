@@ -23,6 +23,7 @@ class PhotoCaptureProcessor: NSObject {
     private let didStartRecordingVideo: (() -> Void)?
     private let didFinishRecordingVideo: (() -> Void)?
 
+    // for still photos
 	init(with requestedPhotoSettings: AVCapturePhotoSettings,
          locationManager: LocationManager?,
 	     willCapturePhotoAnimation: @escaping () -> Void,
@@ -36,6 +37,7 @@ class PhotoCaptureProcessor: NSObject {
         self.didFinishRecordingVideo = nil
     }
 
+    /// for video recording
     init(with requestedPhotoSettings: AVCapturePhotoSettings,
          backgroundRecordingID: UIBackgroundTaskIdentifier?,
          locationManager: LocationManager?,
@@ -112,10 +114,8 @@ extension PhotoCaptureProcessor: AVCapturePhotoFileDataRepresentationCustomizer 
 }
 
 extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
-    /*
-     This extension includes all the delegate callbacks for AVCapturePhotoCaptureDelegate protocol
-    */
-    
+    // This extension includes all the delegate callbacks for AVCapturePhotoCaptureDelegate protocol
+
 //    func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
 //    }
 
@@ -180,7 +180,6 @@ extension PhotoCaptureProcessor: AVCaptureFileOutputRecordingDelegate {
     public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         DispatchQueue.main.async {
             self.didStartRecordingVideo?()
-//            self.delegate?.didStartRecordingVideo()
         }
     }
 
@@ -234,9 +233,8 @@ extension PhotoCaptureProcessor: AVCaptureFileOutputRecordingDelegate {
                 options.shouldMoveFile = true
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                // TODO: not sure if creation date should be start or end of video
-                // creationRequest.creationDate = Date()
-                // creationRequest.location = self.latestLocation
+//                creationRequest.creationDate = Date()
+                creationRequest.location = self.latestLocation
                 localIdentifier = self.localIdentifier(for: creationRequest)
             }, completionHandler: { success, error in
                 if !success {

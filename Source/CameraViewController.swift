@@ -331,7 +331,7 @@ extension CameraViewController: CameraOverlayDelegate {
                 self.cameraControlsOverlay.isCapturingPhoto = false
             })
         case .video:
-            photoManager.toggleMovieRecording()
+            photoManager.toggleMovieRecording(locationManager: self.locationManager)
         }
     }
 

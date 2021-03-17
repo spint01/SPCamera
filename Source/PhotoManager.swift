@@ -65,7 +65,7 @@ public class PhotoManager: NSObject {
     private var capturingPhoto = false
     private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
     private var setupResult: SessionSetupResult = .success
-    var currentCaptureMode: CaptureMode = .none
+    private (set)var currentCaptureMode: CaptureMode = .none
     private var videoDeviceInput: AVCaptureDeviceInput?
     private let photoOutput = AVCapturePhotoOutput()
     private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
@@ -591,18 +591,20 @@ public class PhotoManager: NSObject {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
             }
 
-            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            let photoSettings: AVCapturePhotoSettings
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
-            // if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-            //  photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-            // }
+            if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+            } else {
+                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            }
             if videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
             }
             photoSettings.isHighResolutionPhotoEnabled = true
-            
-            if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
-                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.__availablePreviewPhotoPixelFormatTypes.first!]
+
+            if let availableType = photoSettings.__availablePreviewPhotoPixelFormatTypes.first {
+                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: availableType]
             }
 
             #if DepthDataSupport
@@ -670,7 +672,7 @@ public class PhotoManager: NSObject {
         }
     }
 
-    func toggleMovieRecording() {
+    func toggleMovieRecording(locationManager: LocationManager?) {
         /*
             Disable the Camera button until recording finishes, and disable
             the Record button until recording starts or finishes.
@@ -713,14 +715,19 @@ public class PhotoManager: NSObject {
                 }
             }
             // Start recording to a temporary file.
-            let outputFilePath = "\(NSTemporaryDirectory())/\(NSUUID().uuidString).mp4"
+            let outputFilePath = "\(NSTemporaryDirectory())/\(NSUUID().uuidString).mov"
             let outputFileURL = URL(fileURLWithPath: outputFilePath)
 
             // TODO: using this in order to create the photoCaptureProcessor and get a unique id
             let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
 
+//            let item = AVMutableMetadataItem()
+//            AVMetadataItem.
+//            item.
+//            movieFileOutput
+
             // Use a separate object for the video record delegate to isolate each recording life cycle.
-            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, backgroundRecordingID: self.backgroundRecordingID, locationManager: nil) {
+            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, backgroundRecordingID: self.backgroundRecordingID, locationManager: locationManager) {
                 self.delegate?.didStartRecordingVideo()
             } didFinishRecordingVideo: {
                 self.delegate?.didFinishRecordingVideo()
@@ -783,10 +790,9 @@ public class PhotoManager: NSObject {
         guard let videoDeviceInput = videoDeviceInput else { return }
 
         let keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
-            guard let isSessionRunning = change.newValue else { return }
-            let isDepthDeliveryDataSupported = self.photoOutput.isDepthDataDeliverySupported
-            let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
-
+//            guard let isSessionRunning = change.newValue else { return }
+//            let isDepthDeliveryDataSupported = self.photoOutput.isDepthDataDeliverySupported
+//            let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .UpdateCameraAvailability, object: nil)
             }
