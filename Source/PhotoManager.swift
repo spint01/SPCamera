@@ -158,33 +158,27 @@ public class PhotoManager: NSObject {
 
         // Add video input.
         do {
-            var defaultVideoDevice: AVCaptureDevice?
+            let defaultVideoDevice: AVCaptureDevice
 
-            // Choose the back dual camera if available, otherwise default to a wide angle camera.
-
+            // TODO: allow builtInDualWideCamera for iPhone 11 and greater. It uses a 0.5 zoom factor 
+//            if let backCameraDevice = AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else if let backCameraDevice = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else if let backCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else
             if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
                 defaultVideoDevice = dualCameraDevice
-                // This is iOS 13 only and isn't the camera we want for photos
-//                } else if let backCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
-//                    // If the back dual camera is not available, default to the back wide angle camera.
-//                    defaultVideoDevice = backCameraDevice
             } else if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
                 // If the back dual camera is not available, default to the back wide angle camera.
                 defaultVideoDevice = backCameraDevice
-            } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                /*
-                 In some cases where users break their phones, the back wide angle camera is not available.
-                 In this case, we should default to the front wide angle camera.
-                 */
-                defaultVideoDevice = frontCameraDevice
-            }
-
-            if defaultVideoDevice == nil {
+            } else {
                 print("No AVCaptureDevice")
                 return
             }
 
-            let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice!)
+            let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice)
 
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
