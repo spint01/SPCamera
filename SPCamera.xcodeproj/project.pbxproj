@@ -106,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				CDDB3DBF1FE0CE02005D7679 /* Source */,
-				CDA2315C25E4D30C00D68C6D /* Images */,
 				CD73CB881FE0F8F000652E51 /* SupportFiles */,
 				CD6CA310200DC347007DB210 /* SPCamera.podspec */,
 				CD73CB771FE0F7CD00652E51 /* Demo */,
@@ -177,6 +176,7 @@
 		CDDB3DBF1FE0CE02005D7679 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				CDA2315C25E4D30C00D68C6D /* Images */,
 				CD076A0425492BC100B85EE0 /* Views */,
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
 				CDB892072543F5F700D79FDF /* PhotoManager.swift */,
