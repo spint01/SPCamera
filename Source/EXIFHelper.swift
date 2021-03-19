@@ -12,12 +12,11 @@ import ImageIO
 import MediaPlayer
 
 extension CLLocation {
-
-    func exifMetadata(heading: CLHeading? = nil) -> NSMutableDictionary {
-        let GPSMetadata = NSMutableDictionary()
-        let altitudeRef = Int(altitude < 0.0 ? 1 : 0)
-        let latitudeRef = coordinate.latitude < 0.0 ? "S" : "N"
-        let longitudeRef = coordinate.longitude < 0.0 ? "W" : "E"
+    func exifMetadata(heading: CLHeading? = nil) -> [String : Any]? {
+        var GPSMetadata = [String : Any]()
+        let altitudeRef = Int(self.altitude < 0.0 ? 1 : 0)
+        let latitudeRef = self.coordinate.latitude < 0.0 ? "S" : "N"
+        let longitudeRef = self.coordinate.longitude < 0.0 ? "W" : "E"
 
         // GPS metadata
         GPSMetadata[(kCGImagePropertyGPSLatitude as String)] = abs(coordinate.latitude)
@@ -135,4 +134,16 @@ extension BinaryFloatingPoint {
         (truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
     }
     var direction: Direction { .init(self) }
+}
+
+extension CMTime {
+    var roundedSeconds: TimeInterval {
+        return seconds.rounded()
+    }
+    var hours:  Int { return Int(roundedSeconds / 3600) }
+    var minute: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 3600) / 60) }
+    var second: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 60)) }
+    var positionalTime: String {
+        String(format: "%02d:%02d:%02d", hours, minute, second)
+    }
 }

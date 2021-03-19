@@ -19,16 +19,19 @@ public class CameraViewController: UIViewController {
     }()
     private var previewViewOffset: CGFloat {
         guard !Helper.runningOnIpad else { return 0 }
-        switch ScreenSize.SCREEN_MAX_LENGTH {
-        case 896...10000: // IPHONE_X_MAX
-            return 50
-        case 812..<896: // IPHONE_X
-            return 34
-        case 736..<812: // IPHONE_PLUS
-            return 50
-        default:
-            return 42
+        guard photoManager.currentCaptureMode == .movie else {
+            switch ScreenSize.SCREEN_MAX_LENGTH {
+            case 896...10000: // IPHONE_X_MAX
+                return 50
+            case 812..<896: // IPHONE_X
+                return 34
+            case 736..<812: // IPHONE_PLUS
+                return 50
+            default:
+                return 42
+            }
         }
+        return 0
     }
 
     // All of this is needed to support photo capture with volume buttons
@@ -58,6 +61,10 @@ public class CameraViewController: UIViewController {
     private let onPreview: (([PHAsset]) -> Void)?
 
     private var pivotPinchScale: CGFloat = 0.5
+
+    // timer for recording video
+    private let refreshTimeInterval: TimeInterval = 1 // 1 second
+    private var updateTimer: Timer?
 
     // MARK: - Initialization
 
@@ -98,7 +105,7 @@ public class CameraViewController: UIViewController {
 		super.viewWillDisappear(animated)
         photoManager.stop()
 
-        self.locationManager?.stopUpdatingLocation()
+        locationManager?.stopUpdatingLocation()
 	}
 
     open override var prefersStatusBarHidden: Bool {
@@ -132,11 +139,7 @@ public class CameraViewController: UIViewController {
 
         let bounds = view.layer.bounds
         previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)
-//        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds)")
-
-        //                let rect = self.previewView.videoPreviewLayer.frame
-        //                let fromTop: CGFloat = self.phoneOverlayView.bottomContainerHeight - 44
-        //                self.previewView.videoPreviewLayer.frame = CGRect(x: rect.minX, y: -fromTop, width: rect.width, height: rect.height)
+//        print("bounds: \(bounds)  \nvideoPreviewLayer.bounds: \(previewView.videoPreviewLayer.bounds) previewViewOffset: \(previewViewOffset)")
     }
 
     // MARK: private methods
@@ -177,40 +180,24 @@ public class CameraViewController: UIViewController {
     }
 
     private func setupUI() {
-//        previewView.layer.borderColor = UIColor.green.cgColor
-//        previewView.layer.borderWidth = 2.0
-
-//        previewView.videoPreviewLayer.borderColor = UIColor.green.cgColor
-//        previewView.videoPreviewLayer.borderWidth = 2.0
-
         print("Device \(UIDevice.current.localizedModel) size - w: \(ScreenSize.SCREEN_WIDTH) h: \(ScreenSize.SCREEN_HEIGHT)")
         print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
 
         view.backgroundColor = configuration.bottomContainerViewColor
-
         previewView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(previewView)
         NSLayoutConstraint.activate([
             previewView.leftAnchor.constraint(equalTo: view.leftAnchor),
             previewView.rightAnchor.constraint(equalTo: view.rightAnchor),
             previewView.topAnchor.constraint(equalTo: view.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CameraControlsOverlay.bottomContainerViewHeight)
-            // NOTE: doing this causes the bluetooth picker to display in the upper left corner
-//            previewView.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
-//            previewView.bottomAnchor.constraint(equalTo: bottomContainer.topAnchor)
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-
         view.addSubview(volumeView)
         view.sendSubviewToBack(volumeView)
 
+        cameraControlsOverlay.delegate = self
         let tapGesture = UITapGestureRecognizer(target: photoManager, action: #selector(photoManager.focusAndExposeTap))
         previewView.addGestureRecognizer(tapGesture)
-
-//        phoneOverlayView.layer.borderColor = UIColor.green.cgColor
-//        phoneOverlayView.layer.borderWidth = 2.0
-
-        cameraControlsOverlay.delegate = self
-
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureRecognizerHandler))
         previewView.addGestureRecognizer(pinchGesture)
         cameraControlsOverlay.updateZoomButtonTitle(Constants.minZoomFactor)
@@ -225,9 +212,7 @@ public class CameraViewController: UIViewController {
 
     private func showPreciseLocationUnavailableMessage() {
         let alertController = UIAlertController(title: nil, message: configuration.preciseLocationDeniedMessage, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                style: .cancel,
-                                                handler: nil))
+        alertController.addAction(UIAlertAction(title: configuration.OKButtonTitle, style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
 
@@ -247,14 +232,14 @@ public class CameraViewController: UIViewController {
     @objc private func updateCameraAvailability(_ notification: Notification?) {
         let isSessionRunning = photoManager.isSessionRunning
         #if DepthDataSupport
-        self.depthDataDeliveryButton.isEnabled = isSessionRunning && isDepthDeliveryDataEnabled
-        self.depthDataDeliveryButton.isHidden = !(isSessionRunning && isDepthDeliveryDataSupported)
+        depthDataDeliveryButton.isEnabled = isSessionRunning && isDepthDeliveryDataEnabled
+        depthDataDeliveryButton.isHidden = !(isSessionRunning && isDepthDeliveryDataSupported)
         #endif
         if isSessionRunning {
             // Only enable the ability to change camera if the device has more than one camera.
             cameraControlsOverlay.isCameraAvailable = isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
-    //        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && self.movieFileOutput != nil
-    //                self.captureModeControl?.isEnabled = isSessionRunning
+    //        phoneOverlayView.recordButton.isEnabled = isSessionRunning // && movieFileOutput != nil
+    //                captureModeControl?.isEnabled = isSessionRunning
         } else {
             cameraControlsOverlay.isCameraAvailable = false
             cameraControlsOverlay.photoUnavailableText = "Camera is not available in split window view"
@@ -265,17 +250,12 @@ public class CameraViewController: UIViewController {
         DispatchQueue.main.async {
             self.cameraControlsOverlay.isPhotoLibraryAvailable = false
             let alertController = UIAlertController(title: self.configuration.photoPermissionTitle, message: self.configuration.photoPermissionMessage, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle,
-                                                    style: .cancel,
-                                                    handler: nil))
-            alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle,
-                                                    style: .`default`,
-                                                    handler: { _ in
-                                                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                                                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                                                        }
+            alertController.addAction(UIAlertAction(title: self.configuration.OKButtonTitle, style: .cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: self.configuration.settingsButtonTitle, style: .`default`, handler: { _ in
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
             }))
-
             self.present(alertController, animated: true, completion: nil)
         }
     }
@@ -357,8 +337,17 @@ extension CameraViewController: CameraOverlayDelegate {
                 self.cameraControlsOverlay.isCapturingPhoto = false
             })
         case .video:
-            photoManager.toggleMovieRecording()
+            photoManager.toggleMovieRecording(locationManager: self.locationManager)
         }
+    }
+
+    func cameraModeButtonDidPress(_ mode: CameraMode) {
+        if Helper.runningOnIpad {
+            let gravity: AVLayerVideoGravity = mode == .video ? .resizeAspectFill : .resizeAspect
+            previewView.videoPreviewLayer.videoGravity = gravity
+        }
+        photoManager.updateCameraMode(mode)
+        view.setNeedsLayout()
     }
 
     func doneButtonDidPress() {
@@ -399,7 +388,7 @@ extension CameraViewController: CameraOverlayDelegate {
 
 extension CameraViewController: PhotoManagerDelegate {
     func capturedAsset(_ asset: PHAsset) {
-        if self.configuration.allowMultiplePhotoCapture {
+        if configuration.allowMultiplePhotoCapture {
             assets.append(asset)
             cameraControlsOverlay.photoPreviewTitle("\(self.assets.count)")
          }
@@ -407,13 +396,32 @@ extension CameraViewController: PhotoManagerDelegate {
     }
 
     func didStartRecordingVideo() {
-        // Enable the Record button to let the user stop the recording.
+        startTimer()
         cameraControlsOverlay.isCapturingVideo = true
     }
 
     func didFinishRecordingVideo() {
-        // Only enable the ability to change camera if the device has more than one camera.
+        stopTimer()
         cameraControlsOverlay.isCameraAvailable = photoManager.isSessionRunning && photoManager.videoDeviceDiscoverySession.uniqueDevicePositionsCount > 1
         cameraControlsOverlay.isCapturingVideo = false
+    }
+}
+
+extension CameraViewController {
+    func startTimer() {
+        print("startTimer")
+        // start timer to display video duration
+        updateTimer = Timer.scheduledTimer(timeInterval: refreshTimeInterval, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
+        refresh()
+    }
+
+    func stopTimer() {
+        print("stopTimer")
+        updateTimer?.invalidate()
+    }
+
+    @objc private func refresh() {
+        print("video time: \(Int(photoManager.videoDuration.seconds))")
+        cameraControlsOverlay.videoDuration(photoManager.videoDuration.positionalTime)
     }
 }

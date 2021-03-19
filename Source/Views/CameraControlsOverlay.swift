@@ -22,6 +22,7 @@ enum CameraMode {
 
 protocol CameraOverlayDelegate: class {
     func cameraButtonDidPress(_ mode: CameraMode)
+    func cameraModeButtonDidPress(_ mode: CameraMode)
     func doneButtonDidPress()
     func cancelButtonDidPress()
     func previewButtonDidPress()
@@ -170,18 +171,25 @@ class CameraControlsOverlay {
     private var cameraMode: CameraMode = .photo {
         didSet {
             cameraModeButton.setTitle(cameraMode.title, for: .normal)
-
             switch cameraMode {
             case .photo:
                 cameraButton.innerButtonColor = .white
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle(nil, for:.normal)
+                videoDurationLabel.isHidden = true
             case .video:
                 cameraButton.innerButtonColor = .red
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle("Rec", for:.normal)
+                videoDurationLabel.isHidden = false
+                videoDurationLabel.text = "00:00:00"
             }
         }
+    }
+    private let videoDurationLabel: UILabel = UILabel()
+    func videoDuration(_ durationString: String) {
+        videoDurationLabel.text = durationString
+        videoDurationLabel.setNeedsLayout()
     }
 
     private let cameraUnavailableLabel: UILabel = UILabel()
@@ -199,6 +207,7 @@ class CameraControlsOverlay {
     var isCapturingVideo: Bool = false {
         didSet {
             cameraButton.setTitle(isCapturingVideo ? "Stop" : "Rec", for: .normal)
+            videoDurationLabel.text = "00:00:00"
         }
     }
     var isCameraAvailable: Bool = true {
@@ -288,6 +297,12 @@ class CameraControlsOverlay {
         locationAuthorizationButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         locationAuthorizationButton.addTarget(self, action: #selector(locationAccuracyButtonDidPress), for: .touchUpInside)
         locationAuthorizationButton.isHidden = true
+
+        videoDurationLabel.translatesAutoresizingMaskIntoConstraints = false
+        topContainerView.addSubview(videoDurationLabel)
+        videoDurationLabel.textColor = .white
+        videoDurationLabel.font = UIFont.systemFont(ofSize: 24, weight: .regular)
+        videoDurationLabel.isHidden = true
 
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(bottomContainerView)
@@ -385,6 +400,10 @@ class CameraControlsOverlay {
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(compassTapped))
         compassStackView.addGestureRecognizer(tapGesture)
+        NSLayoutConstraint.activate([
+            videoDurationLabel.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            videoDurationLabel.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor, constant: -30),
+        ])
 
         // bottom
         NSLayoutConstraint.activate([
@@ -428,6 +447,12 @@ class CameraControlsOverlay {
             locationAuthorizationButton.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
             locationAuthorizationButton.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
             locationAuthorizationButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
+            ])
+
+        NSLayoutConstraint.activate([
+            videoDurationLabel.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
+            videoDurationLabel.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+//            locationAuthorizationButton.heightAnchor.constraint(equalToConstant: Constant.accuracyButtonHeight)
             ])
 
         // bottom
@@ -627,6 +652,7 @@ class CameraControlsOverlay {
 
     @objc func cameraModeButtonDidPress(_ button: UIButton) {
         cameraMode = cameraMode == .photo ? .video : .photo
+        delegate?.cameraModeButtonDidPress(cameraMode)
     }
 
     @objc func doneButtonDidPress(_ button: UIButton) {
