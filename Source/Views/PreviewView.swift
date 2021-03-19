@@ -13,17 +13,11 @@ class PreviewView: UIView {
         guard let layer = layer as? AVCaptureVideoPreviewLayer else {
             fatalError("Expected `AVCaptureVideoPreviewLayer` type for layer. Check PreviewView.layerClass implementation.")
         }
-        
         return layer
     }
-	
 	var session: AVCaptureSession? {
-		get {
-			return videoPreviewLayer.session
-		}
-		set {
-			videoPreviewLayer.session = newValue
-		}
+		get { return videoPreviewLayer.session }
+		set { videoPreviewLayer.session = newValue }
 	}
 	
 	// MARK: UIView

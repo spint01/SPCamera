@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD076A0625492BE900B85EE0 /* CameraControlsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD076A0525492BE900B85EE0 /* CameraControlsOverlay.swift */; };
 		CD6CA311200DC348007DB210 /* SPCamera.podspec in Resources */ = {isa = PBXBuildFile; fileRef = CD6CA310200DC347007DB210 /* SPCamera.podspec */; };
 		CD73CB691FE0F65600652E51 /* SPCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD73CB671FE0F65600652E51 /* SPCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD73CB791FE0F7CD00652E51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD73CB781FE0F7CD00652E51 /* AppDelegate.swift */; };
@@ -20,12 +21,14 @@
 		CD73CB8C1FE0FC7700652E51 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */; };
 		CD73CB8D1FE0FC7700652E51 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */; };
 		CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA677281CFF7B5C00B353FB /* PreviewView.swift */; };
-		CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */; };
+		CDA2316625E4D30C00D68C6D /* focusIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA2316025E4D30C00D68C6D /* focusIcon@3x.png */; };
+		CDA2316725E4D30C00D68C6D /* compass_arrow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA2316125E4D30C00D68C6D /* compass_arrow@3x.png */; };
+		CDA2316825E4D30C00D68C6D /* compass@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA2316225E4D30C00D68C6D /* compass@3x.png */; };
+		CDB892082543F5F700D79FDF /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB892072543F5F700D79FDF /* PhotoManager.swift */; };
 		CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC11D171FE8EA4000ADFF1A /* Helper.swift */; };
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
 		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
 		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDECD6542167C051000F10DC /* TopContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDECD6532167C051000F10DC /* TopContainerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +61,7 @@
 		7AA677201CFF765600B353FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SupportFiles/Info.plist; sourceTree = "<group>"; };
 		7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 		7AA677281CFF7B5C00B353FB /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		CD076A0525492BE900B85EE0 /* CameraControlsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlsOverlay.swift; sourceTree = "<group>"; };
 		CD6CA310200DC347007DB210 /* SPCamera.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SPCamera.podspec; sourceTree = "<group>"; };
 		CD73CB651FE0F65600652E51 /* SPCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SPCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD73CB671FE0F65600652E51 /* SPCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPCamera.h; sourceTree = "<group>"; };
@@ -69,12 +73,14 @@
 		CD73CB7F1FE0F7CD00652E51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD73CB821FE0F7CD00652E51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CD80736E1FE226740038BCA7 /* CameraButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
-		CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomContainerView.swift; sourceTree = "<group>"; };
+		CDA2316025E4D30C00D68C6D /* focusIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "focusIcon@3x.png"; sourceTree = "<group>"; };
+		CDA2316125E4D30C00D68C6D /* compass_arrow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass_arrow@3x.png"; sourceTree = "<group>"; };
+		CDA2316225E4D30C00D68C6D /* compass@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass@3x.png"; sourceTree = "<group>"; };
+		CDB892072543F5F700D79FDF /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		CDC11D171FE8EA4000ADFF1A /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
-		CDECD6532167C051000F10DC /* TopContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopContainerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				CDDB3DBF1FE0CE02005D7679 /* Source */,
+				CDA2315C25E4D30C00D68C6D /* Images */,
 				CD73CB881FE0F8F000652E51 /* SupportFiles */,
 				CD6CA310200DC347007DB210 /* SPCamera.podspec */,
 				CD73CB771FE0F7CD00652E51 /* Demo */,
@@ -115,6 +122,16 @@
 				CD73CB761FE0F7CD00652E51 /* SPCamera App.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CD076A0425492BC100B85EE0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CD076A0525492BE900B85EE0 /* CameraControlsOverlay.swift */,
+				CD80736E1FE226740038BCA7 /* CameraButton.swift */,
+				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		CD73CB771FE0F7CD00652E51 /* Demo */ = {
@@ -140,13 +157,14 @@
 			path = SupportFiles;
 			sourceTree = "<group>";
 		};
-		CDC11D161FE8D52D00ADFF1A /* BottomView */ = {
+		CDA2315C25E4D30C00D68C6D /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				CD80736E1FE226740038BCA7 /* CameraButton.swift */,
-				CDC11D141FE8D4C400ADFF1A /* BottomContainerView.swift */,
+				CDA2316025E4D30C00D68C6D /* focusIcon@3x.png */,
+				CDA2316125E4D30C00D68C6D /* compass_arrow@3x.png */,
+				CDA2316225E4D30C00D68C6D /* compass@3x.png */,
 			);
-			path = BottomView;
+			path = Images;
 			sourceTree = "<group>";
 		};
 		CDD4900D1FE31B9C000F4ACB /* Frameworks */ = {
@@ -159,25 +177,16 @@
 		CDDB3DBF1FE0CE02005D7679 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				CDC11D161FE8D52D00ADFF1A /* BottomView */,
-				CDECD6522167C051000F10DC /* TopView */,
+				CD076A0425492BC100B85EE0 /* Views */,
 				7AA677161CFF765600B353FB /* CameraViewController.swift */,
+				CDB892072543F5F700D79FDF /* PhotoManager.swift */,
+				7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */,
 				CDDB3DC01FE0D742005D7679 /* Configuration.swift */,
 				CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */,
 				CDC11D171FE8EA4000ADFF1A /* Helper.swift */,
 				CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */,
-				7AA677261CFF774800B353FB /* PhotoCaptureProcessor.swift */,
-				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
 			);
 			path = Source;
-			sourceTree = "<group>";
-		};
-		CDECD6522167C051000F10DC /* TopView */ = {
-			isa = PBXGroup;
-			children = (
-				CDECD6532167C051000F10DC /* TopContainerView.swift */,
-			);
-			path = TopView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,6 +287,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDA2316725E4D30C00D68C6D /* compass_arrow@3x.png in Resources */,
+				CDA2316625E4D30C00D68C6D /* focusIcon@3x.png in Resources */,
+				CDA2316825E4D30C00D68C6D /* compass@3x.png in Resources */,
 				CD6CA311200DC348007DB210 /* SPCamera.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -299,8 +311,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDECD6542167C051000F10DC /* TopContainerView.swift in Sources */,
+				CD076A0625492BE900B85EE0 /* CameraControlsOverlay.swift in Sources */,
 				CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */,
+				CDB892082543F5F700D79FDF /* PhotoManager.swift in Sources */,
 				CD73CB891FE0FC7700652E51 /* CameraViewController.swift in Sources */,
 				CD73CB8A1FE0FC7700652E51 /* Configuration.swift in Sources */,
 				CD73CB8B1FE0FC7700652E51 /* EXIFHelper.swift in Sources */,
@@ -308,7 +321,6 @@
 				CDC11D181FE8EA4000ADFF1A /* Helper.swift in Sources */,
 				CD73CB8D1FE0FC7700652E51 /* PhotoCaptureProcessor.swift in Sources */,
 				CD73CB8E1FE0FC7700652E51 /* PreviewView.swift in Sources */,
-				CDC11D151FE8D4C400ADFF1A /* BottomContainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,7 +421,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -463,7 +475,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -489,7 +501,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SPCamera/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.lib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -520,7 +532,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SPCamera/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera.lib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -547,7 +559,7 @@
 				DEVELOPMENT_TEAM = T4QM465L38;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "$(SRCROOT)/SupportFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -571,7 +583,7 @@
 				DEVELOPMENT_TEAM = T4QM465L38;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "$(SRCROOT)/SupportFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sgpapps.SPCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
