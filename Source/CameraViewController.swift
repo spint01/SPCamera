@@ -96,7 +96,9 @@ public class CameraViewController: UIViewController {
 
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+
         preparePhotoManager()
+
     }
 
 	open override func viewWillDisappear(_ animated: Bool) {
@@ -317,6 +319,10 @@ extension CameraViewController: LocationManagerAccuracyDelegate {
         default:
             cameraControlsOverlay.isLocationAuthorized = false
         }
+    }
+
+    func headingChanged(heading: Double) {
+        cameraControlsOverlay.rotateCompass(heading: heading)
     }
 }
 
