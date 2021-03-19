@@ -65,15 +65,19 @@ public class PhotoManager: NSObject {
     private var capturingPhoto = false
     private let sessionQueue = DispatchQueue(label: "session queue") // Communicate with the session and other session objects on this queue.
     private var setupResult: SessionSetupResult = .success
-    private var currentCaptureMode: CaptureMode = .none
+    private (set)var currentCaptureMode: CaptureMode = .none
     private var videoDeviceInput: AVCaptureDeviceInput?
     private let photoOutput = AVCapturePhotoOutput()
     private var inProgressPhotoCaptureProcessors = [Int64: PhotoCaptureProcessor]()
     private var movieFileOutput: AVCaptureMovieFileOutput?
+    var videoDuration: CMTime {
+        return movieFileOutput?.recordedDuration ?? CMTime.zero
+    }
     private var keyValueObservations = [NSKeyValueObservation]()
 
     private let previewView: PreviewView
     private let configuration: Configuration
+    private var albumName: String? = Bundle.main.displayName
 
     let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera], mediaType: .video, position: .unspecified)
     private (set)var isSessionRunning = false
@@ -86,15 +90,15 @@ public class PhotoManager: NSObject {
         self.previewView = previewView
         self.configuration = configuration
         setupResult = .success
-        #if targetEnvironment(simulator)
-        print("Camera is not available on Simulator")
-        return
-        #endif
 
         // Set up the video preview view.
         previewView.session = session
         super.init()
+        #if targetEnvironment(simulator)
+        print("Camera is not available on Simulator")
+        #else
         setup()
+        #endif
     }
 
     private func setup() {
@@ -154,33 +158,27 @@ public class PhotoManager: NSObject {
 
         // Add video input.
         do {
-            var defaultVideoDevice: AVCaptureDevice?
+            let defaultVideoDevice: AVCaptureDevice
 
-            // Choose the back dual camera if available, otherwise default to a wide angle camera.
-
+            // TODO: allow builtInDualWideCamera for iPhone 11 and greater. It uses a 0.5 zoom factor 
+//            if let backCameraDevice = AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else if let backCameraDevice = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else if let backCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
+//                defaultVideoDevice = backCameraDevice
+//            } else
             if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
                 defaultVideoDevice = dualCameraDevice
-                // This is iOS 13 only and isn't the camera we want for photos
-//                } else if let backCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
-//                    // If the back dual camera is not available, default to the back wide angle camera.
-//                    defaultVideoDevice = backCameraDevice
             } else if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
                 // If the back dual camera is not available, default to the back wide angle camera.
                 defaultVideoDevice = backCameraDevice
-            } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                /*
-                 In some cases where users break their phones, the back wide angle camera is not available.
-                 In this case, we should default to the front wide angle camera.
-                 */
-                defaultVideoDevice = frontCameraDevice
-            }
-
-            if defaultVideoDevice == nil {
+            } else {
                 print("No AVCaptureDevice")
                 return
             }
 
-            let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice!)
+            let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice)
 
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
@@ -538,6 +536,14 @@ public class PhotoManager: NSObject {
 
     // MARK: Capturing Photos
 
+    func updateCameraMode(_ captureMode: CameraMode) {
+        if captureMode == .photo {
+            photoCaptureMode()
+        } else {
+            videoMode()
+        }
+    }
+
     private func photoCaptureMode() {
         guard currentCaptureMode != .photo else { return }
         // Remove the AVCaptureMovieFileOutput from the session because movie recording is
@@ -579,18 +585,20 @@ public class PhotoManager: NSObject {
                 photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
             }
 
-            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            let photoSettings: AVCapturePhotoSettings
             // Capture HEIF photo when supported, with flash set to auto and high resolution photo enabled.
-            // if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-            //  photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-            // }
+            if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+            } else {
+                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            }
             if videoDeviceInput.device.isFlashAvailable {
                 photoSettings.flashMode = .auto
             }
             photoSettings.isHighResolutionPhotoEnabled = true
-            
-            if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
-                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.__availablePreviewPhotoPixelFormatTypes.first!]
+
+            if let availableType = photoSettings.__availablePreviewPhotoPixelFormatTypes.first {
+                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: availableType]
             }
 
             #if DepthDataSupport
@@ -613,7 +621,6 @@ public class PhotoManager: NSObject {
                     self.sessionQueue.async {
                         self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
                     }
-
                     DispatchQueue.main.async {
                         if let asset = asset, let delegate = self.delegate {
                             delegate.capturedAsset(asset)
@@ -637,7 +644,7 @@ public class PhotoManager: NSObject {
 
     // MARK: Recording Movies
 
-    private func recordMode() {
+    private func videoMode() {
         guard currentCaptureMode != .movie else { return }
         #if DepthDataSupport
         depthDataDeliveryButton.isHidden = true
@@ -659,7 +666,7 @@ public class PhotoManager: NSObject {
         }
     }
 
-    func toggleMovieRecording() {
+    func toggleMovieRecording(locationManager: LocationManager?) {
         /*
             Disable the Camera button until recording finishes, and disable
             the Record button until recording starts or finishes.
@@ -672,10 +679,10 @@ public class PhotoManager: NSObject {
             before entering the session queue. We do this to ensure UI elements are
             accessed on the main thread and session configuration is done on the session queue.
         */
-        let videoPreviewLayerOrientation = previewView.videoPreviewLayer.connection?.videoOrientation
+        let videoPreviewLayerOrientation = Helper.videoOrientation() // previewView.videoPreviewLayer.connection?.videoOrientation
 
         sessionQueue.async {
-            self.recordMode()
+            self.videoMode()
             guard let movieFileOutput = self.movieFileOutput else { return }
             guard !movieFileOutput.isRecording else {
                 movieFileOutput.stopRecording()
@@ -694,19 +701,48 @@ public class PhotoManager: NSObject {
             }
 
             // Update the orientation on the movie file output video connection before starting recording.
-            let movieFileOutputConnection = movieFileOutput.connection(with: .video)
-            movieFileOutputConnection?.videoOrientation = videoPreviewLayerOrientation!
-
-            let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
-
-            if availableVideoCodecTypes.contains(.hevc) {
-                movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection!)
+            if let movieFileOutputConnection = movieFileOutput.connection(with: .video) {
+                movieFileOutputConnection.videoOrientation = videoPreviewLayerOrientation
+                let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
+                if availableVideoCodecTypes.contains(.hevc) {
+                    movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection)
+                }
             }
-
             // Start recording to a temporary file.
-            let outputFileName = NSUUID().uuidString
-            let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
-            movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
+            let outputFilePath = "\(NSTemporaryDirectory())/\(NSUUID().uuidString).mov"
+            let outputFileURL = URL(fileURLWithPath: outputFilePath)
+
+            // TODO: using this in order to create the photoCaptureProcessor and get a unique id
+            let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+
+//            let item = AVMutableMetadataItem()
+//            AVMetadataItem.
+//            item.
+//            movieFileOutput
+
+            // Use a separate object for the video record delegate to isolate each recording life cycle.
+            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, backgroundRecordingID: self.backgroundRecordingID, locationManager: locationManager) {
+                self.delegate?.didStartRecordingVideo()
+            } didFinishRecordingVideo: {
+                self.delegate?.didFinishRecordingVideo()
+            } completionHandler: { (photoCaptureProcessor, asset) in
+                // When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
+                self.sessionQueue.async {
+                    self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
+                }
+                DispatchQueue.main.async {
+                    if let asset = asset, let delegate = self.delegate {
+                        delegate.capturedAsset(asset)
+                    }
+                }
+            }
+            /*
+                The Photo Output keeps a weak reference to the photo capture delegate so
+                we store it in an array to maintain a strong reference to this object
+                until the capture is completed.
+            */
+            self.inProgressPhotoCaptureProcessors[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = photoCaptureProcessor
+            movieFileOutput.startRecording(to: outputFileURL, recordingDelegate: photoCaptureProcessor)
         }
     }
 
@@ -748,10 +784,9 @@ public class PhotoManager: NSObject {
         guard let videoDeviceInput = videoDeviceInput else { return }
 
         let keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
-            guard let isSessionRunning = change.newValue else { return }
-            let isDepthDeliveryDataSupported = self.photoOutput.isDepthDataDeliverySupported
-            let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
-
+//            guard let isSessionRunning = change.newValue else { return }
+//            let isDepthDeliveryDataSupported = self.photoOutput.isDepthDataDeliverySupported
+//            let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .UpdateCameraAvailability, object: nil)
             }
@@ -842,77 +877,5 @@ public class PhotoManager: NSObject {
     }
 }
 
-extension PhotoManager: AVCaptureFileOutputRecordingDelegate {
 
-    public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
-        DispatchQueue.main.async {
-            self.delegate?.didStartRecordingVideo()
-        }
-    }
-
-    public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        /*
-            Note that currentBackgroundRecordingID is used to end the background task
-            associated with this recording. This allows a new recording to be started,
-            associated with a new UIBackgroundTaskIdentifier, once the movie file output's
-            `isRecording` property is back to false — which happens sometime after this method
-            returns.
-
-            Note: Since we use a unique file path for each recording, a new recording will
-            not overwrite a recording currently being saved.
-        */
-        func cleanUp() {
-            let path = outputFileURL.path
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                } catch {
-                    print("Could not remove file at url: \(outputFileURL)")
-                }
-            }
-            if let currentBackgroundRecordingID = backgroundRecordingID {
-                backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
-                if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
-                    UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
-                }
-            }
-        }
-        let success: Bool = (((error as NSError?)?.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue) ?? true
-        if error != nil || !success {
-            print("Movie file finishing error: \(String(describing: error))")
-            DispatchQueue.main.async {
-                self.delegate?.didFinishRecordingVideo()
-            }
-            cleanUp()
-            return
-        }
-
-        // Check authorization status.
-        PHPhotoLibrary.requestAuthorization { status in
-            guard status == .authorized else {
-                cleanUp()
-                return
-            }
-            // Save the movie file to the photo library and cleanup.
-            PHPhotoLibrary.shared().performChanges({
-                    let options = PHAssetResourceCreationOptions()
-                    options.shouldMoveFile = true
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    creationRequest.addResource(with: .video, fileURL: outputFileURL, options: options)
-                }, completionHandler: { success, error in
-                    if !success {
-                        print("Could not save movie to photo library: \(String(describing: error))")
-                    }
-                    cleanUp()
-                }
-            )
-        }
-
-        // Enable the Camera and Record buttons to let the user switch camera and start another recording.
-        DispatchQueue.main.async {
-            self.delegate?.didFinishRecordingVideo()
-        }
-    }
-
-}
 
