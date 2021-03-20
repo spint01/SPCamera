@@ -53,9 +53,10 @@ class AssetManager {
     public static func image(named name: String) -> UIImage {
         let traitCollection = UITraitCollection(displayScale: 3)
         var bundle = Bundle(for: AssetManager.self)
-
+print("bundle: \(bundle)")
         if let resource = bundle.resourcePath, let resourceBundle = Bundle(path: resource + "/SPCamera.bundle") {
             bundle = resourceBundle
+            print("bundle 2: \(bundle)")
         }
 
         return UIImage(named: name, in: bundle, compatibleWith: traitCollection) ?? UIImage()
