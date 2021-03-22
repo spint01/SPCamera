@@ -159,6 +159,9 @@ class CameraControlsOverlay {
         label.numberOfLines = 2
         label.textColor = .white
         label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.50
         label.isHidden = !configuration.showCompass
         return label
     }()
@@ -388,6 +391,7 @@ class CameraControlsOverlay {
         compassStackView.translatesAutoresizingMaskIntoConstraints = false
         topContainerView.addSubview(compassStackView)
         NSLayoutConstraint.activate([
+            compassLabel.widthAnchor.constraint(equalToConstant: Self.topContainerHeight - 20),
             compassStackView.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
             compassStackView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -20),
         ])
@@ -612,12 +616,15 @@ class CameraControlsOverlay {
 
     func rotateCompass(heading: Double) {
         guard configuration.showCompass else { return }
-        compassView.rotateArrow(heading)
-        let adjusted = heading.headingAdjusted
-        compassLabel.text = "\(String(format: "%.0f%@\n%@", adjusted, Helper.DEGREES, adjusted.direction.description))"
-        guard !Helper.runningOnIpad else { return }
-        let textAngle: CGFloat = CGFloat(textLabelRotation).degreesToRadians
-        compassLabel.transform = CGAffineTransform(rotationAngle: -textAngle)
+        UIView.animate(withDuration: 0.3) {
+            self.compassView.rotateArrow(heading)
+            let adjusted = heading.headingAdjusted
+            self.compassLabel.text = "\(String(format: "%.0f%@\n%@", adjusted, Helper.DEGREES, adjusted.direction.description))"
+    //        compassLabel.text = "\(String(format: "%@%.0f", adjusted.direction.description, adjusted))"
+            guard !Helper.runningOnIpad else { return }
+            let textAngle: CGFloat = CGFloat(self.textLabelRotation).degreesToRadians
+            self.compassLabel.transform = CGAffineTransform(rotationAngle: -textAngle)
+        }
     }
 
     func photoPreviewTitle(_ title: String) {
