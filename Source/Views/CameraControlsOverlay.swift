@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreMedia
 
 enum CameraMode {
     case photo
@@ -164,14 +165,23 @@ class CameraControlsOverlay {
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle("Rec", for:.normal)
                 videoDurationLabel.isHidden = false
-                videoDurationLabel.text = "00:00:00"
+                videoDuration(CMTime())
                 compassStackView.isHidden = true
             }
         }
     }
-    private let videoDurationLabel: UILabel = UILabel()
-    func videoDuration(_ durationString: String) {
-        videoDurationLabel.text = durationString
+    private lazy var videoDurationLabel: UIButton = {
+        let button = UIButton()
+        button.contentEdgeInsets = UIEdgeInsets(top: 1, left: 5, bottom: 1, right: 5)
+        button.layer.cornerRadius = 2
+        button.tintColor = .white
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
+        button.isUserInteractionEnabled = false
+        return button
+    }()
+    func videoDuration(_ duration: CMTime) {
+        videoDurationLabel.setTitle(duration.positionalTime, for: .normal)
+        videoDurationLabel.backgroundColor = duration.value > 0 ? .systemRed : .clear
         videoDurationLabel.setNeedsLayout()
     }
 
@@ -190,7 +200,6 @@ class CameraControlsOverlay {
     var isCapturingVideo: Bool = false {
         didSet {
             cameraButton.setTitle(isCapturingVideo ? "Stop" : "Rec", for: .normal)
-            videoDurationLabel.text = "00:00:00"
         }
     }
     var isCameraAvailable: Bool = true {
@@ -284,8 +293,6 @@ class CameraControlsOverlay {
 
         videoDurationLabel.translatesAutoresizingMaskIntoConstraints = false
         topContainerView.addSubview(videoDurationLabel)
-        videoDurationLabel.textColor = .white
-        videoDurationLabel.font = UIFont.systemFont(ofSize: 24, weight: .regular)
         videoDurationLabel.isHidden = true
 
         bottomContainerView.translatesAutoresizingMaskIntoConstraints = false

@@ -144,6 +144,9 @@ extension CMTime {
     var minute: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 3600) / 60) }
     var second: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 60)) }
     var positionalTime: String {
-        String(format: "%02d:%02d:%02d", hours, minute, second)
+        guard roundedSeconds > 0 else {
+            return String(format: "%02d:%02d:%02d", 0, 0, 0)
+        }
+        return String(format: "%02d:%02d:%02d", hours, minute, second)
     }
 }
