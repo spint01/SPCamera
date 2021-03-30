@@ -421,7 +421,7 @@ extension CameraViewController {
     }
 
     @objc private func refresh() {
-        print("video time: \(Int(photoManager.videoDuration.seconds))")
+        print("video time: \(photoManager.videoDuration.seconds)")
         cameraControlsOverlay.videoDuration(photoManager.videoDuration.positionalTime)
     }
 }

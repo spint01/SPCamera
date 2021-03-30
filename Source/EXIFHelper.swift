@@ -138,7 +138,7 @@ extension BinaryFloatingPoint {
 
 extension CMTime {
     var roundedSeconds: TimeInterval {
-        return seconds.rounded()
+        return seconds.rounded(.up)
     }
     var hours:  Int { return Int(roundedSeconds / 3600) }
     var minute: Int { return Int(roundedSeconds.truncatingRemainder(dividingBy: 3600) / 60) }
