@@ -112,12 +112,6 @@ class CameraControlsOverlay {
             return 120
         }
     }
-    private let bottomContainerView: UIView = UIView()
-    private let doneButton: UIButton = UIButton()
-    private let photoPreviewButton: UIButton = UIButton()
-    private let cameraModeButton: UIButton = UIButton()
-    private let zoomButton: UIButton = UIButton()
-
     private static var topContainerHeight: CGFloat {
         guard !Helper.runningOnIpad else { return 50 }
         switch ScreenSize.SCREEN_MAX_LENGTH {
@@ -131,6 +125,13 @@ class CameraControlsOverlay {
             return 42
         }
     }
+
+    private let bottomContainerView: UIView = UIView()
+    private let doneButton: UIButton = UIButton()
+    private let photoPreviewButton: UIButton = UIButton()
+    private let cameraModeButton: UIButton = UIButton()
+    private let zoomButton: UIButton = UIButton()
+
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
     private let locationAuthorizationButton: UIButton = UIButton()
@@ -498,7 +499,8 @@ class CameraControlsOverlay {
     }
 
     private func setupUI() {
-        bottomContainerView.backgroundColor =  configuration.bottomContainerViewColor.withAlphaComponent(0.10)
+        bottomContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
+//        topContainerView.backgroundColor = configuration.bottomContainerViewColor.withAlphaComponent(0.10)
         cameraUnavailableLabel.textColor = configuration.noPermissionsTextColor
         cameraUnavailableLabel.text = configuration.cameraPermissionLabel
         photoLibUnavailableLabel.textColor = configuration.noPermissionsTextColor
