@@ -52,7 +52,6 @@ class PhotoCaptureProcessor: NSObject {
         self.completionHandler = completionHandler
 
         self.willCapturePhotoAnimation = nil
-
     }
 
     private func didFinish(_ assetIdentifer: String?) {

@@ -418,10 +418,11 @@ extension CameraViewController {
     func stopTimer() {
         print("stopTimer")
         updateTimer?.invalidate()
+        cameraControlsOverlay.videoDuration(CMTime())
     }
 
     @objc private func refresh() {
-        print("video time: \(Int(photoManager.videoDuration.seconds))")
-        cameraControlsOverlay.videoDuration(photoManager.videoDuration.positionalTime)
+        print("video time: \(photoManager.videoDuration.seconds)")
+        cameraControlsOverlay.videoDuration(photoManager.videoDuration)
     }
 }

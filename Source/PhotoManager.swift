@@ -688,6 +688,8 @@ public class PhotoManager: NSObject {
                 movieFileOutput.stopRecording()
                 return
             }
+            guard let videoDeviceInput = self.videoDeviceInput else { return }
+
             if UIDevice.current.isMultitaskingSupported {
                 /*
                     Setup background task.
@@ -703,6 +705,9 @@ public class PhotoManager: NSObject {
             // Update the orientation on the movie file output video connection before starting recording.
             if let movieFileOutputConnection = movieFileOutput.connection(with: .video) {
                 movieFileOutputConnection.videoOrientation = videoPreviewLayerOrientation
+                if movieFileOutputConnection.isVideoStabilizationSupported {
+                    movieFileOutputConnection.preferredVideoStabilizationMode = .auto
+                }
                 let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
                 if availableVideoCodecTypes.contains(.hevc) {
                     movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection)
@@ -714,6 +719,19 @@ public class PhotoManager: NSObject {
 
             // TODO: using this in order to create the photoCaptureProcessor and get a unique id
             let photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            let device = videoDeviceInput.device
+            if device.isFlashAvailable, device.isTorchAvailable {
+                do {
+                    try device.lockForConfiguration()
+                    device.torchMode = .auto
+//                    if device.torchMode == .auto {
+//                        try device.setTorchModeOn(level: 0.7)
+//                    }
+                    device.unlockForConfiguration()
+                } catch {
+                    print(error)
+                }
+            }
 
 //            let item = AVMutableMetadataItem()
 //            AVMetadataItem.
