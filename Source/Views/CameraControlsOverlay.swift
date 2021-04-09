@@ -31,71 +31,12 @@ protocol CameraOverlayDelegate: class {
     func zoomButtonDidPress()
 }
 
-private class CompassView: UIView {
-    private lazy var compassArrowImageView: UIImageView = {
-        let view = UIImageView(image: AssetManager.image(named: "compass_arrow"))
-        return view
-    }()
-
-    // MARK: - Initializers
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
-
-    private func commonInit() {
-        // compassArrowImageView
-        compassArrowImageView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(compassArrowImageView)
-        NSLayoutConstraint.activate([
-            compassArrowImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            compassArrowImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            compassArrowImageView.widthAnchor.constraint(equalToConstant: 30),
-            compassArrowImageView.heightAnchor.constraint(equalToConstant: 30)
-        ])
-    }
-
-    private var compassRotation: CGFloat {
-        guard !Helper.runningOnIpad else { return 0 }
-        switch UIDevice.current.orientation {
-            case .landscapeLeft:
-                return -90
-            case .landscapeRight:
-                return 90
-            case .portraitUpsideDown:
-                return 180
-            default: return 0 // .portrait, .faceDown, .faceUp
-        }
-    }
-
-    // MARK: public methods
-
-    var isArrowHidden: Bool = false {
-        didSet {
-            compassArrowImageView.isHidden = isArrowHidden
-        }
-    }
-
-    func rotateArrow(_ heading: Double) {
-        let degrees = CGFloat(heading.headingAdjusted) + compassRotation
-        let angle: CGFloat = degrees.degreesToRadians
-        compassArrowImageView.transform = CGAffineTransform(rotationAngle: -angle)
-    }
-}
-
 class CameraControlsOverlay {
     private enum Constant {
         static let topOffset: CGFloat = 5
         static let zoomButtonSize: CGFloat = 42
         static let accuracyButtonHeight: CGFloat = 35
         static let margins: CGFloat = 20
-        static let compassLabelWidth: CGFloat = 45
     }
 
     // Each device is slightly different in size
@@ -135,21 +76,7 @@ class CameraControlsOverlay {
     private let topContainerView: UIView = UIView()
     private let cameraButton: CameraButton = CameraButton()
     private let locationAuthorizationButton: UIButton = UIButton()
-    private let compassStackView: UIStackView = UIStackView()
-    private lazy var compassLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 2
-        label.textColor = .white
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.50
-        return label
-    }()
-    private lazy var compassView: CompassView = {
-        let view = CompassView()
-        return view
-    }()
+    private let compassView: CompassView = CompassView()
 
     private var cameraMode: CameraMode = .photo {
         didSet {
@@ -160,14 +87,14 @@ class CameraControlsOverlay {
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle(nil, for:.normal)
                 videoDurationLabel.isHidden = true
-                compassStackView.isHidden = !configuration.showCompass
+                compassView.isHidden = !configuration.showCompass
             case .video:
                 cameraButton.innerButtonColor = .red
                 cameraButton.setTitleColor(UIColor.white, for: .normal)
                 cameraButton.setTitle("Rec", for:.normal)
                 videoDurationLabel.isHidden = false
                 videoDuration(CMTime())
-                compassStackView.isHidden = true
+                compassView.isHidden = true
             }
         }
     }
@@ -235,7 +162,7 @@ class CameraControlsOverlay {
     private func updateLocationAuthorizationButtonText() {
         locationAuthorizationButton.isHidden = isLocationAuthorized && isPreciseLocationAuthorized
         let isHidden = !locationAuthorizationButton.isHidden || !configuration.showCompass
-        compassStackView.isHidden = isHidden
+        compassView.isHidden = isHidden
         let text: String = {
             if !isLocationAuthorized {
                 return "Location Off  \(String("\u{276F}"))"
@@ -273,7 +200,7 @@ class CameraControlsOverlay {
         photoLibUnavailableLabel.backgroundColor = UIColor.black.withAlphaComponent(0.50)
         photoLibUnavailableLabel.isHidden = true
 
-        compassStackView.isHidden = configuration.showCompass
+        compassView.isHidden = configuration.showCompass
 
         topContainerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(topContainerView)
@@ -367,22 +294,11 @@ class CameraControlsOverlay {
             ])
 
         compassView.translatesAutoresizingMaskIntoConstraints = false
-        compassLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        // compassStackView
-        compassStackView.translatesAutoresizingMaskIntoConstraints = false
-        topContainerView.addSubview(compassStackView)
+        topContainerView.addSubview(compassView)
         NSLayoutConstraint.activate([
-            compassLabel.widthAnchor.constraint(equalToConstant: Constant.compassLabelWidth),
-            compassStackView.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
-            compassStackView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -16),
+            compassView.centerYAnchor.constraint(equalTo: topContainerView.centerYAnchor),
+            compassView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -16),
         ])
-        compassStackView.axis = .horizontal
-        compassStackView.alignment = .center
-        compassStackView.distribution = .equalSpacing
-        compassStackView.spacing = 0
-        compassStackView.addArrangedSubview(compassLabel)
-        compassStackView.addArrangedSubview(compassView)
 
         NSLayoutConstraint.activate([
             videoDurationLabel.centerXAnchor.constraint(equalTo: topContainerView.centerXAnchor),
@@ -465,20 +381,12 @@ class CameraControlsOverlay {
 
         // compassStackView
         compassView.translatesAutoresizingMaskIntoConstraints = false
-        compassLabel.translatesAutoresizingMaskIntoConstraints = false
-        compassStackView.translatesAutoresizingMaskIntoConstraints = false
-        bottomContainerView.addSubview(compassStackView)
+        bottomContainerView.addSubview(compassView)
         NSLayoutConstraint.activate([
-            compassStackView.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: 30),
-            compassStackView.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
-            compassStackView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -20),
+            compassView.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: 30),
+            compassView.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            compassView.rightAnchor.constraint(equalTo: topContainerView.rightAnchor, constant: -20),
         ])
-        compassStackView.axis = .vertical
-        compassStackView.alignment = .center
-        compassStackView.distribution = .equalSpacing
-        compassStackView.spacing = 20
-        compassStackView.addArrangedSubview(compassView)
-        compassStackView.addArrangedSubview(compassLabel)
 
         NSLayoutConstraint.activate([
             photoPreviewButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
@@ -522,18 +430,6 @@ class CameraControlsOverlay {
         }
     }
 
-    private var textLabelRotation: Double {
-        switch UIDevice.current.orientation {
-            case .landscapeLeft:
-                return -90
-            case .landscapeRight:
-                return 90
-            case .portraitUpsideDown:
-                return 180
-            default: return 0 // .portrait, .faceDown, .faceUp
-        }
-    }
-
     // MARK: public methods
 
     func updateLocationAccuracyButton(_ isGray: Bool) {
@@ -546,15 +442,7 @@ class CameraControlsOverlay {
 
     func rotateCompass(heading: Double) {
         guard configuration.showCompass, !isCapturingVideo else { return }
-        UIView.animate(withDuration: 0.3) {
-            self.compassView.rotateArrow(heading)
-            let adjusted = heading.headingAdjusted
-            self.compassLabel.text = "\(String(format: "%.0f%@\n%@", adjusted, Helper.DEGREES, adjusted.direction.description))"
-    //        compassLabel.text = "\(String(format: "%@%.0f", adjusted.direction.description, adjusted))"
-            guard !Helper.runningOnIpad else { return }
-            let textAngle: CGFloat = CGFloat(self.textLabelRotation).degreesToRadians
-            self.compassLabel.transform = CGAffineTransform(rotationAngle: -textAngle)
-        }
+        compassView.rotateCompass(heading)
     }
 
     func photoPreviewTitle(_ title: String) {

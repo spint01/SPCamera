@@ -43,5 +43,5 @@ public struct Configuration {
     public var allowMultiplePhotoCapture = false
     public var alwaysAskForPreciseLocation = true
     public var isVideoAllowed = false
-    public var showCompass = true
+    public var showCompass = false
 }
