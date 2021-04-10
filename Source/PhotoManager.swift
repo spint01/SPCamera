@@ -195,12 +195,10 @@ public class PhotoManager: NSObject {
                         Use the status bar orientation as the initial video orientation. Subsequent orientation changes are
                         handled by CameraViewController.viewWillTransition(to:with:).
                     */
-                    let statusBarOrientation = UIApplication.shared.statusBarOrientation
                     var initialVideoOrientation: AVCaptureVideoOrientation = .portrait
-                    if statusBarOrientation != .unknown {
-                        if let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: statusBarOrientation) {
-                            initialVideoOrientation = videoOrientation
-                        }
+                    if let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation,
+                       let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: statusBarOrientation) {
+                        initialVideoOrientation = videoOrientation
                     }
                     self.previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
                 }
@@ -218,6 +216,7 @@ public class PhotoManager: NSObject {
         }
 
         // Add audio input.
+        // TODO: move this to first time a video is recorded
         if configuration.isVideoAllowed {
             do {
                 let audioDevice = AVCaptureDevice.default(for: .audio)
