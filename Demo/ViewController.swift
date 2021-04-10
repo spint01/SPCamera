@@ -114,6 +114,8 @@ class ViewController: UIViewController {
         var config = Configuration()
         config.photoAlbumName = "SPCamera"
         config.allowMultiplePhotoCapture = allowMultiplePhotoCapture
+        config.showCompass = true
+        config.isVideoAllowed = true
         config.doneButtonTitle = "Done"
         config.cancelButtonTitle = "Cancel"
 //        config.alwaysAskForPreciseLocation = false

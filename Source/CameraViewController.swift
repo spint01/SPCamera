@@ -180,8 +180,8 @@ public class CameraViewController: UIViewController {
     }
 
     private func setupUI() {
-        print("Device \(UIDevice.current.localizedModel) size - w: \(ScreenSize.SCREEN_WIDTH) h: \(ScreenSize.SCREEN_HEIGHT)")
-        print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
+//        print("Device \(UIDevice.current.localizedModel) size - w: \(ScreenSize.SCREEN_WIDTH) h: \(ScreenSize.SCREEN_HEIGHT)")
+//        print("Device \(UIDevice.current.model) size - min: \(ScreenSize.SCREEN_MIN_LENGTH) max: \(ScreenSize.SCREEN_MAX_LENGTH)")
 
         view.backgroundColor = configuration.bottomContainerViewColor
         previewView.translatesAutoresizingMaskIntoConstraints = false
@@ -278,7 +278,7 @@ public class CameraViewController: UIViewController {
             let factor = newValue < Constants.minZoomFactor ? Constants.minZoomFactor : newValue > Constants.maxZoomFactor ? Constants.maxZoomFactor : newValue
 
             if factor != photoManager.currentZoomFactor {
-                print("pinchGesture: \(gesture.scale) new: \(factor)")
+//                print("pinchGesture: \(gesture.scale) new: \(factor)")
                 photoManager.currentZoomFactor = factor
             }
         case .failed, .ended:
@@ -409,14 +409,14 @@ extension CameraViewController: PhotoManagerDelegate {
 
 extension CameraViewController {
     func startTimer() {
-        print("startTimer")
+//        print("startTimer")
         // start timer to display video duration
         updateTimer = Timer.scheduledTimer(timeInterval: refreshTimeInterval, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
         refresh()
     }
 
     func stopTimer() {
-        print("stopTimer")
+//        print("stopTimer")
         updateTimer?.invalidate()
         cameraControlsOverlay.videoDuration(CMTime())
     }

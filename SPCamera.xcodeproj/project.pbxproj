@@ -29,6 +29,7 @@
 		CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD80736E1FE226740038BCA7 /* CameraButton.swift */; };
 		CDD490141FE31C46000F4ACB /* SPCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; };
 		CDD490151FE31C46000F4ACB /* SPCamera.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD73CB651FE0F65600652E51 /* SPCamera.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CDFA9D0F26200FFD00E33852 /* CompassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA9D0E26200FFD00E33852 /* CompassView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		CDDB3DBB1FE0CDDE005D7679 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		CDDB3DBC1FE0CDDE005D7679 /* EXIFHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EXIFHelper.swift; sourceTree = "<group>"; };
 		CDDB3DC01FE0D742005D7679 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		CDFA9D0E26200FFD00E33852 /* CompassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 			children = (
 				CD076A0525492BE900B85EE0 /* CameraControlsOverlay.swift */,
 				CD80736E1FE226740038BCA7 /* CameraButton.swift */,
+				CDFA9D0E26200FFD00E33852 /* CompassView.swift */,
 				7AA677281CFF7B5C00B353FB /* PreviewView.swift */,
 			);
 			path = Views;
@@ -315,6 +318,7 @@
 				CDD4900C1FE2F60C000F4ACB /* CameraButton.swift in Sources */,
 				CDB892082543F5F700D79FDF /* PhotoManager.swift in Sources */,
 				CD73CB891FE0FC7700652E51 /* CameraViewController.swift in Sources */,
+				CDFA9D0F26200FFD00E33852 /* CompassView.swift in Sources */,
 				CD73CB8A1FE0FC7700652E51 /* Configuration.swift in Sources */,
 				CD73CB8B1FE0FC7700652E51 /* EXIFHelper.swift in Sources */,
 				CD73CB8C1FE0FC7700652E51 /* LocationManager.swift in Sources */,
