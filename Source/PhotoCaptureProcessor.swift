@@ -143,33 +143,50 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             didFinish(nil)
             return
         }
-        
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                var localIdentifier: String?
-                PHPhotoLibrary.shared().performChanges({
-                    let options = PHAssetResourceCreationOptions()
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-
-                    options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
-                    creationRequest.addResource(with: .photo, data: photoData, options: options)
-                    creationRequest.creationDate = Date()
-                    creationRequest.location = self.latestLocation
-                    localIdentifier = self.localIdentifier(for: creationRequest)
-                }, completionHandler: { _, error in
-                    if let error = error {
-                        print("Error occurered while saving photo to photo library: \(error)")
-                    }
-                    self.didFinish(localIdentifier)
-                })
-            } else {
-                if status != .notDetermined {
-                    // unable to save photo
-                    print("unable to save photo to library")
-                    NotificationCenter.default.post(name: .PhotoLibUnavailable, object: nil)
+        if #available(iOS 14, *) {
+            PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+                guard status == .authorized || status == .limited else {
+                    noAddPhotoPermission(status)
+                    return
                 }
-                self.didFinish(nil)
+                addPhoto()
             }
+        } else {
+            PHPhotoLibrary.requestAuthorization { status in
+                guard status == .authorized else {
+                    noAddPhotoPermission(status)
+                    return
+                }
+                addPhoto()
+            }
+        }
+
+        func addPhoto() {
+            var localIdentifier: String?
+            PHPhotoLibrary.shared().performChanges({
+                let options = PHAssetResourceCreationOptions()
+                let creationRequest = PHAssetCreationRequest.forAsset()
+
+                options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
+                creationRequest.addResource(with: .photo, data: photoData, options: options)
+                creationRequest.creationDate = Date()
+                creationRequest.location = self.latestLocation
+                localIdentifier = self.localIdentifier(for: creationRequest)
+            }, completionHandler: { _, error in
+                if let error = error {
+                    print("Error occurered while saving photo to photo library: \(error)")
+                }
+                self.didFinish(localIdentifier)
+            })
+        }
+
+        func noAddPhotoPermission(_ status: PHAuthorizationStatus) {
+            if status != .notDetermined {
+                // unable to save photo
+                print("unable to save photo to library")
+                NotificationCenter.default.post(name: .PhotoLibUnavailable, object: nil)
+            }
+            self.didFinish(nil)
         }
     }
 }
