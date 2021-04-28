@@ -1,0 +1,60 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCameraPackageTests.xctest\/Contents\/MacOS\/SPCameraPackageTests",
+      "packageName" : "SPCamera",
+      "productName" : "SPCameraPackageTests"
+    }
+  ],
+  "copyCommands" : {
+    "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/compass_arrow@3x.png" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/Sources\/SPCamera\/Images\/compass_arrow@3x.png"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/compass_arrow@3x.png"
+        }
+      ]
+    },
+    "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/compass@3x.png" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/Sources\/SPCamera\/Images\/compass@3x.png"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/compass@3x.png"
+        }
+      ]
+    },
+    "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/focusIcon@3x.png" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/Sources\/SPCamera\/Images\/focusIcon@3x.png"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "\/Users\/stevepint\/dev\/sgp\/github\/SPCamera\/.build\/x86_64-apple-macosx\/debug\/SPCamera_SPCamera.bundle\/focusIcon@3x.png"
+        }
+      ]
+    }
+  },
+  "swiftTargetMap" : {
+    "C.SPCamera-debug.module" : "SPCamera",
+    "C.SPCameraTests-debug.module" : "SPCameraTests"
+  },
+  "testDiscoveryCommands" : {
+
+  }
+}

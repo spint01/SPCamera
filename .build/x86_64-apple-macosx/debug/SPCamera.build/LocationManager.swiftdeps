@@ -1,0 +1,575 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "LocationManagerAccuracyDelegate"
+- "LocationManager"
+provides-nominal:
+- "8SPCamera31LocationManagerAccuracyDelegateP"
+- "8SPCamera15LocationManagerC"
+provides-member:
+- ["8SPCamera31LocationManagerAccuracyDelegateP", ""]
+- ["8SPCamera15LocationManagerC", ""]
+provides-dynamic-lookup:
+- "accuracyAuthorization"
+- "authorizeAccuracy"
+- "commonInit"
+- "delegate"
+- "latestHeading"
+- "latestLocation"
+- "locationManager"
+- "manager"
+- "startUpdatingLocation"
+- "stopUpdatingLocation"
+depends-top-level:
+- "<"
+- !private "=="
+- "AnyObject"
+- "AssignmentPrecedence"
+- "CLAccuracyAuthorization"
+- "CLAuthorizationStatus"
+- "CLHeading"
+- "CLLocation"
+- "CLLocationManager"
+- "CLLocationManagerDelegate"
+- "Double"
+- "LocationManager"
+- "LocationManagerAccuracyDelegate"
+- "NSObject"
+- "String"
+- "Void"
+- !private "commonInit"
+- !private "delegate"
+- !private "kCLLocationAccuracyBest"
+- !private "latestHeading"
+- !private "latestLocation"
+- !private "manager"
+- !private "startUpdatingLocation"
+- !private "stopUpdatingLocation"
+- !private "||"
+depends-member:
+- !private ["s18AdditiveArithmeticP", ""]
+- !private ["Sa", "first"]
+- !private ["Sa", "sorted"]
+- !private ["SK", ""]
+- !private ["SK", "first"]
+- !private ["SK", "sorted"]
+- !private ["So23CLAccuracyAuthorizationV", "=="]
+- !private ["So23CLAccuracyAuthorizationV", "RawValue"]
+- !private ["So23CLAccuracyAuthorizationV", "fullAccuracy"]
+- !private ["So21CLAuthorizationStatusV", "=="]
+- !private ["So21CLAuthorizationStatusV", "RawValue"]
+- !private ["So21CLAuthorizationStatusV", "authorizedAlways"]
+- !private ["So21CLAuthorizationStatusV", "authorizedWhenInUse"]
+- !private ["So9CLHeadingC", "trueHeading"]
+- !private ["So10CLLocationC", "horizontalAccuracy"]
+- !private ["So17CLLocationManagerC", "accuracyAuthorization"]
+- !private ["So17CLLocationManagerC", "delegate"]
+- !private ["So17CLLocationManagerC", "desiredAccuracy"]
+- ["So17CLLocationManagerC", "init"]
+- !private ["So17CLLocationManagerC", "location"]
+- !private ["So17CLLocationManagerC", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["So17CLLocationManagerC", "requestWhenInUseAuthorization"]
+- !private ["So17CLLocationManagerC", "startUpdatingHeading"]
+- !private ["So17CLLocationManagerC", "startUpdatingLocation"]
+- !private ["So17CLLocationManagerC", "stopUpdatingHeading"]
+- !private ["So17CLLocationManagerC", "stopUpdatingLocation"]
+- !private ["So25CLLocationManagerDelegateP", "CLAccuracyAuthorization"]
+- ["So25CLLocationManagerDelegateP", "CLLocationManager"]
+- ["So25CLLocationManagerDelegateP", ""]
+- ["So25CLLocationManagerDelegateP", "accuracyAuthorization"]
+- ["So25CLLocationManagerDelegateP", "authorizeAccuracy"]
+- ["So25CLLocationManagerDelegateP", "commonInit"]
+- ["So25CLLocationManagerDelegateP", "deinit"]
+- ["So25CLLocationManagerDelegateP", "delegate"]
+- ["So25CLLocationManagerDelegateP", "init"]
+- !private ["So25CLLocationManagerDelegateP", "kCLLocationAccuracyBest"]
+- ["So25CLLocationManagerDelegateP", "latestHeading"]
+- ["So25CLLocationManagerDelegateP", "latestLocation"]
+- ["So25CLLocationManagerDelegateP", "locationManager"]
+- ["So25CLLocationManagerDelegateP", "locationManagerDidChangeAuthorization"]
+- ["So25CLLocationManagerDelegateP", "locationManagerDidPauseLocationUpdates"]
+- ["So25CLLocationManagerDelegateP", "locationManagerDidResumeLocationUpdates"]
+- ["So25CLLocationManagerDelegateP", "locationManagerShouldDisplayHeadingCalibration"]
+- ["So25CLLocationManagerDelegateP", "manager"]
+- ["So25CLLocationManagerDelegateP", "startUpdatingLocation"]
+- ["So25CLLocationManagerDelegateP", "stopUpdatingLocation"]
+- !private ["s7CVarArgP", "CLAccuracyAuthorization"]
+- ["s7CVarArgP", "CLLocationManager"]
+- ["s7CVarArgP", ""]
+- !private ["s7CVarArgP", "accuracyAuthorization"]
+- !private ["s7CVarArgP", "authorizeAccuracy"]
+- !private ["s7CVarArgP", "commonInit"]
+- !private ["s7CVarArgP", "delegate"]
+- !private ["s7CVarArgP", "desiredAccuracy"]
+- !private ["s7CVarArgP", "first"]
+- !private ["s7CVarArgP", "horizontalAccuracy"]
+- ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "kCLLocationAccuracyBest"]
+- !private ["s7CVarArgP", "latestHeading"]
+- !private ["s7CVarArgP", "latestLocation"]
+- !private ["s7CVarArgP", "location"]
+- ["s7CVarArgP", "locationManager"]
+- ["s7CVarArgP", "locationManagerDidChangeAuthorization"]
+- ["s7CVarArgP", "locationManagerDidPauseLocationUpdates"]
+- ["s7CVarArgP", "locationManagerDidResumeLocationUpdates"]
+- ["s7CVarArgP", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["s7CVarArgP", "manager"]
+- !private ["s7CVarArgP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["s7CVarArgP", "requestWhenInUseAuthorization"]
+- !private ["s7CVarArgP", "sorted"]
+- !private ["s7CVarArgP", "startUpdatingHeading"]
+- !private ["s7CVarArgP", "startUpdatingLocation"]
+- !private ["s7CVarArgP", "stopUpdatingHeading"]
+- !private ["s7CVarArgP", "stopUpdatingLocation"]
+- !private ["s7CVarArgP", "trueHeading"]
+- !private ["Sl", ""]
+- !private ["Sl", "first"]
+- !private ["Sl", "sorted"]
+- !private ["SL", ""]
+- !private ["10Foundation15ContiguousBytesP", "first"]
+- !private ["10Foundation15ContiguousBytesP", "sorted"]
+- !private ["s28CustomDebugStringConvertibleP", "CLAccuracyAuthorization"]
+- ["s28CustomDebugStringConvertibleP", "CLLocationManager"]
+- ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s28CustomDebugStringConvertibleP", "accuracyAuthorization"]
+- !private ["s28CustomDebugStringConvertibleP", "authorizeAccuracy"]
+- !private ["s28CustomDebugStringConvertibleP", "authorizedAlways"]
+- !private ["s28CustomDebugStringConvertibleP", "authorizedWhenInUse"]
+- !private ["s28CustomDebugStringConvertibleP", "commonInit"]
+- !private ["s28CustomDebugStringConvertibleP", "delegate"]
+- !private ["s28CustomDebugStringConvertibleP", "desiredAccuracy"]
+- !private ["s28CustomDebugStringConvertibleP", "first"]
+- !private ["s28CustomDebugStringConvertibleP", "horizontalAccuracy"]
+- ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "kCLLocationAccuracyBest"]
+- !private ["s28CustomDebugStringConvertibleP", "latestHeading"]
+- !private ["s28CustomDebugStringConvertibleP", "latestLocation"]
+- !private ["s28CustomDebugStringConvertibleP", "location"]
+- ["s28CustomDebugStringConvertibleP", "locationManager"]
+- ["s28CustomDebugStringConvertibleP", "locationManagerDidChangeAuthorization"]
+- ["s28CustomDebugStringConvertibleP", "locationManagerDidPauseLocationUpdates"]
+- ["s28CustomDebugStringConvertibleP", "locationManagerDidResumeLocationUpdates"]
+- ["s28CustomDebugStringConvertibleP", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["s28CustomDebugStringConvertibleP", "manager"]
+- !private ["s28CustomDebugStringConvertibleP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["s28CustomDebugStringConvertibleP", "requestWhenInUseAuthorization"]
+- !private ["s28CustomDebugStringConvertibleP", "sorted"]
+- !private ["s28CustomDebugStringConvertibleP", "startUpdatingHeading"]
+- !private ["s28CustomDebugStringConvertibleP", "startUpdatingLocation"]
+- !private ["s28CustomDebugStringConvertibleP", "stopUpdatingHeading"]
+- !private ["s28CustomDebugStringConvertibleP", "stopUpdatingLocation"]
+- !private ["s28CustomDebugStringConvertibleP", "trueHeading"]
+- !private ["s17CustomReflectableP", "authorizedAlways"]
+- !private ["s17CustomReflectableP", "authorizedWhenInUse"]
+- !private ["s17CustomReflectableP", "first"]
+- !private ["s17CustomReflectableP", "sorted"]
+- !private ["s23CustomStringConvertibleP", "CLAccuracyAuthorization"]
+- ["s23CustomStringConvertibleP", "CLLocationManager"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s23CustomStringConvertibleP", "accuracyAuthorization"]
+- !private ["s23CustomStringConvertibleP", "authorizeAccuracy"]
+- !private ["s23CustomStringConvertibleP", "commonInit"]
+- !private ["s23CustomStringConvertibleP", "delegate"]
+- !private ["s23CustomStringConvertibleP", "desiredAccuracy"]
+- !private ["s23CustomStringConvertibleP", "first"]
+- !private ["s23CustomStringConvertibleP", "horizontalAccuracy"]
+- ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "kCLLocationAccuracyBest"]
+- !private ["s23CustomStringConvertibleP", "latestHeading"]
+- !private ["s23CustomStringConvertibleP", "latestLocation"]
+- !private ["s23CustomStringConvertibleP", "location"]
+- ["s23CustomStringConvertibleP", "locationManager"]
+- ["s23CustomStringConvertibleP", "locationManagerDidChangeAuthorization"]
+- ["s23CustomStringConvertibleP", "locationManagerDidPauseLocationUpdates"]
+- ["s23CustomStringConvertibleP", "locationManagerDidResumeLocationUpdates"]
+- ["s23CustomStringConvertibleP", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["s23CustomStringConvertibleP", "manager"]
+- !private ["s23CustomStringConvertibleP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["s23CustomStringConvertibleP", "requestWhenInUseAuthorization"]
+- !private ["s23CustomStringConvertibleP", "sorted"]
+- !private ["s23CustomStringConvertibleP", "startUpdatingHeading"]
+- !private ["s23CustomStringConvertibleP", "startUpdatingLocation"]
+- !private ["s23CustomStringConvertibleP", "stopUpdatingHeading"]
+- !private ["s23CustomStringConvertibleP", "stopUpdatingLocation"]
+- !private ["s23CustomStringConvertibleP", "trueHeading"]
+- !private ["10Foundation12DataProtocolP", ""]
+- !private ["10Foundation12DataProtocolP", "first"]
+- !private ["10Foundation12DataProtocolP", "sorted"]
+- !private ["Se", "authorizedAlways"]
+- !private ["Se", "authorizedWhenInUse"]
+- !private ["Se", "first"]
+- !private ["Se", "sorted"]
+- !private ["SE", "authorizedAlways"]
+- !private ["SE", "authorizedWhenInUse"]
+- !private ["SE", "first"]
+- !private ["SE", "sorted"]
+- !private ["SQ", "=="]
+- !private ["SQ", "CLAccuracyAuthorization"]
+- ["SQ", "CLLocationManager"]
+- !private ["SQ", "RawValue"]
+- ["SQ", ""]
+- !private ["SQ", "accuracyAuthorization"]
+- !private ["SQ", "authorizeAccuracy"]
+- !private ["SQ", "authorizedAlways"]
+- !private ["SQ", "authorizedWhenInUse"]
+- !private ["SQ", "commonInit"]
+- !private ["SQ", "delegate"]
+- !private ["SQ", "desiredAccuracy"]
+- !private ["SQ", "first"]
+- !private ["SQ", "fullAccuracy"]
+- !private ["SQ", "horizontalAccuracy"]
+- ["SQ", "init"]
+- !private ["SQ", "kCLLocationAccuracyBest"]
+- !private ["SQ", "latestHeading"]
+- !private ["SQ", "latestLocation"]
+- !private ["SQ", "location"]
+- ["SQ", "locationManager"]
+- ["SQ", "locationManagerDidChangeAuthorization"]
+- ["SQ", "locationManagerDidPauseLocationUpdates"]
+- ["SQ", "locationManagerDidResumeLocationUpdates"]
+- ["SQ", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["SQ", "manager"]
+- !private ["SQ", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["SQ", "requestWhenInUseAuthorization"]
+- !private ["SQ", "sorted"]
+- !private ["SQ", "startUpdatingHeading"]
+- !private ["SQ", "startUpdatingLocation"]
+- !private ["SQ", "stopUpdatingHeading"]
+- !private ["SQ", "stopUpdatingLocation"]
+- !private ["SQ", "trueHeading"]
+- !private ["s25ExpressibleByArrayLiteralP", ""]
+- !private ["s25ExpressibleByArrayLiteralP", "first"]
+- !private ["s25ExpressibleByArrayLiteralP", "sorted"]
+- !private ["s27ExpressibleByIntegerLiteralP", ""]
+- !private ["s23ExpressibleByNilLiteralP", "authorizedAlways"]
+- !private ["s23ExpressibleByNilLiteralP", "authorizedWhenInUse"]
+- !private ["SH", "=="]
+- !private ["SH", "CLAccuracyAuthorization"]
+- ["SH", "CLLocationManager"]
+- !private ["SH", "RawValue"]
+- ["SH", ""]
+- !private ["SH", "accuracyAuthorization"]
+- !private ["SH", "authorizeAccuracy"]
+- !private ["SH", "authorizedAlways"]
+- !private ["SH", "authorizedWhenInUse"]
+- !private ["SH", "commonInit"]
+- !private ["SH", "delegate"]
+- !private ["SH", "desiredAccuracy"]
+- !private ["SH", "first"]
+- !private ["SH", "fullAccuracy"]
+- !private ["SH", "horizontalAccuracy"]
+- ["SH", "init"]
+- !private ["SH", "kCLLocationAccuracyBest"]
+- !private ["SH", "latestHeading"]
+- !private ["SH", "latestLocation"]
+- !private ["SH", "location"]
+- ["SH", "locationManager"]
+- ["SH", "locationManagerDidChangeAuthorization"]
+- ["SH", "locationManagerDidPauseLocationUpdates"]
+- ["SH", "locationManagerDidResumeLocationUpdates"]
+- ["SH", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["SH", "manager"]
+- !private ["SH", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["SH", "requestWhenInUseAuthorization"]
+- !private ["SH", "sorted"]
+- !private ["SH", "startUpdatingHeading"]
+- !private ["SH", "startUpdatingLocation"]
+- !private ["SH", "stopUpdatingHeading"]
+- !private ["SH", "stopUpdatingLocation"]
+- !private ["SH", "trueHeading"]
+- ["8SPCamera15LocationManagerC", "CLAccuracyAuthorization"]
+- ["8SPCamera15LocationManagerC", "CLAuthorizationStatus"]
+- ["8SPCamera15LocationManagerC", "CLHeading"]
+- ["8SPCamera15LocationManagerC", "CLLocation"]
+- ["8SPCamera15LocationManagerC", "CLLocationManager"]
+- ["8SPCamera15LocationManagerC", "LocationManagerAccuracyDelegate"]
+- ["8SPCamera15LocationManagerC", "String"]
+- ["8SPCamera15LocationManagerC", "Void"]
+- ["8SPCamera15LocationManagerC", ""]
+- ["8SPCamera15LocationManagerC", "accuracyAuthorization"]
+- ["8SPCamera15LocationManagerC", "authorizeAccuracy"]
+- !private ["8SPCamera15LocationManagerC", "commonInit"]
+- ["8SPCamera15LocationManagerC", "deinit"]
+- ["8SPCamera15LocationManagerC", "delegate"]
+- ["8SPCamera15LocationManagerC", "init"]
+- !private ["8SPCamera15LocationManagerC", "kCLLocationAccuracyBest"]
+- ["8SPCamera15LocationManagerC", "latestHeading"]
+- ["8SPCamera15LocationManagerC", "latestLocation"]
+- ["8SPCamera15LocationManagerC", "locationManager"]
+- ["8SPCamera15LocationManagerC", "locationManagerDidChangeAuthorization"]
+- ["8SPCamera15LocationManagerC", "locationManagerDidPauseLocationUpdates"]
+- ["8SPCamera15LocationManagerC", "locationManagerDidResumeLocationUpdates"]
+- ["8SPCamera15LocationManagerC", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["8SPCamera15LocationManagerC", "manager"]
+- ["8SPCamera15LocationManagerC", "startUpdatingLocation"]
+- ["8SPCamera15LocationManagerC", "stopUpdatingLocation"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "CLAuthorizationStatus"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "Double"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "authorizatoonStatusDidChange"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "headingChanged"]
+- !private ["SM", ""]
+- !private ["SM", "first"]
+- !private ["SM", "sorted"]
+- !private ["10Foundation19MutableDataProtocolP", "first"]
+- !private ["10Foundation19MutableDataProtocolP", "sorted"]
+- ["So8NSCodingP", ""]
+- !private ["So8NSCodingP", "horizontalAccuracy"]
+- !private ["So8NSCodingP", "trueHeading"]
+- !private ["So9NSCopyingP", "horizontalAccuracy"]
+- !private ["So9NSCopyingP", "trueHeading"]
+- ["So8NSObjectC", "CLAccuracyAuthorization"]
+- ["So8NSObjectC", "CLAuthorizationStatus"]
+- ["So8NSObjectC", "CLHeading"]
+- ["So8NSObjectC", "CLLocation"]
+- ["So8NSObjectC", "CLLocationManager"]
+- ["So8NSObjectC", "LocationManagerAccuracyDelegate"]
+- ["So8NSObjectC", "String"]
+- ["So8NSObjectC", "Void"]
+- ["So8NSObjectC", ""]
+- ["So8NSObjectC", "accuracyAuthorization"]
+- ["So8NSObjectC", "authorizeAccuracy"]
+- ["So8NSObjectC", "commonInit"]
+- ["So8NSObjectC", "delegate"]
+- !private ["So8NSObjectC", "desiredAccuracy"]
+- !private ["So8NSObjectC", "horizontalAccuracy"]
+- ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "kCLLocationAccuracyBest"]
+- ["So8NSObjectC", "latestHeading"]
+- ["So8NSObjectC", "latestLocation"]
+- !private ["So8NSObjectC", "location"]
+- ["So8NSObjectC", "locationManager"]
+- ["So8NSObjectC", "locationManagerDidChangeAuthorization"]
+- ["So8NSObjectC", "locationManagerDidPauseLocationUpdates"]
+- ["So8NSObjectC", "locationManagerDidResumeLocationUpdates"]
+- ["So8NSObjectC", "locationManagerShouldDisplayHeadingCalibration"]
+- ["So8NSObjectC", "manager"]
+- !private ["So8NSObjectC", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["So8NSObjectC", "requestTemporaryFullAccuracyAuthorizationWithPurposeKey"]
+- !private ["So8NSObjectC", "requestWhenInUseAuthorization"]
+- !private ["So8NSObjectC", "startUpdatingHeading"]
+- ["So8NSObjectC", "startUpdatingLocation"]
+- !private ["So8NSObjectC", "stopUpdatingHeading"]
+- ["So8NSObjectC", "stopUpdatingLocation"]
+- !private ["So8NSObjectC", "trueHeading"]
+- ["So8NSObjectP", "CLAccuracyAuthorization"]
+- ["So8NSObjectP", "CLAuthorizationStatus"]
+- ["So8NSObjectP", "CLHeading"]
+- ["So8NSObjectP", "CLLocation"]
+- ["So8NSObjectP", "CLLocationManager"]
+- ["So8NSObjectP", "LocationManagerAccuracyDelegate"]
+- ["So8NSObjectP", "String"]
+- ["So8NSObjectP", "Void"]
+- ["So8NSObjectP", ""]
+- ["So8NSObjectP", "accuracyAuthorization"]
+- ["So8NSObjectP", "authorizeAccuracy"]
+- ["So8NSObjectP", "commonInit"]
+- ["So8NSObjectP", "deinit"]
+- ["So8NSObjectP", "delegate"]
+- !private ["So8NSObjectP", "desiredAccuracy"]
+- !private ["So8NSObjectP", "horizontalAccuracy"]
+- ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "kCLLocationAccuracyBest"]
+- ["So8NSObjectP", "latestHeading"]
+- ["So8NSObjectP", "latestLocation"]
+- !private ["So8NSObjectP", "location"]
+- ["So8NSObjectP", "locationManager"]
+- ["So8NSObjectP", "locationManagerDidChangeAuthorization"]
+- ["So8NSObjectP", "locationManagerDidPauseLocationUpdates"]
+- ["So8NSObjectP", "locationManagerDidResumeLocationUpdates"]
+- ["So8NSObjectP", "locationManagerShouldDisplayHeadingCalibration"]
+- ["So8NSObjectP", "manager"]
+- !private ["So8NSObjectP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["So8NSObjectP", "requestTemporaryFullAccuracyAuthorizationWithPurposeKey"]
+- !private ["So8NSObjectP", "requestWhenInUseAuthorization"]
+- !private ["So8NSObjectP", "startUpdatingHeading"]
+- ["So8NSObjectP", "startUpdatingLocation"]
+- !private ["So8NSObjectP", "stopUpdatingHeading"]
+- ["So8NSObjectP", "stopUpdatingLocation"]
+- !private ["So8NSObjectP", "trueHeading"]
+- !private ["So14NSSecureCodingP", "horizontalAccuracy"]
+- !private ["So14NSSecureCodingP", "trueHeading"]
+- !private ["Sj", ""]
+- !private ["Sq", "authorizedAlways"]
+- !private ["Sq", "authorizedWhenInUse"]
+- !private ["Sk", ""]
+- !private ["Sk", "first"]
+- !private ["Sk", "sorted"]
+- !private ["Sm", ""]
+- !private ["Sm", "first"]
+- !private ["Sm", "sorted"]
+- !private ["SY", "=="]
+- !private ["SY", "RawValue"]
+- !private ["SY", "authorizedAlways"]
+- !private ["SY", "authorizedWhenInUse"]
+- !private ["SY", "fullAccuracy"]
+- !private ["ST", ""]
+- !private ["ST", "first"]
+- !private ["ST", "sorted"]
+- !private ["s13SignedNumericP", ""]
+- !private ["Sx", ""]
+- !private ["s14_ArrayProtocolP", "first"]
+- !private ["s14_ArrayProtocolP", "sorted"]
+- !private ["s24_DestructorSafeContainerP", "first"]
+- !private ["s24_DestructorSafeContainerP", "sorted"]
+- !private ["s19_HasContiguousBytesP", "first"]
+- !private ["s19_HasContiguousBytesP", "sorted"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "first"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "sorted"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "CLAccuracyAuthorization"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "CLLocationManager"]
+- ["10Foundation27_KeyValueCodingAndObservingP", ""]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "accuracyAuthorization"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "authorizeAccuracy"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "commonInit"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "delegate"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "desiredAccuracy"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "horizontalAccuracy"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "kCLLocationAccuracyBest"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "latestHeading"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "latestLocation"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "location"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "locationManager"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "locationManagerDidChangeAuthorization"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "locationManagerDidPauseLocationUpdates"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "locationManagerDidResumeLocationUpdates"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "manager"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "requestWhenInUseAuthorization"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "startUpdatingHeading"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "startUpdatingLocation"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "stopUpdatingHeading"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "stopUpdatingLocation"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "trueHeading"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "CLAccuracyAuthorization"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "CLLocationManager"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", ""]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "accuracyAuthorization"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "authorizeAccuracy"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "commonInit"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "delegate"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "desiredAccuracy"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "horizontalAccuracy"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "init"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "kCLLocationAccuracyBest"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "latestHeading"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "latestLocation"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "location"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "locationManager"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "locationManagerDidChangeAuthorization"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "locationManagerDidPauseLocationUpdates"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "locationManagerDidResumeLocationUpdates"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "locationManagerShouldDisplayHeadingCalibration"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "manager"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "requestTemporaryFullAccuracyAuthorization"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "requestWhenInUseAuthorization"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "startUpdatingHeading"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "startUpdatingLocation"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "stopUpdatingHeading"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "stopUpdatingLocation"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "trueHeading"]
+- !private ["s21_ObjectiveCBridgeableP", "authorizedAlways"]
+- !private ["s21_ObjectiveCBridgeableP", "authorizedWhenInUse"]
+- !private ["s21_ObjectiveCBridgeableP", "first"]
+- !private ["s21_ObjectiveCBridgeableP", "sorted"]
+- !private ["s26_OptionalNilComparisonTypeV", "authorizedAlways"]
+- !private ["s26_OptionalNilComparisonTypeV", "authorizedWhenInUse"]
+depends-nominal:
+- !private "s18AdditiveArithmeticP"
+- !private "Sa"
+- !private "SK"
+- !private "So23CLAccuracyAuthorizationV"
+- !private "So21CLAuthorizationStatusV"
+- !private "So9CLHeadingC"
+- !private "So10CLLocationC"
+- "So17CLLocationManagerC"
+- "So25CLLocationManagerDelegateP"
+- "s7CVarArgP"
+- !private "Sl"
+- !private "SL"
+- !private "10Foundation15ContiguousBytesP"
+- "s28CustomDebugStringConvertibleP"
+- !private "s17CustomReflectableP"
+- "s23CustomStringConvertibleP"
+- !private "10Foundation12DataProtocolP"
+- !private "Se"
+- !private "SE"
+- "SQ"
+- !private "s25ExpressibleByArrayLiteralP"
+- !private "s27ExpressibleByIntegerLiteralP"
+- !private "s23ExpressibleByNilLiteralP"
+- "SH"
+- "8SPCamera15LocationManagerC"
+- "8SPCamera31LocationManagerAccuracyDelegateP"
+- !private "SM"
+- !private "10Foundation19MutableDataProtocolP"
+- "So8NSCodingP"
+- !private "So9NSCopyingP"
+- "So8NSObjectC"
+- "So8NSObjectP"
+- !private "So14NSSecureCodingP"
+- !private "Sj"
+- !private "Sq"
+- !private "Sk"
+- !private "Sm"
+- !private "SY"
+- !private "ST"
+- !private "s13SignedNumericP"
+- !private "Sx"
+- !private "s14_ArrayProtocolP"
+- !private "s24_DestructorSafeContainerP"
+- !private "s19_HasContiguousBytesP"
+- !private "s35_HasCustomAnyHashableRepresentationP"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- "10Foundation37_KeyValueCodingAndObservingPublishingP"
+- !private "s21_ObjectiveCBridgeableP"
+- !private "s26_OptionalNilComparisonTypeV"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/XPC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/ObjectiveC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreMIDI.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreMedia.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/simd.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreImage.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Combine.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/QuartzCore.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Dispatch.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Metal.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Darwin.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreLocation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Foundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/AVFoundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreFoundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreAudio.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreGraphics.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Photos.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/UniformTypeIdentifiers.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Swift.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/IOKit.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/SwiftOnoneSupport.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/mach-o/dyld.modulemap"
+- "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/mach-o/compact_unwind_encoding.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/xpc/XPC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CoreMedia.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/apinotes/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreLocation.framework/Headers/CoreLocation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVFoundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/MediaPlayer.framework/Headers/MediaPlayer.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/ApplicationServices.framework/Headers/ApplicationServices.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreAudioTypes.framework/Headers/CoreAudioTypes.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Photos.framework/Headers/Photos.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/UniformTypeIdentifiers.framework/Headers/UniformTypeIdentifiers.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers/MediaToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/AudioToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Security.framework/Headers/Security.apinotes"
+interface-hash: "50c759a1c6441398c71b0292217ba664"

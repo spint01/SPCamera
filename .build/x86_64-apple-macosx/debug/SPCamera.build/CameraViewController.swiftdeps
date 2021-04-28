@@ -1,0 +1,1291 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "CameraViewController"
+provides-nominal:
+- "8SPCamera20CameraViewControllerC"
+provides-member:
+- ["8SPCamera20CameraViewControllerC", ""]
+- ["8SPCamera20CameraViewControllerC", "showSettingsAlert"]
+- ["8SPCamera20CameraViewControllerC", "startTimer"]
+- ["8SPCamera20CameraViewControllerC", "stopTimer"]
+provides-dynamic-lookup:
+- "$__lazy_storage_$_assets"
+- "$__lazy_storage_$_cameraControlsOverlay"
+- "$__lazy_storage_$_photoManager"
+- "$__lazy_storage_$_previewView"
+- "$__lazy_storage_$_volumeView"
+- "addObserver"
+- "assets"
+- "authorizatoonStatusDidChange"
+- "cameraButtonDidPress"
+- "cameraControlsOverlay"
+- "cameraModeButtonDidPress"
+- "cancelButtonDidPress"
+- "capturedAsset"
+- "capturedPhotoAssets"
+- "configuration"
+- "didFinishRecordingVideo"
+- "didStartRecordingVideo"
+- "doneButtonDidPress"
+- "headingChanged"
+- "locationButtonDidPress"
+- "locationManager"
+- "onCancel"
+- "onCapture"
+- "onFinish"
+- "onPreview"
+- "photoLibUnavailable"
+- "photoManager"
+- "pinchGestureRecognizerHandler"
+- "pivotPinchScale"
+- "prefersStatusBarHidden"
+- "preparePhotoManager"
+- "previewButtonDidPress"
+- "previewView"
+- "previewViewOffset"
+- "refresh"
+- "refreshTimeInterval"
+- "setupUI"
+- "showPreciseLocationUnavailableMessage"
+- "showSettingsAlert"
+- "startTimer"
+- "stopTimer"
+- "supportedInterfaceOrientations"
+- "updateCameraAvailability"
+- "updateTimer"
+- "viewDidLayoutSubviews"
+- "viewDidLoad"
+- "viewWillAppear"
+- "viewWillDisappear"
+- "viewWillTransition"
+- "volume"
+- "volumeChanged"
+- "volumeView"
+- "zoomButtonDidPress"
+- "zoomValueChanged"
+depends-top-level:
+- !private "!"
+- !private "!="
+- !private "&&"
+- !private "*"
+- !private "-"
+- !private "<"
+- "=="
+- !private ">"
+- "AVAudioSession"
+- !private "AVCaptureVideoOrientation"
+- "AVLayerVideoGravity"
+- !private "Array"
+- "AssignmentPrecedence"
+- "Bool"
+- !private "BooleanLiteralType"
+- "Bundle"
+- "CGFloat"
+- !private "CGPoint"
+- "CGSize"
+- !private "CLAccuracyAuthorization"
+- "CLAuthorizationStatus"
+- !private "CMTime"
+- "CameraControlsOverlay"
+- "CameraMode"
+- "CameraOverlayDelegate"
+- "CameraViewController"
+- "CastingPrecedence"
+- "Configuration"
+- !private "Constants"
+- !private "DispatchQueue"
+- "Double"
+- "FloatLiteralType"
+- !private "Helper"
+- "IntegerLiteralType"
+- "LocationManager"
+- "LocationManagerAccuracyDelegate"
+- "MPVolumeView"
+- "NSCoder"
+- !private "NSLayoutConstraint"
+- "NSNotification"
+- "Notification"
+- !private "NotificationCenter"
+- "PHAsset"
+- "PhotoManager"
+- "PhotoManagerDelegate"
+- "PreviewView"
+- !private "ScreenSize"
+- "String"
+- !private "StringLiteralType"
+- "TernaryPrecedence"
+- "TimeInterval"
+- "Timer"
+- "UIAlertAction"
+- "UIAlertController"
+- !private "UIDevice"
+- "UIInterfaceOrientationMask"
+- "UIPinchGestureRecognizer"
+- "UISlider"
+- !private "UITapGestureRecognizer"
+- "UIViewController"
+- "UIViewControllerTransitionCoordinator"
+- "Void"
+- !private "assets"
+- !private "cameraControlsOverlay"
+- "configuration"
+- !private "fatalError"
+- !private "locationButtonDidPress"
+- !private "locationManager"
+- !private "onCancel"
+- !private "onCapture"
+- !private "onFinish"
+- !private "onPreview"
+- !private "photoLibUnavailable"
+- !private "photoManager"
+- !private "pinchGestureRecognizerHandler"
+- !private "pivotPinchScale"
+- !private "preparePhotoManager"
+- !private "present"
+- "previewView"
+- !private "previewViewOffset"
+- !private "print"
+- !private "refresh"
+- !private "refreshTimeInterval"
+- "self"
+- !private "setupUI"
+- !private "showSettingsAlert"
+- !private "startTimer"
+- !private "stopTimer"
+- !private "updateCameraAvailability"
+- !private "updateTimer"
+- "view"
+- !private "volume"
+- !private "volumeChanged"
+- !private "volumeView"
+- !private "zoomValueChanged"
+- !private "||"
+depends-member:
+- ["So14AVAudioSessionC", "sharedInstance"]
+- !private ["So19AVCaptureConnectionC", "videoOrientation"]
+- !private ["So26AVCaptureVideoPreviewLayerC", "connection"]
+- !private ["So26AVCaptureVideoPreviewLayerC", "position"]
+- !private ["So26AVCaptureVideoPreviewLayerC", "videoGravity"]
+- !private ["So19AVLayerVideoGravitya", "resizeAspect"]
+- !private ["So19AVLayerVideoGravitya", "resizeAspectFill"]
+- !private ["s18AdditiveArithmeticP", ""]
+- !private ["Sa", "append"]
+- !private ["Sa", "count"]
+- ["Sa", "init"]
+- ["SK", ""]
+- !private ["SK", "append"]
+- !private ["SK", "count"]
+- ["SK", "init"]
+- !private ["So8NSBundleC", "main"]
+- ["So7CALayerC", ""]
+- !private ["So7CALayerC", "connection"]
+- !private ["So7CALayerC", "position"]
+- !private ["So7CALayerC", "videoGravity"]
+- !private ["So13CAMediaTimingP", ""]
+- !private ["So13CAMediaTimingP", "connection"]
+- !private ["So13CAMediaTimingP", "position"]
+- !private ["So13CAMediaTimingP", "videoGravity"]
+- !private ["So23CLAccuracyAuthorizationV", "=="]
+- !private ["So23CLAccuracyAuthorizationV", "RawValue"]
+- !private ["So23CLAccuracyAuthorizationV", "fullAccuracy"]
+- !private ["So23CLAccuracyAuthorizationV", "reducedAccuracy"]
+- ["So21CLAuthorizationStatusV", "authorizedAlways"]
+- ["So21CLAuthorizationStatusV", "authorizedWhenInUse"]
+- ["So21CLAuthorizationStatusV", "notDetermined"]
+- !private ["So25CLLocationManagerDelegateP", "accuracyAuthorization"]
+- !private ["So25CLLocationManagerDelegateP", "authorizeAccuracy"]
+- !private ["So25CLLocationManagerDelegateP", "init"]
+- !private ["So25CLLocationManagerDelegateP", "stopUpdatingLocation"]
+- !private ["So6CMTimea", "init"]
+- !private ["So6CMTimea", "seconds"]
+- !private ["s7CVarArgP", "Name"]
+- !private ["s7CVarArgP", "accuracyAuthorization"]
+- !private ["s7CVarArgP", "addObserver"]
+- !private ["s7CVarArgP", "append"]
+- !private ["s7CVarArgP", "async"]
+- !private ["s7CVarArgP", "authorizeAccuracy"]
+- !private ["s7CVarArgP", "capturePhoto"]
+- !private ["s7CVarArgP", "connection"]
+- !private ["s7CVarArgP", "count"]
+- !private ["s7CVarArgP", "currentCaptureMode"]
+- !private ["s7CVarArgP", "currentZoomFactor"]
+- !private ["s7CVarArgP", "default"]
+- ["s7CVarArgP", "delegate"]
+- ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "invalidate"]
+- !private ["s7CVarArgP", "isSessionRunning"]
+- !private ["s7CVarArgP", "main"]
+- !private ["s7CVarArgP", "position"]
+- !private ["s7CVarArgP", "scheduledTimer"]
+- ["s7CVarArgP", "sharedInstance"]
+- !private ["s7CVarArgP", "start"]
+- !private ["s7CVarArgP", "stop"]
+- !private ["s7CVarArgP", "stopUpdatingLocation"]
+- !private ["s7CVarArgP", "subscript"]
+- !private ["s7CVarArgP", "toggleMovieRecording"]
+- !private ["s7CVarArgP", "toggleZoom"]
+- !private ["s7CVarArgP", "uniqueDevicePositionsCount"]
+- !private ["s7CVarArgP", "updateCameraMode"]
+- !private ["s7CVarArgP", "userInfo"]
+- !private ["s7CVarArgP", "videoDeviceDiscoverySession"]
+- !private ["s7CVarArgP", "videoDuration"]
+- !private ["s7CVarArgP", "videoGravity"]
+- !private ["s7CVarArgP", "videoOrientation"]
+- !private ["8SPCamera21CameraControlsOverlayC", "delegate"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isCameraAvailable"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isCapturingPhoto"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isCapturingVideo"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isLocationAuthorized"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isPhotoLibraryAvailable"]
+- !private ["8SPCamera21CameraControlsOverlayC", "isPreciseLocationAuthorized"]
+- !private ["8SPCamera21CameraControlsOverlayC", "photoPreviewTitle"]
+- !private ["8SPCamera21CameraControlsOverlayC", "photoUnavailableText"]
+- !private ["8SPCamera21CameraControlsOverlayC", "rotateCompass"]
+- !private ["8SPCamera21CameraControlsOverlayC", "updateLocationAccuracyButton"]
+- !private ["8SPCamera21CameraControlsOverlayC", "updateZoomButtonTitle"]
+- !private ["8SPCamera21CameraControlsOverlayC", "videoDuration"]
+- !private ["8SPCamera10CameraModeO", ""]
+- ["8SPCamera10CameraModeO", "photo"]
+- ["8SPCamera10CameraModeO", "video"]
+- ["8SPCamera21CameraOverlayDelegateP", "AVAudioSession"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "AVCaptureVideoOrientation"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "Bundle"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "CGPoint"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "CLAccuracyAuthorization"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "CMTime"]
+- ["8SPCamera21CameraOverlayDelegateP", "CameraControlsOverlay"]
+- ["8SPCamera21CameraOverlayDelegateP", "Configuration"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "Constants"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "DispatchQueue"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "Helper"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "LocationManager"]
+- ["8SPCamera21CameraOverlayDelegateP", "MPVolumeView"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "NSLayoutConstraint"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "NSNotification"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "NotificationCenter"]
+- ["8SPCamera21CameraOverlayDelegateP", "PHAsset"]
+- ["8SPCamera21CameraOverlayDelegateP", "PhotoManager"]
+- ["8SPCamera21CameraOverlayDelegateP", "PreviewView"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "ScreenSize"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "Timer"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "UIAlertAction"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "UIAlertController"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "UIDevice"]
+- ["8SPCamera21CameraOverlayDelegateP", "UIInterfaceOrientationMask"]
+- ["8SPCamera21CameraOverlayDelegateP", "UIPinchGestureRecognizer"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "UISlider"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "UITapGestureRecognizer"]
+- ["8SPCamera21CameraOverlayDelegateP", "UIViewControllerTransitionCoordinator"]
+- ["8SPCamera21CameraOverlayDelegateP", ""]
+- !private ["8SPCamera21CameraOverlayDelegateP", "addObserver"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "assets"]
+- ["8SPCamera21CameraOverlayDelegateP", "authorizatoonStatusDidChange"]
+- ["8SPCamera21CameraOverlayDelegateP", "cameraButtonDidPress"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "cameraControlsOverlay"]
+- ["8SPCamera21CameraOverlayDelegateP", "cameraModeButtonDidPress"]
+- ["8SPCamera21CameraOverlayDelegateP", "cancelButtonDidPress"]
+- ["8SPCamera21CameraOverlayDelegateP", "capturedAsset"]
+- ["8SPCamera21CameraOverlayDelegateP", "configuration"]
+- ["8SPCamera21CameraOverlayDelegateP", "didFinishRecordingVideo"]
+- ["8SPCamera21CameraOverlayDelegateP", "didStartRecordingVideo"]
+- ["8SPCamera21CameraOverlayDelegateP", "doneButtonDidPress"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "fatalError"]
+- ["8SPCamera21CameraOverlayDelegateP", "headingChanged"]
+- ["8SPCamera21CameraOverlayDelegateP", "locationButtonDidPress"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "locationManager"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "onCancel"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "onCapture"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "onFinish"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "onPreview"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "photoLibUnavailable"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "photoManager"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "pinchGestureRecognizerHandler"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "pivotPinchScale"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "preparePhotoManager"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "present"]
+- ["8SPCamera21CameraOverlayDelegateP", "previewButtonDidPress"]
+- ["8SPCamera21CameraOverlayDelegateP", "previewView"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "previewViewOffset"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "print"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "refresh"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "refreshTimeInterval"]
+- ["8SPCamera21CameraOverlayDelegateP", "self"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "setupUI"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "showPreciseLocationUnavailableMessage"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "showSettingsAlert"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "startTimer"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "stopTimer"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "updateCameraAvailability"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "updateTimer"]
+- ["8SPCamera21CameraOverlayDelegateP", "view"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "volume"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "volumeChanged"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "volumeView"]
+- ["8SPCamera21CameraOverlayDelegateP", "zoomButtonDidPress"]
+- !private ["8SPCamera21CameraOverlayDelegateP", "zoomValueChanged"]
+- !private ["8SPCamera20CameraViewControllerC", "$__lazy_storage_$_assets"]
+- !private ["8SPCamera20CameraViewControllerC", "$__lazy_storage_$_cameraControlsOverlay"]
+- !private ["8SPCamera20CameraViewControllerC", "$__lazy_storage_$_photoManager"]
+- !private ["8SPCamera20CameraViewControllerC", "$__lazy_storage_$_previewView"]
+- !private ["8SPCamera20CameraViewControllerC", "$__lazy_storage_$_volumeView"]
+- ["8SPCamera20CameraViewControllerC", "AVAudioSession"]
+- !private ["8SPCamera20CameraViewControllerC", "AVCaptureVideoOrientation"]
+- !private ["8SPCamera20CameraViewControllerC", "AVLayerVideoGravity"]
+- ["8SPCamera20CameraViewControllerC", "Bool"]
+- !private ["8SPCamera20CameraViewControllerC", "Bundle"]
+- ["8SPCamera20CameraViewControllerC", "CGFloat"]
+- !private ["8SPCamera20CameraViewControllerC", "CGPoint"]
+- ["8SPCamera20CameraViewControllerC", "CGSize"]
+- !private ["8SPCamera20CameraViewControllerC", "CLAccuracyAuthorization"]
+- ["8SPCamera20CameraViewControllerC", "CLAuthorizationStatus"]
+- !private ["8SPCamera20CameraViewControllerC", "CMTime"]
+- ["8SPCamera20CameraViewControllerC", "CameraControlsOverlay"]
+- ["8SPCamera20CameraViewControllerC", "CameraMode"]
+- ["8SPCamera20CameraViewControllerC", "Configuration"]
+- !private ["8SPCamera20CameraViewControllerC", "Constants"]
+- !private ["8SPCamera20CameraViewControllerC", "DispatchQueue"]
+- ["8SPCamera20CameraViewControllerC", "Double"]
+- !private ["8SPCamera20CameraViewControllerC", "Helper"]
+- ["8SPCamera20CameraViewControllerC", "LocationManager"]
+- ["8SPCamera20CameraViewControllerC", "MPVolumeView"]
+- ["8SPCamera20CameraViewControllerC", "NSCoder"]
+- !private ["8SPCamera20CameraViewControllerC", "NSLayoutConstraint"]
+- !private ["8SPCamera20CameraViewControllerC", "NSNotification"]
+- ["8SPCamera20CameraViewControllerC", "Notification"]
+- !private ["8SPCamera20CameraViewControllerC", "NotificationCenter"]
+- ["8SPCamera20CameraViewControllerC", "PHAsset"]
+- ["8SPCamera20CameraViewControllerC", "PhotoManager"]
+- ["8SPCamera20CameraViewControllerC", "PreviewView"]
+- !private ["8SPCamera20CameraViewControllerC", "ScreenSize"]
+- ["8SPCamera20CameraViewControllerC", "String"]
+- ["8SPCamera20CameraViewControllerC", "TimeInterval"]
+- ["8SPCamera20CameraViewControllerC", "Timer"]
+- !private ["8SPCamera20CameraViewControllerC", "UIAlertAction"]
+- !private ["8SPCamera20CameraViewControllerC", "UIAlertController"]
+- !private ["8SPCamera20CameraViewControllerC", "UIDevice"]
+- ["8SPCamera20CameraViewControllerC", "UIInterfaceOrientationMask"]
+- ["8SPCamera20CameraViewControllerC", "UIPinchGestureRecognizer"]
+- !private ["8SPCamera20CameraViewControllerC", "UISlider"]
+- !private ["8SPCamera20CameraViewControllerC", "UITapGestureRecognizer"]
+- ["8SPCamera20CameraViewControllerC", "UIViewControllerTransitionCoordinator"]
+- ["8SPCamera20CameraViewControllerC", "Void"]
+- ["8SPCamera20CameraViewControllerC", ""]
+- !private ["8SPCamera20CameraViewControllerC", "addObserver"]
+- !private ["8SPCamera20CameraViewControllerC", "assets"]
+- ["8SPCamera20CameraViewControllerC", "authorizatoonStatusDidChange"]
+- ["8SPCamera20CameraViewControllerC", "cameraButtonDidPress"]
+- !private ["8SPCamera20CameraViewControllerC", "cameraControlsOverlay"]
+- ["8SPCamera20CameraViewControllerC", "cameraModeButtonDidPress"]
+- ["8SPCamera20CameraViewControllerC", "cancelButtonDidPress"]
+- ["8SPCamera20CameraViewControllerC", "capturedAsset"]
+- !private ["8SPCamera20CameraViewControllerC", "capturedPhotoAssets"]
+- ["8SPCamera20CameraViewControllerC", "configuration"]
+- ["8SPCamera20CameraViewControllerC", "deinit"]
+- ["8SPCamera20CameraViewControllerC", "didFinishRecordingVideo"]
+- ["8SPCamera20CameraViewControllerC", "didStartRecordingVideo"]
+- ["8SPCamera20CameraViewControllerC", "doneButtonDidPress"]
+- !private ["8SPCamera20CameraViewControllerC", "fatalError"]
+- ["8SPCamera20CameraViewControllerC", "headingChanged"]
+- ["8SPCamera20CameraViewControllerC", "init"]
+- ["8SPCamera20CameraViewControllerC", "locationButtonDidPress"]
+- !private ["8SPCamera20CameraViewControllerC", "locationManager"]
+- !private ["8SPCamera20CameraViewControllerC", "onCancel"]
+- !private ["8SPCamera20CameraViewControllerC", "onCapture"]
+- !private ["8SPCamera20CameraViewControllerC", "onFinish"]
+- !private ["8SPCamera20CameraViewControllerC", "onPreview"]
+- !private ["8SPCamera20CameraViewControllerC", "photoLibUnavailable"]
+- !private ["8SPCamera20CameraViewControllerC", "photoManager"]
+- ["8SPCamera20CameraViewControllerC", "pinchGestureRecognizerHandler"]
+- !private ["8SPCamera20CameraViewControllerC", "pivotPinchScale"]
+- ["8SPCamera20CameraViewControllerC", "prefersStatusBarHidden"]
+- !private ["8SPCamera20CameraViewControllerC", "preparePhotoManager"]
+- !private ["8SPCamera20CameraViewControllerC", "present"]
+- ["8SPCamera20CameraViewControllerC", "previewButtonDidPress"]
+- ["8SPCamera20CameraViewControllerC", "previewView"]
+- !private ["8SPCamera20CameraViewControllerC", "previewViewOffset"]
+- !private ["8SPCamera20CameraViewControllerC", "print"]
+- !private ["8SPCamera20CameraViewControllerC", "refresh"]
+- !private ["8SPCamera20CameraViewControllerC", "refreshTimeInterval"]
+- ["8SPCamera20CameraViewControllerC", "self"]
+- !private ["8SPCamera20CameraViewControllerC", "setupUI"]
+- !private ["8SPCamera20CameraViewControllerC", "showPreciseLocationUnavailableMessage"]
+- ["8SPCamera20CameraViewControllerC", "showSettingsAlert"]
+- ["8SPCamera20CameraViewControllerC", "startTimer"]
+- ["8SPCamera20CameraViewControllerC", "stopTimer"]
+- ["8SPCamera20CameraViewControllerC", "supportedInterfaceOrientations"]
+- !private ["8SPCamera20CameraViewControllerC", "updateCameraAvailability"]
+- !private ["8SPCamera20CameraViewControllerC", "updateTimer"]
+- ["8SPCamera20CameraViewControllerC", "view"]
+- ["8SPCamera20CameraViewControllerC", "viewDidLayoutSubviews"]
+- ["8SPCamera20CameraViewControllerC", "viewDidLoad"]
+- ["8SPCamera20CameraViewControllerC", "viewWillAppear"]
+- ["8SPCamera20CameraViewControllerC", "viewWillDisappear"]
+- ["8SPCamera20CameraViewControllerC", "viewWillTransition"]
+- !private ["8SPCamera20CameraViewControllerC", "volume"]
+- !private ["8SPCamera20CameraViewControllerC", "volumeChanged"]
+- !private ["8SPCamera20CameraViewControllerC", "volumeView"]
+- ["8SPCamera20CameraViewControllerC", "zoomButtonDidPress"]
+- !private ["8SPCamera20CameraViewControllerC", "zoomValueChanged"]
+- !private ["8SPCamera11CaptureModeO", "RawValue"]
+- !private ["8SPCamera11CaptureModeO", ""]
+- !private ["8SPCamera11CaptureModeO", "movie"]
+- ["Sl", ""]
+- !private ["Sl", "append"]
+- !private ["Sl", "count"]
+- ["Sl", "init"]
+- !private ["Sl", "subscript"]
+- !private ["SL", "<"]
+- !private ["SL", "<="]
+- !private ["SL", ">"]
+- !private ["SL", ">="]
+- ["SL", ""]
+- !private ["SL", "init"]
+- !private ["SL", "seconds"]
+- !private ["8SPCamera13ConfigurationV", "allowMultiplePhotoCapture"]
+- !private ["8SPCamera13ConfigurationV", "alwaysAskForPreciseLocation"]
+- ["8SPCamera13ConfigurationV", "bottomContainerViewColor"]
+- ["8SPCamera13ConfigurationV", "init"]
+- !private ["8SPCamera13ConfigurationV", "mediaCaptureFailer"]
+- !private ["8SPCamera9ConstantsO", "maxZoomFactor"]
+- !private ["8SPCamera9ConstantsO", "minZoomFactor"]
+- !private ["10Foundation15ContiguousBytesP", "append"]
+- !private ["10Foundation15ContiguousBytesP", "count"]
+- ["10Foundation15ContiguousBytesP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "Name"]
+- !private ["s28CustomDebugStringConvertibleP", "PhotoLibUnavailable"]
+- !private ["s28CustomDebugStringConvertibleP", "UpdateCameraAvailability"]
+- !private ["s28CustomDebugStringConvertibleP", "ZoomValueChanged"]
+- !private ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s28CustomDebugStringConvertibleP", "accuracyAuthorization"]
+- !private ["s28CustomDebugStringConvertibleP", "addObserver"]
+- !private ["s28CustomDebugStringConvertibleP", "append"]
+- !private ["s28CustomDebugStringConvertibleP", "async"]
+- !private ["s28CustomDebugStringConvertibleP", "authorizeAccuracy"]
+- !private ["s28CustomDebugStringConvertibleP", "capturePhoto"]
+- !private ["s28CustomDebugStringConvertibleP", "connection"]
+- !private ["s28CustomDebugStringConvertibleP", "count"]
+- !private ["s28CustomDebugStringConvertibleP", "currentCaptureMode"]
+- !private ["s28CustomDebugStringConvertibleP", "currentZoomFactor"]
+- !private ["s28CustomDebugStringConvertibleP", "default"]
+- ["s28CustomDebugStringConvertibleP", "delegate"]
+- ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "invalidate"]
+- !private ["s28CustomDebugStringConvertibleP", "isSessionRunning"]
+- !private ["s28CustomDebugStringConvertibleP", "main"]
+- !private ["s28CustomDebugStringConvertibleP", "position"]
+- !private ["s28CustomDebugStringConvertibleP", "scheduledTimer"]
+- ["s28CustomDebugStringConvertibleP", "sharedInstance"]
+- !private ["s28CustomDebugStringConvertibleP", "start"]
+- !private ["s28CustomDebugStringConvertibleP", "stop"]
+- !private ["s28CustomDebugStringConvertibleP", "stopUpdatingLocation"]
+- !private ["s28CustomDebugStringConvertibleP", "subscript"]
+- !private ["s28CustomDebugStringConvertibleP", "toggleMovieRecording"]
+- !private ["s28CustomDebugStringConvertibleP", "toggleZoom"]
+- !private ["s28CustomDebugStringConvertibleP", "uniqueDevicePositionsCount"]
+- !private ["s28CustomDebugStringConvertibleP", "updateCameraMode"]
+- !private ["s28CustomDebugStringConvertibleP", "userInfo"]
+- !private ["s28CustomDebugStringConvertibleP", "videoDeviceDiscoverySession"]
+- !private ["s28CustomDebugStringConvertibleP", "videoDuration"]
+- !private ["s28CustomDebugStringConvertibleP", "videoGravity"]
+- !private ["s28CustomDebugStringConvertibleP", "videoOrientation"]
+- !private ["s17CustomReflectableP", "PhotoLibUnavailable"]
+- !private ["s17CustomReflectableP", "UpdateCameraAvailability"]
+- !private ["s17CustomReflectableP", "ZoomValueChanged"]
+- !private ["s17CustomReflectableP", "append"]
+- !private ["s17CustomReflectableP", "count"]
+- ["s17CustomReflectableP", "init"]
+- !private ["s17CustomReflectableP", "subscript"]
+- !private ["s17CustomReflectableP", "userInfo"]
+- !private ["s23CustomStringConvertibleP", "Name"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s23CustomStringConvertibleP", "accuracyAuthorization"]
+- !private ["s23CustomStringConvertibleP", "addObserver"]
+- !private ["s23CustomStringConvertibleP", "append"]
+- !private ["s23CustomStringConvertibleP", "appendInterpolation"]
+- !private ["s23CustomStringConvertibleP", "appendLiteral"]
+- !private ["s23CustomStringConvertibleP", "async"]
+- !private ["s23CustomStringConvertibleP", "authorizeAccuracy"]
+- !private ["s23CustomStringConvertibleP", "capturePhoto"]
+- !private ["s23CustomStringConvertibleP", "connection"]
+- !private ["s23CustomStringConvertibleP", "count"]
+- !private ["s23CustomStringConvertibleP", "currentCaptureMode"]
+- !private ["s23CustomStringConvertibleP", "currentZoomFactor"]
+- !private ["s23CustomStringConvertibleP", "default"]
+- ["s23CustomStringConvertibleP", "delegate"]
+- ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "invalidate"]
+- !private ["s23CustomStringConvertibleP", "isSessionRunning"]
+- !private ["s23CustomStringConvertibleP", "main"]
+- !private ["s23CustomStringConvertibleP", "position"]
+- !private ["s23CustomStringConvertibleP", "scheduledTimer"]
+- ["s23CustomStringConvertibleP", "sharedInstance"]
+- !private ["s23CustomStringConvertibleP", "start"]
+- !private ["s23CustomStringConvertibleP", "stop"]
+- !private ["s23CustomStringConvertibleP", "stopUpdatingLocation"]
+- !private ["s23CustomStringConvertibleP", "subscript"]
+- !private ["s23CustomStringConvertibleP", "toggleMovieRecording"]
+- !private ["s23CustomStringConvertibleP", "toggleZoom"]
+- !private ["s23CustomStringConvertibleP", "uniqueDevicePositionsCount"]
+- !private ["s23CustomStringConvertibleP", "updateCameraMode"]
+- !private ["s23CustomStringConvertibleP", "userInfo"]
+- !private ["s23CustomStringConvertibleP", "videoDeviceDiscoverySession"]
+- !private ["s23CustomStringConvertibleP", "videoDuration"]
+- !private ["s23CustomStringConvertibleP", "videoGravity"]
+- !private ["s23CustomStringConvertibleP", "videoOrientation"]
+- ["10Foundation12DataProtocolP", ""]
+- !private ["10Foundation12DataProtocolP", "append"]
+- !private ["10Foundation12DataProtocolP", "count"]
+- ["10Foundation12DataProtocolP", "init"]
+- !private ["Se", "PhotoLibUnavailable"]
+- !private ["Se", "UpdateCameraAvailability"]
+- !private ["Se", "ZoomValueChanged"]
+- !private ["Se", "append"]
+- !private ["Se", "count"]
+- ["Se", "init"]
+- !private ["Se", "subscript"]
+- !private ["s26DefaultStringInterpolationV", "appendInterpolation"]
+- !private ["s26DefaultStringInterpolationV", "appendLiteral"]
+- !private ["SD", "subscript"]
+- !private ["So31AVCaptureDeviceDiscoverySessionC", "uniqueDevicePositionsCount"]
+- ["So18OS_dispatch_objectC", ""]
+- !private ["So18OS_dispatch_objectC", "async"]
+- !private ["So18OS_dispatch_objectC", "init"]
+- !private ["So18OS_dispatch_objectC", "main"]
+- !private ["So18OS_dispatch_objectC", "sync"]
+- !private ["So17OS_dispatch_queueC", "async"]
+- !private ["So17OS_dispatch_queueC", "main"]
+- !private ["SE", "PhotoLibUnavailable"]
+- !private ["SE", "UpdateCameraAvailability"]
+- !private ["SE", "ZoomValueChanged"]
+- !private ["SE", "append"]
+- !private ["SE", "count"]
+- ["SE", "init"]
+- !private ["SE", "subscript"]
+- !private ["SQ", "=="]
+- !private ["SQ", "Name"]
+- !private ["SQ", "PhotoLibUnavailable"]
+- !private ["SQ", "RawValue"]
+- !private ["SQ", "UpdateCameraAvailability"]
+- !private ["SQ", "ZoomValueChanged"]
+- ["SQ", ""]
+- !private ["SQ", "accuracyAuthorization"]
+- !private ["SQ", "addObserver"]
+- !private ["SQ", "append"]
+- !private ["SQ", "async"]
+- !private ["SQ", "authorizeAccuracy"]
+- ["SQ", "authorizedAlways"]
+- ["SQ", "authorizedWhenInUse"]
+- !private ["SQ", "capturePhoto"]
+- !private ["SQ", "configurationFailed"]
+- !private ["SQ", "connection"]
+- !private ["SQ", "count"]
+- !private ["SQ", "currentCaptureMode"]
+- !private ["SQ", "currentZoomFactor"]
+- !private ["SQ", "default"]
+- ["SQ", "delegate"]
+- !private ["SQ", "fullAccuracy"]
+- ["SQ", "init"]
+- !private ["SQ", "invalidate"]
+- !private ["SQ", "isSessionRunning"]
+- !private ["SQ", "main"]
+- !private ["SQ", "movie"]
+- !private ["SQ", "notAuthorized"]
+- ["SQ", "notDetermined"]
+- ["SQ", "photo"]
+- !private ["SQ", "position"]
+- !private ["SQ", "reducedAccuracy"]
+- !private ["SQ", "resizeAspect"]
+- !private ["SQ", "resizeAspectFill"]
+- !private ["SQ", "scheduledTimer"]
+- !private ["SQ", "seconds"]
+- ["SQ", "sharedInstance"]
+- !private ["SQ", "start"]
+- !private ["SQ", "stop"]
+- !private ["SQ", "stopUpdatingLocation"]
+- !private ["SQ", "subscript"]
+- !private ["SQ", "success"]
+- !private ["SQ", "toggleMovieRecording"]
+- !private ["SQ", "toggleZoom"]
+- !private ["SQ", "uniqueDevicePositionsCount"]
+- !private ["SQ", "updateCameraMode"]
+- !private ["SQ", "userInfo"]
+- ["SQ", "video"]
+- !private ["SQ", "videoDeviceDiscoverySession"]
+- !private ["SQ", "videoDuration"]
+- !private ["SQ", "videoGravity"]
+- !private ["SQ", "videoOrientation"]
+- ["s25ExpressibleByArrayLiteralP", ""]
+- !private ["s25ExpressibleByArrayLiteralP", "append"]
+- !private ["s25ExpressibleByArrayLiteralP", "count"]
+- ["s25ExpressibleByArrayLiteralP", "init"]
+- !private ["s30ExpressibleByDictionaryLiteralP", "subscript"]
+- ["s43ExpressibleByExtendedGraphemeClusterLiteralP", ""]
+- ["s25ExpressibleByFloatLiteralP", "FloatLiteralType"]
+- ["s25ExpressibleByFloatLiteralP", "init"]
+- !private ["s27ExpressibleByIntegerLiteralP", "IntegerLiteralType"]
+- !private ["s27ExpressibleByIntegerLiteralP", ""]
+- !private ["s27ExpressibleByIntegerLiteralP", "init"]
+- !private ["s23ExpressibleByNilLiteralP", "PhotoLibUnavailable"]
+- !private ["s23ExpressibleByNilLiteralP", "UpdateCameraAvailability"]
+- !private ["s23ExpressibleByNilLiteralP", "ZoomValueChanged"]
+- !private ["s32ExpressibleByStringInterpolationP", "StringInterpolation"]
+- ["s32ExpressibleByStringInterpolationP", ""]
+- !private ["s32ExpressibleByStringInterpolationP", "init"]
+- ["s26ExpressibleByStringLiteralP", ""]
+- ["s33ExpressibleByUnicodeScalarLiteralP", ""]
+- !private ["SF", "<"]
+- !private ["SF", "<="]
+- !private ["SF", ">"]
+- !private ["SF", ">="]
+- !private ["SH", "=="]
+- !private ["SH", "Name"]
+- !private ["SH", "PhotoLibUnavailable"]
+- !private ["SH", "RawValue"]
+- !private ["SH", "UpdateCameraAvailability"]
+- !private ["SH", "ZoomValueChanged"]
+- ["SH", ""]
+- !private ["SH", "accuracyAuthorization"]
+- !private ["SH", "addObserver"]
+- !private ["SH", "append"]
+- !private ["SH", "async"]
+- !private ["SH", "authorizeAccuracy"]
+- ["SH", "authorizedAlways"]
+- ["SH", "authorizedWhenInUse"]
+- !private ["SH", "capturePhoto"]
+- !private ["SH", "configurationFailed"]
+- !private ["SH", "connection"]
+- !private ["SH", "count"]
+- !private ["SH", "currentCaptureMode"]
+- !private ["SH", "currentZoomFactor"]
+- !private ["SH", "default"]
+- ["SH", "delegate"]
+- !private ["SH", "fullAccuracy"]
+- ["SH", "init"]
+- !private ["SH", "invalidate"]
+- !private ["SH", "isSessionRunning"]
+- !private ["SH", "main"]
+- !private ["SH", "movie"]
+- !private ["SH", "notAuthorized"]
+- ["SH", "notDetermined"]
+- ["SH", "photo"]
+- !private ["SH", "position"]
+- !private ["SH", "reducedAccuracy"]
+- !private ["SH", "resizeAspect"]
+- !private ["SH", "resizeAspectFill"]
+- !private ["SH", "scheduledTimer"]
+- ["SH", "sharedInstance"]
+- !private ["SH", "start"]
+- !private ["SH", "stop"]
+- !private ["SH", "stopUpdatingLocation"]
+- !private ["SH", "subscript"]
+- !private ["SH", "success"]
+- !private ["SH", "toggleMovieRecording"]
+- !private ["SH", "toggleZoom"]
+- !private ["SH", "uniqueDevicePositionsCount"]
+- !private ["SH", "updateCameraMode"]
+- !private ["SH", "userInfo"]
+- ["SH", "video"]
+- !private ["SH", "videoDeviceDiscoverySession"]
+- !private ["SH", "videoDuration"]
+- !private ["SH", "videoGravity"]
+- !private ["SH", "videoOrientation"]
+- !private ["8SPCamera6HelperV", "runningOnIpad"]
+- !private ["8SPCamera15LocationManagerC", "accuracyAuthorization"]
+- !private ["8SPCamera15LocationManagerC", "authorizeAccuracy"]
+- !private ["8SPCamera15LocationManagerC", "init"]
+- !private ["8SPCamera15LocationManagerC", "stopUpdatingLocation"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "AVAudioSession"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "AVCaptureVideoOrientation"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "Bundle"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "CGPoint"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "CLAccuracyAuthorization"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "CMTime"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "CameraControlsOverlay"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "Configuration"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "Constants"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "DispatchQueue"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "Helper"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "LocationManager"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "MPVolumeView"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "NSLayoutConstraint"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "NSNotification"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "NotificationCenter"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "PHAsset"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "PhotoManager"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "PreviewView"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "ScreenSize"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "Timer"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "UIAlertAction"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "UIAlertController"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "UIDevice"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "UIInterfaceOrientationMask"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "UIPinchGestureRecognizer"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "UISlider"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "UITapGestureRecognizer"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "UIViewControllerTransitionCoordinator"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", ""]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "addObserver"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "assets"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "authorizatoonStatusDidChange"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "cameraButtonDidPress"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "cameraControlsOverlay"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "cameraModeButtonDidPress"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "cancelButtonDidPress"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "capturedAsset"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "configuration"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "didFinishRecordingVideo"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "didStartRecordingVideo"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "doneButtonDidPress"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "fatalError"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "headingChanged"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "locationButtonDidPress"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "locationManager"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "onCancel"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "onCapture"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "onFinish"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "onPreview"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "photoLibUnavailable"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "photoManager"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "pinchGestureRecognizerHandler"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "pivotPinchScale"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "preparePhotoManager"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "present"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "previewButtonDidPress"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "previewView"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "previewViewOffset"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "print"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "refresh"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "refreshTimeInterval"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "self"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "setupUI"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "showPreciseLocationUnavailableMessage"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "showSettingsAlert"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "startTimer"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "stopTimer"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "updateCameraAvailability"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "updateTimer"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "view"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "volume"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "volumeChanged"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "volumeView"]
+- ["8SPCamera31LocationManagerAccuracyDelegateP", "zoomButtonDidPress"]
+- !private ["8SPCamera31LocationManagerAccuracyDelegateP", "zoomValueChanged"]
+- ["s25LosslessStringConvertibleP", ""]
+- ["SM", ""]
+- !private ["SM", "append"]
+- !private ["SM", "count"]
+- ["SM", "init"]
+- !private ["10Foundation19MutableDataProtocolP", "append"]
+- !private ["10Foundation19MutableDataProtocolP", "count"]
+- ["10Foundation19MutableDataProtocolP", "init"]
+- !private ["So8NSCodingP", "Name"]
+- !private ["So8NSCodingP", ""]
+- !private ["So8NSCodingP", "connection"]
+- !private ["So8NSCodingP", "position"]
+- !private ["So8NSCodingP", "userInfo"]
+- !private ["So8NSCodingP", "videoGravity"]
+- !private ["So9NSCopyingP", "Name"]
+- !private ["So9NSCopyingP", "userInfo"]
+- !private ["So14NSNotificationC", "Name"]
+- !private ["So14NSNotificationC", "userInfo"]
+- !private ["So8NSObjectC", "Name"]
+- ["So8NSObjectC", ""]
+- !private ["So8NSObjectC", "accuracyAuthorization"]
+- !private ["So8NSObjectC", "activate"]
+- !private ["So8NSObjectC", "addObserver"]
+- !private ["So8NSObjectC", "addObserverForName"]
+- !private ["So8NSObjectC", "async"]
+- !private ["So8NSObjectC", "authorizeAccuracy"]
+- !private ["So8NSObjectC", "capturePhoto"]
+- !private ["So8NSObjectC", "connection"]
+- !private ["So8NSObjectC", "currentCaptureMode"]
+- !private ["So8NSObjectC", "currentZoomFactor"]
+- !private ["So8NSObjectC", "default"]
+- ["So8NSObjectC", "delegate"]
+- ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "invalidate"]
+- !private ["So8NSObjectC", "isSessionRunning"]
+- !private ["So8NSObjectC", "main"]
+- !private ["So8NSObjectC", "position"]
+- !private ["So8NSObjectC", "resume"]
+- !private ["So8NSObjectC", "scheduledTimer"]
+- !private ["So8NSObjectC", "scheduledTimerWithTimeInterval"]
+- !private ["So8NSObjectC", "setTarget"]
+- ["So8NSObjectC", "sharedInstance"]
+- !private ["So8NSObjectC", "start"]
+- !private ["So8NSObjectC", "stop"]
+- !private ["So8NSObjectC", "stopUpdatingLocation"]
+- !private ["So8NSObjectC", "suspend"]
+- !private ["So8NSObjectC", "sync"]
+- !private ["So8NSObjectC", "toggleMovieRecording"]
+- !private ["So8NSObjectC", "toggleZoom"]
+- !private ["So8NSObjectC", "uniqueDevicePositionsCount"]
+- !private ["So8NSObjectC", "updateCameraMode"]
+- !private ["So8NSObjectC", "userInfo"]
+- !private ["So8NSObjectC", "videoDeviceDiscoverySession"]
+- !private ["So8NSObjectC", "videoDuration"]
+- !private ["So8NSObjectC", "videoGravity"]
+- !private ["So8NSObjectC", "videoOrientation"]
+- !private ["So8NSObjectP", "Name"]
+- !private ["So8NSObjectP", ""]
+- !private ["So8NSObjectP", "accuracyAuthorization"]
+- !private ["So8NSObjectP", "activate"]
+- !private ["So8NSObjectP", "addObserver"]
+- !private ["So8NSObjectP", "addObserverForName"]
+- !private ["So8NSObjectP", "async"]
+- !private ["So8NSObjectP", "authorizeAccuracy"]
+- ["So8NSObjectP", "capturePhoto"]
+- !private ["So8NSObjectP", "connection"]
+- !private ["So8NSObjectP", "currentCaptureMode"]
+- !private ["So8NSObjectP", "currentZoomFactor"]
+- !private ["So8NSObjectP", "default"]
+- ["So8NSObjectP", "delegate"]
+- ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "invalidate"]
+- !private ["So8NSObjectP", "isSessionRunning"]
+- !private ["So8NSObjectP", "main"]
+- !private ["So8NSObjectP", "position"]
+- !private ["So8NSObjectP", "resume"]
+- !private ["So8NSObjectP", "scheduledTimer"]
+- !private ["So8NSObjectP", "scheduledTimerWithTimeInterval"]
+- !private ["So8NSObjectP", "setTarget"]
+- ["So8NSObjectP", "sharedInstance"]
+- !private ["So8NSObjectP", "start"]
+- !private ["So8NSObjectP", "stop"]
+- !private ["So8NSObjectP", "stopUpdatingLocation"]
+- !private ["So8NSObjectP", "suspend"]
+- !private ["So8NSObjectP", "sync"]
+- !private ["So8NSObjectP", "toggleMovieRecording"]
+- !private ["So8NSObjectP", "toggleZoom"]
+- !private ["So8NSObjectP", "uniqueDevicePositionsCount"]
+- !private ["So8NSObjectP", "updateCameraMode"]
+- !private ["So8NSObjectP", "userInfo"]
+- !private ["So8NSObjectP", "videoDeviceDiscoverySession"]
+- !private ["So8NSObjectP", "videoDuration"]
+- !private ["So8NSObjectP", "videoGravity"]
+- !private ["So8NSObjectP", "videoOrientation"]
+- !private ["So14NSSecureCodingP", ""]
+- !private ["So14NSSecureCodingP", "connection"]
+- !private ["So14NSSecureCodingP", "position"]
+- !private ["So14NSSecureCodingP", "videoGravity"]
+- !private ["So18NSNotificationNamea", "PhotoLibUnavailable"]
+- !private ["So18NSNotificationNamea", "RawValue"]
+- !private ["So18NSNotificationNamea", "UpdateCameraAvailability"]
+- !private ["So18NSNotificationNamea", "ZoomValueChanged"]
+- !private ["So18NSNotificationNamea", "init"]
+- !private ["10Foundation12NotificationV", "userInfo"]
+- !private ["So20NSNotificationCenterC", "addObserver"]
+- !private ["So20NSNotificationCenterC", "default"]
+- !private ["Sj", ""]
+- ["So9OS_objectC", ""]
+- !private ["So9OS_objectC", "activate"]
+- !private ["So9OS_objectC", "async"]
+- !private ["So9OS_objectC", "init"]
+- !private ["So9OS_objectC", "main"]
+- !private ["So9OS_objectC", "resume"]
+- !private ["So9OS_objectC", "setTarget"]
+- !private ["So9OS_objectC", "suspend"]
+- !private ["So9OS_objectC", "sync"]
+- !private ["Sq", "PhotoLibUnavailable"]
+- !private ["Sq", "UpdateCameraAvailability"]
+- !private ["Sq", "ZoomValueChanged"]
+- !private ["8SPCamera12PhotoManagerC", "capturePhoto"]
+- !private ["8SPCamera12PhotoManagerC", "currentCaptureMode"]
+- !private ["8SPCamera12PhotoManagerC", "currentZoomFactor"]
+- ["8SPCamera12PhotoManagerC", "delegate"]
+- ["8SPCamera12PhotoManagerC", "init"]
+- !private ["8SPCamera12PhotoManagerC", "isSessionRunning"]
+- !private ["8SPCamera12PhotoManagerC", "start"]
+- !private ["8SPCamera12PhotoManagerC", "stop"]
+- !private ["8SPCamera12PhotoManagerC", "toggleMovieRecording"]
+- !private ["8SPCamera12PhotoManagerC", "toggleZoom"]
+- !private ["8SPCamera12PhotoManagerC", "updateCameraMode"]
+- !private ["8SPCamera12PhotoManagerC", "videoDeviceDiscoverySession"]
+- !private ["8SPCamera12PhotoManagerC", "videoDuration"]
+- ["8SPCamera20PhotoManagerDelegateP", "AVAudioSession"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "AVCaptureVideoOrientation"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "Bundle"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "CGPoint"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "CLAccuracyAuthorization"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "CMTime"]
+- ["8SPCamera20PhotoManagerDelegateP", "CameraControlsOverlay"]
+- ["8SPCamera20PhotoManagerDelegateP", "Configuration"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "Constants"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "DispatchQueue"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "Helper"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "LocationManager"]
+- ["8SPCamera20PhotoManagerDelegateP", "MPVolumeView"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "NSLayoutConstraint"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "NSNotification"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "NotificationCenter"]
+- ["8SPCamera20PhotoManagerDelegateP", "PHAsset"]
+- ["8SPCamera20PhotoManagerDelegateP", "PhotoManager"]
+- ["8SPCamera20PhotoManagerDelegateP", "PreviewView"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "ScreenSize"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "Timer"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "UIAlertAction"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "UIAlertController"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "UIDevice"]
+- ["8SPCamera20PhotoManagerDelegateP", "UIInterfaceOrientationMask"]
+- ["8SPCamera20PhotoManagerDelegateP", "UIPinchGestureRecognizer"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "UISlider"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "UITapGestureRecognizer"]
+- ["8SPCamera20PhotoManagerDelegateP", "UIViewControllerTransitionCoordinator"]
+- ["8SPCamera20PhotoManagerDelegateP", ""]
+- !private ["8SPCamera20PhotoManagerDelegateP", "addObserver"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "assets"]
+- ["8SPCamera20PhotoManagerDelegateP", "authorizatoonStatusDidChange"]
+- ["8SPCamera20PhotoManagerDelegateP", "cameraButtonDidPress"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "cameraControlsOverlay"]
+- ["8SPCamera20PhotoManagerDelegateP", "cameraModeButtonDidPress"]
+- ["8SPCamera20PhotoManagerDelegateP", "cancelButtonDidPress"]
+- ["8SPCamera20PhotoManagerDelegateP", "capturedAsset"]
+- ["8SPCamera20PhotoManagerDelegateP", "configuration"]
+- ["8SPCamera20PhotoManagerDelegateP", "didFinishRecordingVideo"]
+- ["8SPCamera20PhotoManagerDelegateP", "didStartRecordingVideo"]
+- ["8SPCamera20PhotoManagerDelegateP", "doneButtonDidPress"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "fatalError"]
+- ["8SPCamera20PhotoManagerDelegateP", "headingChanged"]
+- ["8SPCamera20PhotoManagerDelegateP", "locationButtonDidPress"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "locationManager"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "onCancel"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "onCapture"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "onFinish"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "onPreview"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "photoLibUnavailable"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "photoManager"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "pinchGestureRecognizerHandler"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "pivotPinchScale"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "preparePhotoManager"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "present"]
+- ["8SPCamera20PhotoManagerDelegateP", "previewButtonDidPress"]
+- ["8SPCamera20PhotoManagerDelegateP", "previewView"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "previewViewOffset"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "print"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "refresh"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "refreshTimeInterval"]
+- ["8SPCamera20PhotoManagerDelegateP", "self"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "setupUI"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "showPreciseLocationUnavailableMessage"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "showSettingsAlert"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "startTimer"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "stopTimer"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "updateCameraAvailability"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "updateTimer"]
+- ["8SPCamera20PhotoManagerDelegateP", "view"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "volume"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "volumeChanged"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "volumeView"]
+- ["8SPCamera20PhotoManagerDelegateP", "zoomButtonDidPress"]
+- !private ["8SPCamera20PhotoManagerDelegateP", "zoomValueChanged"]
+- !private ["8SPCamera17PhotoManagerSetupO", "configurationFailed"]
+- !private ["8SPCamera17PhotoManagerSetupO", "notAuthorized"]
+- !private ["8SPCamera17PhotoManagerSetupO", "success"]
+- !private ["8SPCamera11PreviewViewC", "addGestureRecognizer"]
+- ["8SPCamera11PreviewViewC", "backgroundColor"]
+- ["8SPCamera11PreviewViewC", "init"]
+- !private ["8SPCamera11PreviewViewC", "translatesAutoresizingMaskIntoConstraints"]
+- !private ["8SPCamera11PreviewViewC", "videoPreviewLayer"]
+- ["Sk", ""]
+- !private ["Sk", "append"]
+- !private ["Sk", "count"]
+- ["Sk", "init"]
+- ["Sm", ""]
+- !private ["Sm", "append"]
+- !private ["Sm", "count"]
+- ["Sm", "init"]
+- !private ["SY", "=="]
+- !private ["SY", "PhotoLibUnavailable"]
+- !private ["SY", "RawValue"]
+- !private ["SY", "UpdateCameraAvailability"]
+- !private ["SY", "ZoomValueChanged"]
+- !private ["SY", ""]
+- ["SY", "authorizedAlways"]
+- ["SY", "authorizedWhenInUse"]
+- !private ["SY", "fullAccuracy"]
+- !private ["SY", "init"]
+- !private ["SY", "movie"]
+- ["SY", "notDetermined"]
+- !private ["SY", "reducedAccuracy"]
+- !private ["SY", "resizeAspect"]
+- !private ["SY", "resizeAspectFill"]
+- !private ["10Foundation20ReferenceConvertibleP", "userInfo"]
+- !private ["7Combine9SchedulerP", "async"]
+- !private ["7Combine9SchedulerP", "main"]
+- !private ["8SPCamera10ScreenSizeV", "SCREEN_MAX_LENGTH"]
+- ["ST", ""]
+- !private ["ST", "append"]
+- !private ["ST", "count"]
+- ["ST", "init"]
+- !private ["ST", "subscript"]
+- !private ["s13SignedNumericP", ""]
+- !private ["Sx", ""]
+- !private ["s27StringInterpolationProtocolP", "appendInterpolation"]
+- !private ["s27StringInterpolationProtocolP", "appendLiteral"]
+- !private ["s27StringInterpolationProtocolP", "init"]
+- ["s16TextOutputStreamP", ""]
+- !private ["s16TextOutputStreamP", "appendInterpolation"]
+- !private ["s16TextOutputStreamP", "appendLiteral"]
+- ["s20TextOutputStreamableP", ""]
+- !private ["So7NSTimerC", "invalidate"]
+- !private ["So7NSTimerC", "scheduledTimer"]
+- !private ["s14_ArrayProtocolP", "append"]
+- !private ["s14_ArrayProtocolP", "count"]
+- ["s14_ArrayProtocolP", "init"]
+- !private ["s24_DestructorSafeContainerP", "append"]
+- !private ["s24_DestructorSafeContainerP", "count"]
+- ["s24_DestructorSafeContainerP", "init"]
+- !private ["s35_ExpressibleByBuiltinBooleanLiteralP", "init"]
+- ["s51_ExpressibleByBuiltinExtendedGraphemeClusterLiteralP", ""]
+- ["s33_ExpressibleByBuiltinFloatLiteralP", "init"]
+- ["s35_ExpressibleByBuiltinIntegerLiteralP", "init"]
+- !private ["s34_ExpressibleByBuiltinStringLiteralP", "init"]
+- ["s41_ExpressibleByBuiltinUnicodeScalarLiteralP", ""]
+- !private ["s19_HasContiguousBytesP", "append"]
+- !private ["s19_HasContiguousBytesP", "count"]
+- ["s19_HasContiguousBytesP", "init"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "Name"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "PhotoLibUnavailable"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "RawValue"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "UpdateCameraAvailability"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "ZoomValueChanged"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", ""]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "append"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "count"]
+- ["s35_HasCustomAnyHashableRepresentationP", "init"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "resizeAspect"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "resizeAspectFill"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "subscript"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "userInfo"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "Name"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "accuracyAuthorization"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "addObserver"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "async"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "authorizeAccuracy"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "capturePhoto"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "connection"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "currentCaptureMode"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "currentZoomFactor"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "default"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "delegate"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "invalidate"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "isSessionRunning"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "main"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "position"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "scheduledTimer"]
+- ["10Foundation27_KeyValueCodingAndObservingP", "sharedInstance"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "start"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "stop"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "stopUpdatingLocation"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "toggleMovieRecording"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "toggleZoom"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "uniqueDevicePositionsCount"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "updateCameraMode"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "userInfo"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "videoDeviceDiscoverySession"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "videoDuration"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "videoGravity"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "videoOrientation"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "Name"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "accuracyAuthorization"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "addObserver"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "async"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "authorizeAccuracy"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "capturePhoto"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "connection"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "currentCaptureMode"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "currentZoomFactor"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "default"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "delegate"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "init"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "invalidate"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "isSessionRunning"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "main"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "position"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "scheduledTimer"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", "sharedInstance"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "start"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "stop"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "stopUpdatingLocation"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "toggleMovieRecording"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "toggleZoom"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "uniqueDevicePositionsCount"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "updateCameraMode"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "userInfo"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "videoDeviceDiscoverySession"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "videoDuration"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "videoGravity"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "videoOrientation"]
+- !private ["s21_ObjectiveCBridgeableP", "PhotoLibUnavailable"]
+- !private ["s21_ObjectiveCBridgeableP", "RawValue"]
+- !private ["s21_ObjectiveCBridgeableP", "UpdateCameraAvailability"]
+- !private ["s21_ObjectiveCBridgeableP", "ZoomValueChanged"]
+- !private ["s21_ObjectiveCBridgeableP", ""]
+- !private ["s21_ObjectiveCBridgeableP", "_ObjectiveCType"]
+- !private ["s21_ObjectiveCBridgeableP", "_bridgeToObjectiveC"]
+- !private ["s21_ObjectiveCBridgeableP", "_conditionallyBridgeFromObjectiveC"]
+- !private ["s21_ObjectiveCBridgeableP", "_forceBridgeFromObjectiveC"]
+- !private ["s21_ObjectiveCBridgeableP", "_unconditionallyBridgeFromObjectiveC"]
+- !private ["s21_ObjectiveCBridgeableP", "append"]
+- !private ["s21_ObjectiveCBridgeableP", "count"]
+- ["s21_ObjectiveCBridgeableP", "init"]
+- !private ["s21_ObjectiveCBridgeableP", "resizeAspect"]
+- !private ["s21_ObjectiveCBridgeableP", "resizeAspectFill"]
+- !private ["s21_ObjectiveCBridgeableP", "seconds"]
+- !private ["s21_ObjectiveCBridgeableP", "subscript"]
+- !private ["s21_ObjectiveCBridgeableP", "userInfo"]
+- !private ["s20_SwiftNewtypeWrapperP", "PhotoLibUnavailable"]
+- !private ["s20_SwiftNewtypeWrapperP", "RawValue"]
+- !private ["s20_SwiftNewtypeWrapperP", "UpdateCameraAvailability"]
+- !private ["s20_SwiftNewtypeWrapperP", "ZoomValueChanged"]
+- !private ["s20_SwiftNewtypeWrapperP", "init"]
+- !private ["s20_SwiftNewtypeWrapperP", "resizeAspect"]
+- !private ["s20_SwiftNewtypeWrapperP", "resizeAspectFill"]
+depends-nominal:
+- "So14AVAudioSessionC"
+- !private "So19AVCaptureConnectionC"
+- !private "So26AVCaptureVideoPreviewLayerC"
+- !private "So19AVLayerVideoGravitya"
+- !private "s18AdditiveArithmeticP"
+- "Sa"
+- "SK"
+- !private "So8NSBundleC"
+- "So7CALayerC"
+- !private "So13CAMediaTimingP"
+- !private "So23CLAccuracyAuthorizationV"
+- "So21CLAuthorizationStatusV"
+- !private "So25CLLocationManagerDelegateP"
+- !private "So6CMTimea"
+- "s7CVarArgP"
+- !private "8SPCamera21CameraControlsOverlayC"
+- "8SPCamera10CameraModeO"
+- "8SPCamera21CameraOverlayDelegateP"
+- "8SPCamera20CameraViewControllerC"
+- !private "8SPCamera11CaptureModeO"
+- "Sl"
+- "SL"
+- "8SPCamera13ConfigurationV"
+- !private "8SPCamera9ConstantsO"
+- "10Foundation15ContiguousBytesP"
+- "s28CustomDebugStringConvertibleP"
+- "s17CustomReflectableP"
+- "s23CustomStringConvertibleP"
+- "10Foundation12DataProtocolP"
+- "Se"
+- !private "s26DefaultStringInterpolationV"
+- !private "SD"
+- !private "So31AVCaptureDeviceDiscoverySessionC"
+- "So18OS_dispatch_objectC"
+- !private "So17OS_dispatch_queueC"
+- "SE"
+- "SQ"
+- "s25ExpressibleByArrayLiteralP"
+- !private "s30ExpressibleByDictionaryLiteralP"
+- "s43ExpressibleByExtendedGraphemeClusterLiteralP"
+- "s25ExpressibleByFloatLiteralP"
+- !private "s27ExpressibleByIntegerLiteralP"
+- !private "s23ExpressibleByNilLiteralP"
+- "s32ExpressibleByStringInterpolationP"
+- "s26ExpressibleByStringLiteralP"
+- "s33ExpressibleByUnicodeScalarLiteralP"
+- !private "SF"
+- "SH"
+- !private "8SPCamera6HelperV"
+- !private "8SPCamera15LocationManagerC"
+- "8SPCamera31LocationManagerAccuracyDelegateP"
+- "s25LosslessStringConvertibleP"
+- "SM"
+- "10Foundation19MutableDataProtocolP"
+- !private "So8NSCodingP"
+- !private "So9NSCopyingP"
+- !private "So14NSNotificationC"
+- "So8NSObjectC"
+- "So8NSObjectP"
+- !private "So14NSSecureCodingP"
+- !private "So18NSNotificationNamea"
+- !private "10Foundation12NotificationV"
+- !private "So20NSNotificationCenterC"
+- !private "Sj"
+- "So9OS_objectC"
+- !private "Sq"
+- "8SPCamera12PhotoManagerC"
+- "8SPCamera20PhotoManagerDelegateP"
+- !private "8SPCamera17PhotoManagerSetupO"
+- "8SPCamera11PreviewViewC"
+- "Sk"
+- "Sm"
+- "SY"
+- !private "10Foundation20ReferenceConvertibleP"
+- !private "7Combine9SchedulerP"
+- !private "8SPCamera10ScreenSizeV"
+- "ST"
+- !private "s13SignedNumericP"
+- !private "Sx"
+- !private "s27StringInterpolationProtocolP"
+- "s16TextOutputStreamP"
+- "s20TextOutputStreamableP"
+- !private "So7NSTimerC"
+- "s14_ArrayProtocolP"
+- "s24_DestructorSafeContainerP"
+- !private "s35_ExpressibleByBuiltinBooleanLiteralP"
+- "s51_ExpressibleByBuiltinExtendedGraphemeClusterLiteralP"
+- "s33_ExpressibleByBuiltinFloatLiteralP"
+- "s35_ExpressibleByBuiltinIntegerLiteralP"
+- !private "s34_ExpressibleByBuiltinStringLiteralP"
+- "s41_ExpressibleByBuiltinUnicodeScalarLiteralP"
+- "s19_HasContiguousBytesP"
+- "s35_HasCustomAnyHashableRepresentationP"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- "10Foundation37_KeyValueCodingAndObservingPublishingP"
+- "s21_ObjectiveCBridgeableP"
+- !private "s20_SwiftNewtypeWrapperP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/XPC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/ObjectiveC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreMIDI.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreMedia.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/simd.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreImage.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Combine.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/QuartzCore.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Dispatch.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Metal.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Darwin.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreLocation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Foundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/AVFoundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreFoundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreAudio.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreGraphics.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Photos.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/UniformTypeIdentifiers.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Swift.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/IOKit.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/SwiftOnoneSupport.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/mach-o/dyld.modulemap"
+- "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/mach-o/compact_unwind_encoding.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/xpc/XPC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CoreMedia.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/apinotes/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreLocation.framework/Headers/CoreLocation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVFoundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/MediaPlayer.framework/Headers/MediaPlayer.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/ApplicationServices.framework/Headers/ApplicationServices.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreAudioTypes.framework/Headers/CoreAudioTypes.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Photos.framework/Headers/Photos.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/UniformTypeIdentifiers.framework/Headers/UniformTypeIdentifiers.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers/MediaToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/AudioToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/Security.framework/Headers/Security.apinotes"
+interface-hash: "c4576e94b76bf8fd368f183735cfdeb9"

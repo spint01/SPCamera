@@ -1,0 +1,16 @@
+version: "Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)"
+options: "05f606dd9cf3e003090af29c61842283"
+build_time: [1619571768, 231352000]
+inputs:
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/CameraViewController.swift": !dirty [1618015462, 663523643]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Configuration.swift": !dirty [1619565245, 838082849]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/EXIFHelper.swift": !dirty [1617163207, 738099590]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Helper.swift": !dirty [1616381824, 66995579]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/LocationManager.swift": !dirty [1616128386, 72075670]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/PhotoCaptureProcessor.swift": !dirty [1618015462, 660033252]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/PhotoManager.swift": !dirty [1618015462, 657863060]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CameraButton.swift": !dirty [1616128386, 75062669]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CameraControlsOverlay.swift": !dirty [1619565245, 839068924]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CompassView.swift": !dirty [1618015462, 647381579]
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/PreviewView.swift": !dirty [1616128386, 76466061]
+  "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/DerivedSources/resource_bundle_accessor.swift": !dirty [9223372036, 854775807]

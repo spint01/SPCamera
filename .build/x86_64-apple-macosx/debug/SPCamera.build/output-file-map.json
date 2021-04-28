@@ -1,0 +1,77 @@
+{
+  "": {
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/master.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/CameraViewController.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/CameraViewController.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/CameraViewController.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/CameraViewController~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/CameraViewController.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Configuration.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Configuration.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Configuration.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Configuration~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Configuration.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/EXIFHelper.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/EXIFHelper.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/EXIFHelper.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/EXIFHelper~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/EXIFHelper.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Helper.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Helper.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Helper.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Helper~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Helper.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/LocationManager.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/LocationManager.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/LocationManager.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/LocationManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/LocationManager.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/PhotoCaptureProcessor.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoCaptureProcessor.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoCaptureProcessor.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoCaptureProcessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoCaptureProcessor.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/PhotoManager.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoManager.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoManager.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/PhotoManager.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CameraButton.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraButton.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraButton.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraButton~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraButton.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CameraControlsOverlay.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraControlsOverlay.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraControlsOverlay.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraControlsOverlay~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CameraControlsOverlay.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/CompassView.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CompassView.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CompassView.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CompassView~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/CompassView.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/Sources/SPCamera/Views/PreviewView.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/PreviewView.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/PreviewView.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/PreviewView~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/Views/PreviewView.swiftdeps"
+  },
+  "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/resource_bundle_accessor.d",
+    "object": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/resource_bundle_accessor.swiftdeps"
+  }
+}

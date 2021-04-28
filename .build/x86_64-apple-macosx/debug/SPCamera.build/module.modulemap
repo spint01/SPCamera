@@ -1,0 +1,4 @@
+module SPCamera {
+    header "/Users/stevepint/dev/sgp/github/SPCamera/.build/x86_64-apple-macosx/debug/SPCamera.build/SPCamera-Swift.h"
+    requires objc
+}
