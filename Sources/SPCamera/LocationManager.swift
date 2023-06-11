@@ -3,7 +3,7 @@ import CoreLocation
 import AVFoundation
 import UIKit
 
-protocol LocationManagerAccuracyDelegate: class {
+protocol LocationManagerAccuracyDelegate: NSObjectProtocol {
     func authorizatoonStatusDidChange(authorizationStatus: CLAuthorizationStatus)
     func headingChanged(heading: Double)
 }

@@ -21,13 +21,15 @@ public class CameraViewController: UIViewController {
         guard !Helper.runningOnIpad else { return 0 }
         guard photoManager.currentCaptureMode == .movie else {
             switch ScreenSize.SCREEN_MAX_LENGTH {
-            case 896...10000: // IPHONE_X_MAX
+            case 896...10000: // IPHONE_X_MAX, Pro Max, 13 Plus
                 return 50
-            case 812..<896: // IPHONE_X
+            case 840..<896: // IPHONE_11 - 14
+                return 24
+            case 812..<840: // IPHONE_X, 12 Mini
                 return 34
             case 736..<812: // IPHONE_PLUS
                 return 50
-            default:
+            default: // iPhone SE
                 return 42
             }
         }
@@ -44,10 +46,10 @@ public class CameraViewController: UIViewController {
     private var volume = AVAudioSession.sharedInstance().outputVolume
     private lazy var assets = [PHAsset]()
 
-    private lazy var cameraControlsOverlay: CameraControlsOverlay = { [weak self] in
+    private lazy var cameraControlsOverlay: CameraControlsOverlay = { [unowned self] in
         return CameraControlsOverlay(parentView: view, configuration: configuration)
     }()
-    private lazy var photoManager: PhotoManager = { [weak self] in
+    private lazy var photoManager: PhotoManager = { [unowned self] in
         let photoManager = PhotoManager(previewView: previewView, configuration: configuration)
         photoManager.delegate = self
         return photoManager
@@ -136,6 +138,10 @@ public class CameraViewController: UIViewController {
 
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
+        if !Helper.runningOnIpad, let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
+            videoPreviewLayerConnection.videoOrientation = .portrait
+        }
 
         let bounds = view.layer.bounds
         previewView.videoPreviewLayer.position = CGPoint(x: bounds.midX, y: bounds.midY - previewViewOffset)

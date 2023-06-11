@@ -21,7 +21,7 @@ enum CameraMode {
     }
 }
 
-protocol CameraOverlayDelegate: class {
+protocol CameraOverlayDelegate: NSObjectProtocol {
     func cameraButtonDidPress(_ mode: CameraMode)
     func cameraModeButtonDidPress(_ mode: CameraMode)
     func doneButtonDidPress()

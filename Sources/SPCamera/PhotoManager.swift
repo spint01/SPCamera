@@ -42,7 +42,7 @@ extension Notification.Name {
     static let ZoomValueChanged = NSNotification.Name("ZoomValueChanged")
 }
 
-protocol PhotoManagerDelegate: class {
+protocol PhotoManagerDelegate: NSObjectProtocol {
     func capturedAsset(_ asset: PHAsset)
     func didStartRecordingVideo()
     func didFinishRecordingVideo()
