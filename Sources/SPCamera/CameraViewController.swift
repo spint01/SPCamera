@@ -139,8 +139,10 @@ public class CameraViewController: UIViewController {
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if !Helper.runningOnIpad, let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
-            videoPreviewLayerConnection.videoOrientation = .portrait
+        if #available(iOS 16, *) {
+            if !Helper.runningOnIpad, let videoPreviewLayerConnection = previewView.videoPreviewLayer.connection {
+                videoPreviewLayerConnection.videoOrientation = .portrait
+            }
         }
 
         let bounds = view.layer.bounds
